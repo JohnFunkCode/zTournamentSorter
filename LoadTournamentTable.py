@@ -1,11 +1,10 @@
+# V12 - new output method to match tournament guide 
+#
 #   Feautres to add:
 # Better error handling - loop through each record looking for bogus stuff and print an error message telling what's wrong with it
 # Summary Stats - how many people of each belt, how many sparring, how may forms, how many weaponds
 # Event Stats - how many people in each event as per the event guide
 #
-#
-#
-
 
 import pandas as pd
 import numpy as np
@@ -144,6 +143,235 @@ def writeEventToFile( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
+
+###############################################################################
+# write4To6EventToExcel
+#  This method provides a re-usable method to write output 4-6 year old divisions
+#
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+def write4To6EventToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask= mask_WhiteBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'White')
+
+    mask= mask_YellowBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Yellow')
+
+    mask= mask_OrangeBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Orange')
+
+    mask1 = mask_PurpleBelt & compositMask
+    mask2 = mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Purple,Blue & Blue Stripe')
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Grean,Green Stripe & All Brown')
+
+    mask= mask_AllBlackBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Black')
+    
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# write7To9EventToExcel
+#  This method provides a re-usable method to write output 7 to 9 year old divisions
+#
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+def write7To9EventToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'White & Yellow')
+
+    mask= mask_OrangeBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Orange')
+
+    mask = mask_PurpleBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Purple')
+
+    mask= mask_AllBlueBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Blue & Blue Stripe')
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Grean,GreenStripe & All Brown')
+
+    mask= mask_AllBlackBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Black')
+    
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# write10AndUpToExcel
+#  This method provides a re-usable method to write output 10 year old and older divisions
+#
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def write10AndUpEventToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'White & Yellow')
+
+    mask= mask_OrangeBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Orange')
+
+    mask= mask_PurpleBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Purple')
+
+    mask= mask_AllBlueBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Blue & Blue Stripe')
+
+    mask= mask_AllGreenBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Green & Green Stripe')
+
+    mask= mask_AllBrownBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'All Brown')
+
+    mask= mask_AllBlackBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Black')
+
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# write16To17ToExcel
+#  This method provides a re-usable method to write output 16 -17 year old divisions
+#
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def write16To17ToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask = mask1 | mask2 | mask3
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'White, Yellow & Orange')
+
+    mask1= mask_PurpleBelt & compositMask
+    mask2= mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2 
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Purple, Blue & Blue Stripe')
+
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2 
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Green,Green Stripe & All Brown')
+
+    mask= mask_AllBlackBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Black')
+
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# writeWeaponsDivision1ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def writeWeaponsDivision1ToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+    mask6= mask_AllGreenBelt & compositMask
+    mask7= mask_AllBrownBelt & compositMask
+    mask8= mask_AllBlackBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Division1')
+
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# writeWeaponsDivision2ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def writeWeaponsDivision2ToExcel( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=ExcelWriter(fullpath)
+    print "Generating " + fullpath
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+    mask6= mask_AllGreenBelt & compositMask
+    mask7= mask_AllBrownBelt & compositMask
+    mask8= mask_AllBlackBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+
+    wmk=newDataFrameFromMask( mask )
+    wmk.to_excel(writer,'Division2')
+
+    writer.save()
+    time.sleep(1)
+
+
 ###############################################################################
 # writeWeaponsDivision3ToFile
 #  arguments:
@@ -151,8 +379,6 @@ def writeEventToFile( filename, compositMask ):
 #  compsitMask - a mask made up of everything but the belts that you want
 #
 def writeWeaponsDivision3ToFile( filename, compositMask ):
-#    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
-#    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=ExcelWriter(fullpath)
     print "Generating " + fullpath
@@ -169,15 +395,6 @@ def writeWeaponsDivision3ToFile( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
     wmk.to_excel(writer,'Division3')
 
-#    mask= mask_AllBrownBelt & compositMask
-#    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Brown')
-
-#    mask= mask_AllBlackBelt & compositMask
-#    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
-
-
     writer.save()
     time.sleep(1)
 
@@ -188,8 +405,6 @@ def writeWeaponsDivision3ToFile( filename, compositMask ):
 #  compsitMask - a mask made up of everything but the belts that you want
 #
 def writeWeaponsDivision4ToFile( filename, compositMask ):
-#    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
-#    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=ExcelWriter(fullpath)
     print "Generating " + fullpath
@@ -214,8 +429,6 @@ def writeWeaponsDivision4ToFile( filename, compositMask ):
 #  compsitMask - a mask made up of everything but the belts that you want
 #
 def writeWeaponsDivision5ToFile( filename, compositMask ):
-#    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
-#    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     print "Generating " + fullpath
     writer=ExcelWriter(fullpath)
@@ -236,8 +449,6 @@ def writeWeaponsDivision5ToFile( filename, compositMask ):
 #  compsitMask - a mask made up of everything but the belts that you want
 #
 def writeWeaponsDivision6ToFile( filename, compositMask ):
-#    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
-#    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=ExcelWriter(fullpath)
     print "Generating " + fullpath
@@ -417,165 +628,146 @@ mask_Age13Plus=cdf["Competitor's Age?"]>=13
 # Kids Kata Spreadsheet - 4-6 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age4to6
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "KidsKata.xlsx", compositMask )
+write4To6EventToExcel( "KidsKata.xlsx", compositMask )
 
 ###############################################################################
 # Youth Kata Spreadsheet - 7-9 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age7to9
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "YouthKata.xlsx", compositMask )
+write7To9EventToExcel( "YouthKata.xlsx", compositMask )
 
 ###############################################################################
 # Boy's Sparring Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Age10to12 & mask_Male
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "BoysSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "BoysSparring.xlsx", compositMask )
 
 ###############################################################################
 # Kids Sparring Spreadsheet - 4-6 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Age4to6
-writeEventToFile( "KidsSparring.xlsx", compositMask )
+write4To6EventToExcel( "KidsSparring.xlsx", compositMask )
 
 ###############################################################################
 # Boys & Girls Kata Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age10to12
-writeEventToFile( "BoysGilrsKata.xlsx", compositMask )
+write10AndUpEventToExcel( "BoysGilrsKata.xlsx", compositMask )
 
 ###############################################################################
 # Youth Girls Sparring Spreadsheet - 7-9 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age7to9
-writeEventToFile( "YouthGirlSparring.xlsx", compositMask )
+write7To9EventToExcel( "YouthGirlSparring.xlsx", compositMask )
 
 ###############################################################################
 # Youth Boys Sparring Spreadsheet - 7-9 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age7to9
-writeEventToFile( "YouthBoysSparring.xlsx", compositMask )
+write7To9EventToExcel( "YouthBoysSparring.xlsx", compositMask )
 
 ###############################################################################
 # Girl's Sparring Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Age10to12 & mask_Female
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "GirlsSparring.xlsx", compositMask )
+#write10AndUpEventToExcel( "GirlsSparring.xlsx", compositMask )
+write7To9EventToExcel( "GirlsSparring.xlsx", compositMask )
 
 
 ###############################################################################
 # Teen Girls Sparring Spreadsheet - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age13to15
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "TeenGirlSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "TeenGirlSparring.xlsx", compositMask )
 
 ###############################################################################
 # Womans Sparring Spreadsheet - 18-39 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age18to39
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "WomensSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "WomensSparring.xlsx", compositMask )
 
 ###############################################################################
 # Weapons Division 1 - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age4to9
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "WeaponsDivision1.xlsx", compositMask )
+writeWeaponsDivision1ToExcel( "WeaponsDivision1.xlsx", compositMask )
 
 ###############################################################################
 # Weapons Division 1 - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age10to12
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "WeaponsDivision2.xlsx", compositMask )
+writeWeaponsDivision2ToExcel( "WeaponsDivision2.xlsx", compositMask )
 
 ###############################################################################
 # Men And Womens Kata - 18-39 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age18to39
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "MenAndWomensKata.xlsx", compositMask )
+write10AndUpEventToExcel( "MenAndWomensKata.xlsx", compositMask )
 
 ###############################################################################
 # Teen Kata - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age13to15
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "TeenKata.xlsx", compositMask )
+write10AndUpEventToExcel( "TeenKata.xlsx", compositMask )
 
 ###############################################################################
 # Senior Mens Sparring - 40+ year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age40Plus
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "SeniorMensSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "SeniorMensSparring.xlsx", compositMask )
 
 ###############################################################################
 # Senior Womens Sparring - 40+ year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age40Plus
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "SeniorWomensSparring.xlsx", compositMask )
+write7To9EventToExcel( "SeniorWomensSparring.xlsx", compositMask )
 
 ###############################################################################
 # Young Adult Kata - 16-17 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age16to17
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "YoungAdultKata.xlsx", compositMask )
+write16To17ToExcel( "YoungAdultKata.xlsx", compositMask )
 
 ###############################################################################
 #  Mens Sparring - 18-39 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age18to39
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "MensSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "MensSparring.xlsx", compositMask )
 
 ###############################################################################
 #  Teen Boys Sparring - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age13to15
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "TeenBoysSparring.xlsx", compositMask )
+write10AndUpEventToExcel( "TeenBoysSparring.xlsx", compositMask )
 
 ###############################################################################
 # Senior Kata - 40+ year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age40Plus
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "SeniorKata.xlsx", compositMask )
+write10AndUpEventToExcel( "SeniorKata.xlsx", compositMask )
 
 ###############################################################################
 #  Young Adult Mens Sparring - 16-17 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age16to17
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "YoungAdultMensSparring.xlsx", compositMask )
+write16To17ToExcel( "YoungAdultMensSparring.xlsx", compositMask )
 
 ###############################################################################
 #  Young Adult Womens Sparring - 16-17 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age16to17
-#wmk=newDataFrameFromMask( compositMask )
-writeEventToFile( "YoungAdultWomensSparring.xlsx", compositMask )
+write16To17ToExcel( "YoungAdultWomensSparring.xlsx", compositMask )
 
 ###############################################################################
 #  WeaponsDivision3 13-17 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age13to17
-#wmk=newDataFrameFromMask( compositMask )
 writeWeaponsDivision3ToFile( "WeaponsDivision3.xlsx", compositMask )
 
 ###############################################################################
 #  WeaponsDivision4 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age18Plus
-wmk=newDataFrameFromMask( compositMask )
 writeWeaponsDivision4ToFile( "WeaponsDivision4.xlsx", compositMask )
 
 
@@ -583,14 +775,12 @@ writeWeaponsDivision4ToFile( "WeaponsDivision4.xlsx", compositMask )
 #  WeaponsDivision5 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age18Plus
-wmk=newDataFrameFromMask( compositMask )
 writeWeaponsDivision5ToFile( "WeaponsDivision5.xlsx", compositMask )
 
 ###############################################################################
 #  WeaponsDivision6 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age13Plus
-#wmk=newDataFrameFromMask( compositMask )
 writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
 
 print "Done!"

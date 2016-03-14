@@ -1,4 +1,4 @@
-# V14 - new output patters to match 4/30/2016 Tournament Guide
+# V15 - Error handling for height and weight
 #
 # There are 6 patterns in this Tournament Guide
 #
@@ -72,7 +72,7 @@ import time
 
 
 ###############################################################################
-# checkInput
+# fixInput
 #  This function scans indiviual rows looking for input errors
 #  at first, it will just point out errors to the user
 #  arguments:  none
@@ -80,7 +80,6 @@ import time
 #
 def fixInput( inputDataFrame, errorLogFile ):
     errorCount = 0
-
     # first use Ria's technique to remove bogus lines from the data frame
     cleanDataFrame = df[np.isfinite(df['Registrant ID'])]
 
@@ -111,7 +110,27 @@ def fixInput( inputDataFrame, errorLogFile ):
 
 #        errorLogFile.write( "Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"]) + " did not contain a valid rank " )
 
-    #Check for non-numeric data in the Weight Field
+
+    #Convert weight to digits with regex and generate an error if not valid
+    import re
+    compiledRegex=re.compile('\d+')
+    for index, row in cleanDataFrame.iterrows():
+        rawWeightString=row['Competitor\'s Weight (in lbs.)?']
+        matchList=compiledRegex.match(rawWeightString)
+        cleanWeightString=matchList.group()
+#        cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
+        cleanDataFrame.at[index,'Competitor\'s Weight (in lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
+
+        #print cleanWeightString
+        cleanWeight=int(cleanWeightString)
+        if (0==cleanWeight) or (350 < cleanWeight):
+            errorCount+=1
+            errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has an invalid Weight field:" + rawWeightString
+            errorLogFile.write(errorString+"\r\f")
+            print errorString
+
+
+#    #Check for non-numeric data in the Weight Field
 #    for index, row in cleanDataFrame.iterrows():
 #        try:
 #            int(row['Competitor\'s Weight (in lbs.)?'])
@@ -121,7 +140,6 @@ def fixInput( inputDataFrame, errorLogFile ):
 #            errorLogFile.write(errorString+"\r\f")
 #            print errorString
 
-
 #good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
 #import re
 #wString="98 lbs"
@@ -129,47 +147,71 @@ def fixInput( inputDataFrame, errorLogFile ):
 #s=p.match(wString)
 #print s.group()
 
-#==============================================================================
-# #Height - todo: make the error more usable
-#     import re
-#     compiledRegex=re.compile('\d+')
-#     for index, row in cleanDataFrame.iterrows():
-#         splitString=row['Competitor\'s Height (in feet and inches)?']
-# #        print splitString
-#         matchList=compiledRegex.findall(splitString)
-#         l=len(matchList)
-#         if l>=2:
-#             feet=matchList[0]
-#             inches=matchList[1]
-#         if l==1:
-#             if(int(matchList[0])<12):
-#                 #single digit less than 12
-#                 feet=matchList[0]
-#                 inches=0
-#             else:
-#                 #single digit greater than 12
-#                 feet= 0
-#                 inches=matchList[0]
-#                 if inches>12:
-#                     feet=int(inches)/12
-#                     inches=int(inches)%12
-#         if l==0:
-#             feet=0
-#             inches=0
-#
-#         #resonability test
-#         if (int(feet) > 6) or (int(feet) < 3):
-#             print splitString, "|", feet, "|", inches, "is not reasonable"
-#         print splitString, "|", feet, "|", inches
-#==============================================================================
+ #Height - todo: make the error more usable
+#    import re
+    compiledRegex=re.compile('\d+')
+    for index, row in cleanDataFrame.iterrows():
+        splitString=row['Competitor\'s Height (in feet and inches)?']
+ #        print splitString
+        matchList=compiledRegex.findall(splitString)
+        l=len(matchList)
+        if l>=2:
+            feet=matchList[0]
+            inches=matchList[1]
+        if l==1:
+            if(int(matchList[0])<12):
+                #single digit less than 12
+                feet=matchList[0]
+                inches=0
+            else:
+                #single digit greater than 12
+                feet= 0
+                inches=matchList[0]
+                if inches>12:
+                    feet=int(inches)/12
+                    inches=int(inches)%12
+        if l==0:
+            feet=0
+            inches=0
+
+        #resonability test
+        if (int(feet) < 3) or (int(feet) > 6):
+           #print splitString, "|", feet, "|", inches, "is not reasonable"
+           errorCount+=1
+           errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has bad data in the height field: " + splitString
+           errorLogFile.write(errorString+"\r\f")
+           print errorString
+
+        #Write it to new columns in the data frame
+        cleanDataFrame.loc[index,'Feet']=feet
+        cleanDataFrame.loc[index,'Inches']=inches
+        heightInInches = (int(feet)*12)+int(inches)
+        cleanDataFrame.loc[index,'HeightInInches']=heightInInches
+        bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?'])
+        cleanDataFrame.loc[index,'BodyMassIndex']=bodyMassIndex
+        #print splitString, "|", feet, "|", inches
+
+#---test version
+        cleanDataFrame.at[index,'Feet']=feet
+        cleanDataFrame.at[index,'Inches']=inches
+        heightInInches = (int(feet)*12)+int(inches)
+        cleanDataFrame.at[index,'HeightInInches']=heightInInches
+        bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?'])
+        cleanDataFrame.at[index,'BodyMassIndex']=bodyMassIndex
+        #print splitString, "|", feet, "|", inches
+
+
+
 
    # if there are errors exit
     if( errorCount > 0):
         errorLogFile.write( str(errorCount)+" "+"errors found" )
+        errorLogFile.close()
         print str(errorCount)+" "+"errors found"
         sys.exit("Exiting - The input must be fixed manually")
     else:
          errorLogFile.write( "No errors found" )
+
 
     return cleanDataFrame
 
@@ -197,7 +239,9 @@ def pathDelimiter():
 def newDataFrameFromMask( mask ):
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor's Age?", "Current Belt Rank?", "Competitor's Weight (in lbs.)?", "Competitor's Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons.","Parent or Guardian Name (if competitor is under 18)?","Phone","Mobile Phone"]][mask].sort("Competitor's Age?")
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor's Age?", "Current Belt Rank?", "Competitor's Weight (in lbs.)?", "Competitor's Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort("Competitor's Age?")
-    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor's Age?", "Current Belt Rank?", "Competitor's Weight (in lbs.)?", "Competitor's Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor's Age?")
+#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor's Age?", "Current Belt Rank?", "Competitor's Weight (in lbs.)?", "Competitor's Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor's Age?")
+    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor's Age?", "Current Belt Rank?", "Feet","Inches","HeightInInches","Competitor's Weight (in lbs.)?","BodyMassIndex", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor's Age?")
+    newdf.sort_values('BodyMassIndex',inplace=True)
     return newdf
 
 ###############################################################################
@@ -747,6 +791,10 @@ Tk().withdraw() # we don't want a full GUI, so keep the root window from appeari
 filename = askopenfilename()
 #filename="/Volumes/1TB/Dropbox/TournamentProject/CleanRegistrantExport.csv" #For John Debugging
 #filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
+
+print time.strftime("%X") + " Reading and processing the data...."
+
+
 df=pd.read_csv(filename)
 #cdf = df[np.isfinite(df['Registrant ID'])]
 
@@ -901,6 +949,8 @@ mask_Age18Plus=cdf["Competitor's Age?"]>=18
 # 13 plus used in Weapons Division 6
 mask_Age13Plus=cdf["Competitor's Age?"]>=13
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
+
+print time.strftime("%X") + " Generating the output results..."
 
 ###############################################################################
 # Kids Kata Spreadsheet - 4-6 year olds one sheet per rank
@@ -1079,4 +1129,5 @@ writeWeaponsDivision5ToFile( "WeaponsDivision5.xlsx", compositMask )
 compositMask=mask_Weapons & mask_Age13Plus
 writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
 
-print "Done!"
+localtime = time.asctime( time.localtime(time.time()) )
+print  time.strftime("%X") + " Done!"

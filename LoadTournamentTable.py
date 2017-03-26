@@ -1,5 +1,5 @@
 # V19 - Merge out of town dojo name into dojo name to improve printing
-# V19.1 got things setup in PyCharm
+# V19.1 move work to PyCharm
 #
 # There are 6 patterns in this Tournament Guide
 #

@@ -1,4 +1,4 @@
-# V18 - Make the spreadsheets print better
+# V19 - Merge out of town dojo name into dojo name to improve printing
 #
 # There are 6 patterns in this Tournament Guide
 #
@@ -148,7 +148,7 @@ def fixInput( inputDataFrame, errorLogFile ):
 #s=p.match(wString)
 #print s.group()
 
- #Height - todo: make the error more usable
+ #Height 
 #    import re
     compiledRegex=re.compile('\d+')
     for index, row in cleanDataFrame.iterrows():
@@ -201,8 +201,22 @@ def fixInput( inputDataFrame, errorLogFile ):
         cleanDataFrame.at[index,'BMI']=bodyMassIndex
         #print splitString, "|", feet, "|", inches
 
-
-
+        #Look for out of state dojos and move them into the 'Select Your Z Ultimate Studio' column
+        for index, row in cleanDataFrame.iterrows():
+            theString=row['Select Your Z Ultimate Studio']
+            if( theString=="Out of State" ):
+                outofstateString=row['Out of State Studio Name']
+                if(pd.isnull(outofstateString)):
+                    errorCount+=1
+                    errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " says the student is from Out of State, but there is no out of State Studio provided"
+                    errorLogFile.write(errorString+"\r\f")
+                    #print errorString
+                else:
+                    #print outofstateString
+                    cleanDataFrame.at[index,'Select Your Z Ultimate Studio']="** "+outofstateString
+                         
+                     
+                     
 
    # if there are errors exit
     if( errorCount > 0):
@@ -242,21 +256,23 @@ def newDataFrameFromMask( mask ):
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort("Competitor\'s Age?")
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","HeightInInches","Competitor\'s Weight (in lbs.)?","BodyMassIndex", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
-    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (eg. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
+#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (eg. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
+    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (eg. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
     newdf.sort_values('BMI',inplace=True)
-    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Out of State Studio Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
+#    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Out of State Studio Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
+    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
     return newdf
 
 ###############################################################################
 # writeFormattedExcelSheet
 #  This method writes a dataframe, to the given excel writer, and given sheet name
-#
+#  
 #
 #  arguments:
 #  data frame to be written to
 #  excel writer - that is ready to write to
 #  sheet name
-#
+#  
 def writeFormattedExcelSheet( df, writer, sheetname ):
     df.to_excel(writer,sheetname)
 
@@ -269,7 +285,7 @@ def writeFormattedExcelSheet( df, writer, sheetname ):
     align_center=workbook.add_format()
     align_center.set_align('center')
     align_center.set_border(1)
-
+        
     align_left=workbook.add_format()
     align_left.set_align('left')
     align_left.set_border(1)
@@ -278,24 +294,37 @@ def writeFormattedExcelSheet( df, writer, sheetname ):
     full_border.set_border(1)
 
     #set the format of a few columns
-    worksheet.set_column('A:O',0,full_border)  #column A:O is everything
+    worksheet.set_column('A:O',0,full_border)  #column A:O is everything   
 
-    worksheet.set_column('A:A',5,align_left)  #column A is the index
-    worksheet.set_column('B:B',15)  #column B is First Name
-    worksheet.set_column('C:C',20)  #column C is Last Name
-    worksheet.set_column('D:D',7)  #column D is Gender
-    worksheet.set_column('E:E',20)  #column E is Dojo
-    worksheet.set_column('F:F',20)  #column F is Out of State Dojo
-    worksheet.set_column('G:G',3,align_center)  #column G is age
-    worksheet.set_column('H:H',15)  #column H is rank
-    worksheet.set_column('I:I',4,align_center)  #column I is feet
-    worksheet.set_column('J:J',5,align_center)  #column J is Inches
-    worksheet.set_column('L:L',6,align_center)  #column L is Weight
-    worksheet.set_column('M:M',4,align_center)  #column I is BMI
-    worksheet.set_column('N:N',25)  #column I is Events
-    worksheet.set_column('O:O',12)  #column I is Weapons
+#    worksheet.set_column('A:A',5,align_left)  #column A is the index   
+#    worksheet.set_column('B:B',15)  #column B is First Name   
+#    worksheet.set_column('C:C',20)  #column C is Last Name   
+#    worksheet.set_column('D:D',7)  #column D is Gender 
+#    worksheet.set_column('E:E',20)  #column E is Dojo   
+#    worksheet.set_column('F:F',20)  #column F is Out of State Dojo   
+#    worksheet.set_column('G:G',3,align_center)  #column G is age  
+#    worksheet.set_column('H:H',15)  #column H is rank  
+#    worksheet.set_column('I:I',4,align_center)  #column I is feet
+#    worksheet.set_column('J:J',5,align_center)  #column J is Inches
+#    worksheet.set_column('L:L',6,align_center)  #column L is Weight
+#    worksheet.set_column('M:M',4,align_center)  #column I is BMI
+#    worksheet.set_column('N:N',25)  #column I is Events
+#    worksheet.set_column('O:O',12)  #column I is Weapons
 
-
+    worksheet.set_column('A:A',5,align_left)  #column A is the index   
+    worksheet.set_column('B:B',15)  #column B is First Name   
+    worksheet.set_column('C:C',20)  #column C is Last Name   
+    worksheet.set_column('D:D',7)  #column D is Gender 
+    worksheet.set_column('E:E',20)  #column E is Dojo   
+    worksheet.set_column('F:F',3,align_center)  #column F is age  
+    worksheet.set_column('G:G',15)  #column G is rank  
+    worksheet.set_column('H:H',4,align_center)  #column G is feet
+    worksheet.set_column('I:I',5,align_center)  #column I is Inches
+    worksheet.set_column('K:K',6,align_center)  #column K is Weight
+    worksheet.set_column('L:L',4,align_center)  #column L is BMI
+    worksheet.set_column('M:M',25)  #column M is Events
+    worksheet.set_column('N:N',12)  #column N is Weapons    
+    
 ###############################################################################
 # write event to file
 #  arguments:
@@ -320,7 +349,7 @@ def writeEventToFile( filename, compositMask ):
 #    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
-
+    
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #   wmk.to_excel(writer,'Orange')
@@ -355,7 +384,7 @@ def writeEventToFile( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
-
+   
 
 
 ###############################################################################
@@ -380,13 +409,13 @@ def writePattern1ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
     writeFormattedExcelSheet(wmk,writer,'White')
 #    wmk.to_excel(writer,'White')
-
+     
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
-
+    
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
   #  wmk.to_excel(writer,'Orange')
@@ -400,7 +429,7 @@ def writePattern1ToExcel( filename, compositMask ):
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
 
     mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask 
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Green, Green Stripe')
@@ -435,24 +464,24 @@ def writePattern2ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'White')
     writeFormattedExcelSheet(wmk,writer,'White')
-
+    
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
-
+    
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
-
+    
     mask1 = mask_PurpleBelt & compositMask
     mask2 = mask_AllBlueBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Purple, Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
-
+    
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
@@ -491,34 +520,34 @@ def writePattern3ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'White')
     writeFormattedExcelSheet(wmk,writer,'White')
-
+    
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
-
+    
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
-
+    
     mask = mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
-
+    
     mask = mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Blue, Blue Stripe')
-
+    
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
-
+    
     writer.save()
     time.sleep(1)
 
@@ -548,7 +577,7 @@ def writePattern4ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'White, Yellow, Orange')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow, Orange')
-
+    
 #    mask= mask_OrangeBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Orange')
@@ -563,14 +592,14 @@ def writePattern4ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Purple, Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
-
+    
     mask1= mask_AllBrownBelt & compositMask
     mask2= mask_AllGreenBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
-
+    
 #    mask= mask_AllBrownBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'All Brown')
@@ -660,37 +689,37 @@ def writePattern6ToExcel( filename, compositMask ):
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'White, Yellow')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow')
-
+    
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
-
+    
     mask= mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
-
+    
     mask = mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Blue, Blue Stripe')
-
+    
     mask = mask_AllGreenBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Green, Green Stripe')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe')
-
+    
     mask = mask_AllBrownBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Brown')
     writeFormattedExcelSheet(wmk,writer,'Brown')
-
+    
     mask= mask_AllBlackBelt & compositMask
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Black')
     writeFormattedExcelSheet(wmk,writer,'Black')
-
+    
     writer.save()
     time.sleep(1)
 
@@ -1001,7 +1030,10 @@ mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt #a
 mask_1stBlackBelt=cdf['Current Belt Rank?']=='Black 1st Degree'
 mask_2ndBlackBelt=cdf['Current Belt Rank?']=='Black 2nd Degree'
 mask_3rdBlackBelt=cdf['Current Belt Rank?']=='Black 3rd Degree'
-mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt #all 1st 2nd and 3rd Brown
+mask_4thBlackBelt=cdf['Current Belt Rank?']=='Black 4th Degree'
+mask_5thBlackBelt=cdf['Current Belt Rank?']=='Black 5th Degree'
+mask_JrBlackBelt=cdf['Current Belt Rank?']=='Black Junior'
+mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt #all Jr, 1st, 2nd, and 3rd degree black
 #testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
 
 # Atomic mask for Gender
@@ -1118,7 +1150,7 @@ writePattern2ToExcel( "KidsSparring.xlsx", compositMask )
 # Boys & Girls Kata Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age10to12
-writePattern6ToExcel( "BoysGilrsKata.xlsx", compositMask )
+writePattern6ToExcel( "BoysGirlsKata.xlsx", compositMask )
 
 ### 10:30 Events
 

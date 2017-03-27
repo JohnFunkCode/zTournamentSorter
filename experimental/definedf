@@ -1,0 +1,20 @@
+#test to figure out the syntax to only return rows of a dataframe that match a given regex
+import pandas as pd
+import numpy as np
+
+data = [["Ann","Beth","Cathy","Dorothy"],["becky","Francis","Gail","Heather"],["Irene","Joy","Kelly","Liz"],["Mary","Nancy","Ohno","Pam"]]
+index = ['a', 'b', 'c', 'd']
+columns = ['one', 'two', 'three', 'four']
+df=pd.DataFrame(data, index=index ,columns=columns)
+print "original data frame"
+print df
+
+
+pattern=r'^[a-lA-L]'   #^ means starts wtih [a-l][A-L] means letters in the set a-l
+df.two.str.contains(pattern)
+print "filtered data frame"
+print "Varient 1"
+print df[df.two.str.contains(pattern)]
+
+print "Varient 2"
+print df[df['two'].str.contains(pattern)]

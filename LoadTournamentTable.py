@@ -1,7 +1,6 @@
-# V19 - Merge out of town dojo name into dojo name to improve printing
-# V19.1 move work to PyCharm
-#
-# There are 6 patterns in this Tournament Guide
+# V20 - added PDF report containing the details of each division
+
+# There are 6 patterns in the Denver Tournament Guide
 #
 #Pattern1
 #  White
@@ -54,7 +53,10 @@
 #  Black
 #
 #   Feautres to add:
-# Better error handling - loop through each record looking for bogus stuff and print an error message telling what's wrong with it
+# Split the 9:45 boys & Girls Kata into a-m and m-z
+# Make the headings look better
+# generate the output to the same directory as the input - and look for the logos in a subdirectory based on where code is launched from
+# Add functionality to touch people every time they are used, and print the stats - print anyone who didn't get touched.
 # Summary Stats - how many people of each belt, how many sparring, how may forms, how many weaponds
 # Event Stats - how many people in each event as per the event guide
 #
@@ -68,6 +70,7 @@ import sys
 #from pandas import ExcelWriter
 #from pandas import XlsxWriter
 import time
+from Reporting import PDFReportClass as pdf
 
 #import sys
 #matplotlib inline
@@ -83,9 +86,12 @@ import time
 def fixInput( inputDataFrame, errorLogFile ):
     errorCount = 0
     # first use Ria's technique to remove bogus lines from the data frame
+
+    print "  " + time.strftime("%X") + " Cleaning out garbage rows"
     cleanDataFrame = df[np.isfinite(df['Registrant ID'])]
 
     #next check for non-numeric data in the age field
+    print "  " + time.strftime("%X") + " Checking for non-numeric data in numeric fields"
     for index, row in cleanDataFrame.iterrows():
         try:
             int(row['Competitor\'s Age?'])
@@ -96,6 +102,7 @@ def fixInput( inputDataFrame, errorLogFile ):
             print errorString
 
     #Test Rank - looking for 'Please Select'
+    print "  " + time.strftime("%X") + " Looking for invalid Rank data"
     mask_NoBelt=(cleanDataFrame['Current Belt Rank?']=='Please Select')
     #df_NoBelt=cleanDataFrame[['Registrant ID','First Name','Last Name','Select Your Z Ultimate Studio','Email','Phone','Mobile Phone']][mask_NoBelt]
     df_NoBelt=cleanDataFrame[['Registrant ID','First Name','Last Name','Select Your Z Ultimate Studio']][mask_NoBelt]
@@ -112,7 +119,7 @@ def fixInput( inputDataFrame, errorLogFile ):
 
 #        errorLogFile.write( "Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"]) + " did not contain a valid rank " )
 
-
+    print "  " + time.strftime("%X") + " Looking for invalid weight"
     #Convert weight to digits with regex and generate an error if not valid
     import re
     compiledRegex=re.compile('\d+')
@@ -149,7 +156,8 @@ def fixInput( inputDataFrame, errorLogFile ):
 #s=p.match(wString)
 #print s.group()
 
- #Height 
+#Height
+    print "  " + time.strftime("%X") + " Looking for invalid height"
 #    import re
     compiledRegex=re.compile('\d+')
     for index, row in cleanDataFrame.iterrows():
@@ -202,19 +210,20 @@ def fixInput( inputDataFrame, errorLogFile ):
         cleanDataFrame.at[index,'BMI']=bodyMassIndex
         #print splitString, "|", feet, "|", inches
 
-        #Look for out of state dojos and move them into the 'Select Your Z Ultimate Studio' column
-        for index, row in cleanDataFrame.iterrows():
-            theString=row['Select Your Z Ultimate Studio']
-            if( theString=="Out of State" ):
-                outofstateString=row['Out of State Studio Name']
-                if(pd.isnull(outofstateString)):
-                    errorCount+=1
-                    errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " says the student is from Out of State, but there is no out of State Studio provided"
-                    errorLogFile.write(errorString+"\r\f")
-                    #print errorString
-                else:
-                    #print outofstateString
-                    cleanDataFrame.at[index,'Select Your Z Ultimate Studio']="** "+outofstateString
+    #Look for out of state dojos and move them into the 'Select Your Z Ultimate Studio' column
+    print "  " + time.strftime("%X") + " Looking for out of state dojos"
+    for index, row in cleanDataFrame.iterrows():
+        theString=row['Select Your Z Ultimate Studio']
+        if( theString=="Out of State" ):
+            outofstateString=row['Out of State Studio Name']
+            if(pd.isnull(outofstateString)):
+                errorCount+=1
+                errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " says the student is from Out of State, but there is no out of State Studio provided"
+                errorLogFile.write(errorString+"\r\f")
+                #print errorString
+            else:
+                #print outofstateString
+                cleanDataFrame.at[index,'Select Your Z Ultimate Studio']="** "+outofstateString
                          
                      
                      
@@ -338,7 +347,7 @@ def writeEventToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
 
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -404,7 +413,7 @@ def writeEventToFile( filename, compositMask ):
 def writePattern1ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath,engine='xlsxwriter')
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -443,6 +452,54 @@ def writePattern1ToExcel( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
+
+###############################################################################
+# writePattern1ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White
+#    Yellow
+#    Orange
+#    Purple, Blue, Blue Stripe
+#    Green, Green Stripe
+#
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+def writePattern1ToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask = mask_WhiteBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+
+    mask = mask_YellowBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+2), event_time, division_name, age, "Orange")
+
+    mask1 = mask_PurpleBelt & compositMask
+    mask2 = mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+3), event_time, division_name, age, "Purple, Blue, Blue Stripe")
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+4), event_time, division_name, age, "Green, Green Stripe, Brown")
+
+    #    mask= mask_AllBlackBelt & compositMask
+    #    wmk=newDataFrameFromMask( mask )
+    #    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
+
+
 ###############################################################################
 # writePattern2ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -459,7 +516,7 @@ def writePattern1ToExcel( filename, compositMask ):
 def writePattern2ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -499,6 +556,54 @@ def writePattern2ToExcel( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
+# writePattern2ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White
+#    Yellow
+#    Orange
+#    Purple, Blue, Blue Stripe
+#    Green, Green Stripe
+#
+#  arguments:
+def writePattern2ToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask = mask_WhiteBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+
+    mask = mask_YellowBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+
+
+    mask1 = mask_PurpleBelt & compositMask
+    mask2 = mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Purple, Blue, Blue Stripe")
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,"Green, Green Stripe, Brown")
+
+
+#
+#    mask= mask_AllBlackBelt & compositMask
+#    wmk=newDataFrameFromMask( mask )
+#    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
+
+
+###############################################################################
 # writePattern3ToExcel
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
@@ -515,7 +620,7 @@ def writePattern2ToExcel( filename, compositMask ):
 def writePattern3ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -554,6 +659,49 @@ def writePattern3ToExcel( filename, compositMask ):
 
 
 ###############################################################################
+# writePattern3ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White
+#    Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#
+def writePattern3ToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask = mask_WhiteBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+
+    mask = mask_YellowBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+2), event_time, division_name, age, "Orange")
+
+    mask = mask_PurpleBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+3), event_time, division_name, age, "Purple")
+
+    mask = mask_AllBlueBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+4), event_time, division_name, age, "Blue, Blue Stripe")
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), event_time, division_name, age, "Green, Green Stripe, Brown")
+
+
+###############################################################################
 # writePattern4ToExcel
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
@@ -569,7 +717,7 @@ def writePattern3ToExcel( filename, compositMask ):
 def writePattern4ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -615,6 +763,53 @@ def writePattern4ToExcel( filename, compositMask ):
 
 
 ###############################################################################
+# writePattern4ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow, Orange
+#    Purple, Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#    Black
+#
+def writePattern4ToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask3 = mask_OrangeBelt & compositMask
+    mask = mask1 | mask2 | mask3
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow, Orange")
+
+    #    mask= mask_OrangeBelt & compositMask
+    #    wmk=newDataFrameFromMask( mask )
+    #    wmk.to_excel(writer,'Orange')
+
+    #    mask= mask_PurpleBelt & compositMask
+    #    wmk=newDataFrameFromMask( mask )
+    #    wmk.to_excel(writer,'Purple')
+
+    mask1 = mask_PurpleBelt & compositMask
+    mask2 = mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Purple, Blue, Blue Stripe")
+
+    mask1 = mask_AllBrownBelt & compositMask
+    mask2 = mask_AllGreenBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+2), event_time, division_name, age, "Green, Green Stripe, Brown")
+
+    mask = mask_AllBlackBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+3), event_time, division_name, age, "Black")
+
+
+
+###############################################################################
 # writePattern5ToExcel
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
@@ -629,7 +824,7 @@ def writePattern4ToExcel( filename, compositMask ):
 def writePattern5ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -665,6 +860,46 @@ def writePattern5ToExcel( filename, compositMask ):
 
 
 ###############################################################################
+# writePattern5ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#
+def writePattern5ToPDF( starting_ring,event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+
+    mask= mask_OrangeBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
+
+    mask= mask_PurpleBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+
+    mask = mask_AllBlueBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe")
+
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age, "Green, Green Stripe, Brown")
+
+
+
+###############################################################################
 # writePattern6ToExcel
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
@@ -682,7 +917,7 @@ def writePattern5ToExcel( filename, compositMask ):
 def writePattern6ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -724,6 +959,111 @@ def writePattern6ToExcel( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
+
+###############################################################################
+# writePattern6ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe
+#    Brown
+#    Black
+#
+def writePattern6ToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Orange")
+
+    mask = mask_PurpleBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+2), event_time, division_name, age, "Purple")
+
+    mask = mask_AllBlueBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+3), event_time, division_name, age, "Blue, Blue Stripe")
+
+    mask = mask_AllGreenBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+4), event_time, division_name, age, "Green, Green Stripe")
+
+    mask = mask_AllBrownBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), event_time, division_name, age, "Brown")
+
+    mask = mask_AllBlackBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+6), event_time, division_name, age, "Black")
+
+###############################################################################
+# writePattern6ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe
+#    Brown
+#    Black
+#
+def writePattern6WithSplitToPDF(starting_ring,event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+1), event_time, division_name, age, "Orange")
+
+    mask = mask_PurpleBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+2), event_time, division_name, age, "Purple")
+
+    mask = mask_AllBlueBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    #filter to only keep the ones that start with a-l A-L
+    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
+    AtoL = wmk[wmk['Last Name'].str.contains(pattern)]
+
+    #filter to only keep the ones that start with m-z M-Z
+    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
+    MtoZ = wmk[wmk['Last Name'].str.contains(pattern)]
+
+    pdf_report.put_dataframe_on_pdfpage(AtoL, str(starting_ring+3), event_time, division_name, age, "Blue, Blue Stripe (A-L)")
+    pdf_report.put_dataframe_on_pdfpage(MtoZ, str(starting_ring+4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)")
+
+
+    mask = mask_AllGreenBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+4), event_time, division_name, age, "Green, Green Stripe")
+
+    mask = mask_AllBrownBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), event_time, division_name, age, "Brown")
+
+    mask = mask_AllBlackBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+6), event_time, division_name, age, "Black")
+
+
+
 ###############################################################################
 # writePattern7ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -740,7 +1080,7 @@ def writePattern6ToExcel( filename, compositMask ):
 def writePattern7ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -773,6 +1113,44 @@ def writePattern7ToExcel( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
+# writePattern7ToPDF
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow & Orange
+#    Purple, Blue & Blue Stripe
+#    Green, Green Stripe, Brown
+#    Black
+#
+def writePattern7ToPDF( starting_ring,event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask = mask1 | mask2 | mask3
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow & Orange")
+
+    mask1= mask_PurpleBelt & compositMask
+    mask2= mask_AllBlueBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring +1), event_time, division_name, age, "Purple, Blue & Blue Stripe")
+
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Green, Green Stripe, Brown")
+
+    mask= mask_AllBlackBelt & compositMask
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
+
+
+###############################################################################
 # writeWeaponsDivision1ToExcel
 #  arguments:
 #  filename - the filename without path to write
@@ -781,7 +1159,7 @@ def writePattern7ToExcel( filename, compositMask ):
 def writeWeaponsDivision1ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -802,6 +1180,28 @@ def writeWeaponsDivision1ToExcel( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
+# writeWeaponsDivision1ToPCF
+#
+def writeWeaponsDivision1ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+    mask6= mask_AllGreenBelt & compositMask
+    mask7= mask_AllBrownBelt & compositMask
+    mask8= mask_AllBlackBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 1")
+
+###############################################################################
 # writeWeaponsDivision2ToExcel
 #  arguments:
 #  filename - the filename without path to write
@@ -810,7 +1210,7 @@ def writeWeaponsDivision1ToExcel( filename, compositMask ):
 def writeWeaponsDivision2ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -830,17 +1230,38 @@ def writeWeaponsDivision2ToExcel( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
+###############################################################################
+# writeWeaponsDivision2ToPDF
+#
+def writeWeaponsDivision2ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+    mask6= mask_AllGreenBelt & compositMask
+    mask7= mask_AllBrownBelt & compositMask
+    mask8= mask_AllBlackBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 1")
+
 
 ###############################################################################
-# writeWeaponsDivision3ToFile
+# writeWeaponsDivision3ToExcel
 #  arguments:
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 #
-def writeWeaponsDivision3ToFile( filename, compositMask ):
+def writeWeaponsDivision3ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -859,15 +1280,36 @@ def writeWeaponsDivision3ToFile( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
-# writeWeaponsDivision4ToFile
+# writeWeaponsDivision3ToPDF
+#
+def writeWeaponsDivision3ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_WhiteBelt & compositMask
+    mask2= mask_YellowBelt & compositMask
+    mask3= mask_OrangeBelt & compositMask
+    mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+    mask6= mask_AllGreenBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6
+
+    wmk=newDataFrameFromMask( mask )
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 3")
+
+
+###############################################################################
+# writeWeaponsDivision4ToExcel
 #  arguments:
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 #
-def writeWeaponsDivision4ToFile( filename, compositMask ):
+def writeWeaponsDivision4ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -884,14 +1326,33 @@ def writeWeaponsDivision4ToFile( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
-#  writeWeaponsDivision5ToFile  18+ year Blue and Green
+# writeWeaponsDivision4ToPDF
+#
+def writeWeaponsDivision4ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask3 = mask_OrangeBelt & compositMask
+    mask4 = mask_PurpleBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4
+
+    wmk = newDataFrameFromMask(mask)
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 4")
+
+
+###############################################################################
+#  writeWeaponsDivision5ToExcel  18+ year Blue and Green
 #  arguments:
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 #
-def writeWeaponsDivision5ToFile( filename, compositMask ):
+def writeWeaponsDivision5ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
     writer=pd.ExcelWriter(fullpath)
 
     mask1 = mask_AllBlueBelt & compositMask
@@ -905,7 +1366,23 @@ def writeWeaponsDivision5ToFile( filename, compositMask ):
     time.sleep(1)
 
 ###############################################################################
-#  writeWeaponsDivision6ToFile
+# writeWeaponsDivision5ToPDF
+#
+def writeWeaponsDivision5ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1 = mask_AllBlueBelt & compositMask
+    mask2= mask_AllGreenBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 5")
+
+
+###############################################################################
+#  writeWeaponsDivision6ToExcel
 #  arguments:
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
@@ -913,7 +1390,7 @@ def writeWeaponsDivision5ToFile( filename, compositMask ):
 def writeWeaponsDivision6ToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
 
     mask1= mask_AllBrownBelt & compositMask
 
@@ -926,10 +1403,28 @@ def writeWeaponsDivision6ToFile( filename, compositMask ):
     writer.save()
     time.sleep(1)
 
+###############################################################################
+# writeWeaponsDivision6ToPDF
+#
+def writeWeaponsDivision6ToPDF( event_time, division_name, age, compositMask ):
+    print time.strftime("%X") + " Generating PDF for " + event_time + " " + division_name + " " + age
+
+    pdf.PDFReport.set_pageInfo("division_name")
+
+    mask1= mask_AllBrownBelt & compositMask
+
+    mask2= mask_AllBlackBelt & compositMask
+    mask = mask1 | mask2
+    wmk=newDataFrameFromMask( mask )
+
+    pdf_report.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 6")
+
+
 def writeSparingTreeToExcel( filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print "Generating " + fullpath
+    print time.strftime("%X") +" Generating " + fullpath
+
     wmk=newDataFrameFromMask( compositMask )
 
 #    byDojo = wmk.groupby('Select Your Z Ultimate Studio')
@@ -955,7 +1450,7 @@ root.update() # Prevent the askfilename() window doesn't stay open
 #filename="/Volumes/1TB/Dropbox/TournamentProject/CleanRegistrantExport.csv" #For John Debugging
 #filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
 
-print time.strftime("%X") + " Reading and processing the data...."
+print time.strftime("%X") + " Reading the data...."
 
 
 df=pd.read_csv(filename)
@@ -963,6 +1458,8 @@ df=pd.read_csv(filename)
 
 errorLogFileName=filename[0:len(filename)-4]+"-Error.txt"
 errorLogFile= open(errorLogFileName, "w")
+
+print time.strftime("%X") + " Checking for errors in the data...."
 
 cdf = fixInput(df,errorLogFile)
 
@@ -1119,25 +1616,37 @@ mask_Age13Plus=cdf["Competitor\'s Age?"]>=13
 print time.strftime("%X") + " Generating the output results..."
 
 ###############################################################################
+# Setup a few things for the pdf report
+pdf_report =pdf.PDFReport()
+pdf.PDFReport.set_title("Forms")
+pdf.PDFReport.set_sourcefile(filename)
+
+### 9AM Events
+
+###############################################################################
 # Kids Kata Spreadsheet - 4-6 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age4to6
 writePattern1ToExcel( "KidsKata.xlsx", compositMask )
+writePattern1ToPDF(1, "9:00am", "Kids Kata", "4-6", compositMask)
 
-### 9AM Events
 
 ###############################################################################
 # Youth Kata Spreadsheet - 7-9 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age7to9
 writePattern3ToExcel( "YouthKata.xlsx", compositMask )
+writePattern3ToPDF(6,"9:00am","Youth Kata","7-9",compositMask)
+
 
 ###############################################################################
 # Boy's Sparring Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Age10to12 & mask_Male
 writePattern6ToExcel( "BoysSparring.xlsx", compositMask )
+writePattern6ToPDF(12,"9:00am","Boy's Sparring","10-12",compositMask)
 writeSparingTreeToExcel( "BoysSparringTree.xlsx", compositMask )
+
 
 ### 9:45 Events
 
@@ -1146,12 +1655,15 @@ writeSparingTreeToExcel( "BoysSparringTree.xlsx", compositMask )
 #
 compositMask=mask_Sparring & mask_Age4to6
 writePattern2ToExcel( "KidsSparring.xlsx", compositMask )
+writePattern2ToPDF(1,"9:45am","Kids Sparring","4-6",compositMask)
 
 ###############################################################################
 # Boys & Girls Kata Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Forms & mask_Age10to12
 writePattern6ToExcel( "BoysGirlsKata.xlsx", compositMask )
+#writePattern6ToPDF(6,"9:45am","Boy's & Girls Kata","10-12",compositMask)
+writePattern6WithSplitToPDF(6,"9:45am","Boy's & Girls Kata","10-12",compositMask)
 
 ### 10:30 Events
 
@@ -1160,18 +1672,21 @@ writePattern6ToExcel( "BoysGirlsKata.xlsx", compositMask )
 #
 compositMask=mask_Sparring & mask_Female & mask_Age7to9
 writePattern5ToExcel( "YouthGirlSparring.xlsx", compositMask )
+writePattern5ToPDF(1,"10:30am","Youth Girl Sparring","7-9",compositMask)
 
 ###############################################################################
 # Youth Boys Sparring Spreadsheet - 7-9 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age7to9
 writePattern5ToExcel( "YouthBoysSparring.xlsx", compositMask )
+writePattern5ToPDF(6,"10:30am","Youth Boys Sparring","7-9",compositMask)
 
 ###############################################################################
 # Girl's Sparring Spreadsheet - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Age10to12 & mask_Female
 writePattern4ToExcel( "GirlsSparring.xlsx", compositMask )
+writePattern4ToPDF(11,"10:30am","Girls Sparring","10-12",compositMask)
 
 ### 11:15 Events
 
@@ -1180,24 +1695,29 @@ writePattern4ToExcel( "GirlsSparring.xlsx", compositMask )
 #
 compositMask=mask_Sparring & mask_Female & mask_Age13to15
 writePattern4ToExcel( "TeenGirlSparring.xlsx", compositMask )
+writePattern4ToPDF(1,"11:15am","Teen Girls Sparring","13-15",compositMask)
 
 ###############################################################################
 # Womans Sparring Spreadsheet - 18-39 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age18to39
 writePattern4ToExcel( "WomensSparring.xlsx", compositMask )
+writePattern4ToPDF(5,"11:15am","Women's Sparring","18-39",compositMask)
+
 
 ###############################################################################
 # Weapons Division 1 - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age4to9
 writeWeaponsDivision1ToExcel( "WeaponsDivision1.xlsx", compositMask )
+writeWeaponsDivision1ToPDF("11:15am","Weapons Division 1","4-9",compositMask)
 
 ###############################################################################
 # Weapons Division 1 - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age10to12
 writeWeaponsDivision2ToExcel( "WeaponsDivision2.xlsx", compositMask )
+writeWeaponsDivision2ToPDF("11:15am","Weapons Division 2","10-12",compositMask)
 
 ### 1:30 Events
 
@@ -1206,6 +1726,7 @@ writeWeaponsDivision2ToExcel( "WeaponsDivision2.xlsx", compositMask )
 #
 compositMask=mask_Forms & mask_Age18to39
 writePattern6ToExcel( "MenAndWomensKata.xlsx", compositMask )
+writePattern6ToPDF(1,"1:30pm","Men & Womens Kata","18-39",compositMask)
 
 
 ###############################################################################
@@ -1213,6 +1734,7 @@ writePattern6ToExcel( "MenAndWomensKata.xlsx", compositMask )
 #
 compositMask=mask_Forms & mask_Age13to15
 writePattern6ToExcel( "TeenKata.xlsx", compositMask )
+writePattern6ToPDF(8,"1:30pm","Teen Kata","18-39",compositMask)
 
 ### 2:15 Events
 
@@ -1221,12 +1743,14 @@ writePattern6ToExcel( "TeenKata.xlsx", compositMask )
 #
 compositMask=mask_Sparring & mask_Male & mask_Age40Plus
 writePattern4ToExcel( "SeniorMensSparring.xlsx", compositMask )
+writePattern4ToPDF(1,"2:15pm","Senior Men's Sparring","40 +",compositMask)
 
 ###############################################################################
 # Senior Womens Sparring - 40+ year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age40Plus
 writePattern4ToExcel( "SeniorWomensSparring.xlsx", compositMask )
+writePattern4ToPDF(5,"2:15pm","Senior Women's Sparring","40 +",compositMask)
 
 
 ###############################################################################
@@ -1234,6 +1758,7 @@ writePattern4ToExcel( "SeniorWomensSparring.xlsx", compositMask )
 #
 compositMask=mask_Forms & mask_Age16to17
 writePattern4ToExcel( "YoungAdultKata.xlsx", compositMask )
+writePattern4ToPDF(9,"2:15pm","Young Adult Kata","16-17",compositMask)
 
 ### 3:00 Events
 
@@ -1242,18 +1767,21 @@ writePattern4ToExcel( "YoungAdultKata.xlsx", compositMask )
 #
 compositMask=mask_Sparring & mask_Male & mask_Age18to39
 writePattern4ToExcel( "MensSparring.xlsx", compositMask )
+writePattern4ToPDF(1,"3:00pm","Mens Sparring","18-39",compositMask)
 
 ###############################################################################
 #  Teen Boys Sparring - 13-15 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age13to15
 writePattern4ToExcel( "TeenBoysSparring.xlsx", compositMask )
+writePattern4ToPDF(5,"3:00pm","Teen Boys Sparring","13-15",compositMask)
 
 ###############################################################################
 #  Young Adult Mens Sparring - 16-17 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Male & mask_Age16to17
 writePattern4ToExcel( "YoungAdultMensSparring.xlsx", compositMask )
+writePattern4ToPDF(9,"3:00pm","YoungAdultMensSparring Sparring","16-17",compositMask)
 
 ### 3:45 Events
 
@@ -1262,12 +1790,14 @@ writePattern4ToExcel( "YoungAdultMensSparring.xlsx", compositMask )
 #
 compositMask=mask_Forms & mask_Age40Plus
 writePattern6ToExcel( "SeniorKata.xlsx", compositMask )
+writePattern6ToPDF(1,"3:45pm","Senior Kata","40+",compositMask)
 
 ###############################################################################
 #  Young Adult Womens Sparring - 16-17 year olds one sheet per rank
 #
 compositMask=mask_Sparring & mask_Female & mask_Age16to17
 writePattern7ToExcel( "YoungAdultWomensSparring.xlsx", compositMask )
+writePattern7ToPDF(8,"3:45pm","Young Adult Womens Sparring","16-17",compositMask)
 
 ### 4:15 Events
 
@@ -1275,26 +1805,34 @@ writePattern7ToExcel( "YoungAdultWomensSparring.xlsx", compositMask )
 #  WeaponsDivision3 13-17 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age13to17
-writeWeaponsDivision3ToFile( "WeaponsDivision3.xlsx", compositMask )
+writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
+writeWeaponsDivision3ToPDF("4:15pm","Weapons Division 3","13-17",compositMask)
 
 ###############################################################################
 #  WeaponsDivision4 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age18Plus
-writeWeaponsDivision4ToFile( "WeaponsDivision4.xlsx", compositMask )
+writeWeaponsDivision4ToExcel("WeaponsDivision4.xlsx", compositMask)
+writeWeaponsDivision4ToPDF("4:15pm","Weapons Division 4","18+",compositMask)
 
 
 ###############################################################################
 #  WeaponsDivision5 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age18Plus
-writeWeaponsDivision5ToFile( "WeaponsDivision5.xlsx", compositMask )
+writeWeaponsDivision5ToExcel("WeaponsDivision5.xlsx", compositMask)
+writeWeaponsDivision5ToPDF("4:15pm","Weapons Division 5","18+",compositMask)
 
 ###############################################################################
 #  WeaponsDivision6 18+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age13Plus
 writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
+writeWeaponsDivision6ToPDF("4:15pm","Weapons Division 6","13+",compositMask)
+
+print time.strftime("%X") + " Saving PDF to disk...."
+
+pdf_report.write_pdfpage()
 
 localtime = time.asctime( time.localtime(time.time()) )
 print  time.strftime("%X") + " Done!"

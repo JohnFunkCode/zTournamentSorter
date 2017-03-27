@@ -70,7 +70,7 @@ import sys
 #from pandas import ExcelWriter
 #from pandas import XlsxWriter
 import time
-from Reporting import PDFReportClass as pdf
+from reporting import PDFReportClass as pdf
 
 #import sys
 #matplotlib inline

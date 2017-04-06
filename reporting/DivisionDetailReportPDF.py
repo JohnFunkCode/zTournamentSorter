@@ -6,7 +6,7 @@ Created on Sat Nov  5 20:36:56 2016
 @author: john funk
 """
 
-# PlatypusTable Test
+#
 import pandas as pd
 import numpy as np
 
@@ -23,31 +23,31 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 import datetime
 from reportlab.lib.utils import ImageReader
 
-class PDFReport(object):
+class DivisionDetailReportPDF(object):
     def __init__(self):
-        self.doc = SimpleDocTemplate("simple_table.pdf", pagesize=landscape(letter))
+        self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter))
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        PDFReport.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        PDFReport.sourcefile = "not initialized"
-        PDFReport.pageinfo = "not initialized"
-        PDFReport.Title = "not initialized"
-        PDFReport.PAGE_HEIGHT = defaultPageSize[1];
-        PDFReport.PAGE_WIDTH = defaultPageSize[0]
-        PDFReport.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        DivisionDetailReportPDF.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        DivisionDetailReportPDF.sourcefile = "not initialized"
+        DivisionDetailReportPDF.pageinfo = "not initialized"
+        DivisionDetailReportPDF.Title = "not initialized"
+        DivisionDetailReportPDF.PAGE_HEIGHT = defaultPageSize[1];
+        DivisionDetailReportPDF.PAGE_WIDTH = defaultPageSize[0]
+        DivisionDetailReportPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
 
     @staticmethod
     def set_title(title):
-        PDFReport.Title = title
+        DivisionDetailReportPDF.Title = title
 
     @staticmethod
     def set_pageInfo(pageinfo):
-        PDFReport.pageinfo = pageinfo
+        DivisionDetailReportPDF.pageinfo = pageinfo
 
     @staticmethod
     def set_sourcefile(sourcefile):
-        PDFReport.sourcefile = sourcefile
+        DivisionDetailReportPDF.sourcefile = sourcefile
 
     def put_dataframe_on_pdfpage(self, df, ring_number, event_time, division_name, age, belts):
         elements = []
@@ -110,16 +110,16 @@ def first_page_layout(canvas, doc):
     canvas.saveState()
     canvas.setFont('Times-Bold', 16)
     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    canvas.drawCentredString(PDFReport.PAGE_WIDTH / 2.0, 8 * inch, PDFReport.Title)
+    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 8 * inch, DivisionDetailReportPDF.Title)
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "First Page / %s" % PDFReport.pageinfo)
+    canvas.drawString(inch, 0.75 * inch, "First Page / %s" % DivisionDetailReportPDF.pageinfo)
     canvas.restoreState()
 
 # define layout for subsequent pages
 def later_page_layout(canvas, doc):
     canvas.saveState()
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, PDFReport.pageinfo))
+    canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, DivisionDetailReportPDF.pageinfo))
     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -130,7 +130,7 @@ def page_layout(canvas, doc):
     canvas.setFont('Times-Roman', 9)
     canvas.drawString(inch * 3, 0.75 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
-                      doc.page, PDFReport.timestamp, PDFReport.sourcefile))
+                          doc.page, DivisionDetailReportPDF.timestamp, DivisionDetailReportPDF.sourcefile))
     canvas.restoreState()
 
 ########

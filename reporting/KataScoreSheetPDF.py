@@ -22,10 +22,11 @@ from reportlab.platypus import PageBreak
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 import datetime
 from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
 
 class KataScoreSheetPDF(object):
     def __init__(self):
-        self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter))
+        self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
@@ -36,6 +37,11 @@ class KataScoreSheetPDF(object):
         KataScoreSheetPDF.PAGE_HEIGHT = defaultPageSize[1];
         KataScoreSheetPDF.PAGE_WIDTH = defaultPageSize[0]
         KataScoreSheetPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        KataScoreSheetPDF.ring_number= "not initialized"
+        KataScoreSheetPDF.event_time= "not initialized"
+        KataScoreSheetPDF.division_name= "not initialized"
+        KataScoreSheetPDF.age= "not initialized"
+        KataScoreSheetPDF.belts= "not initialized"
 
     @staticmethod
     def set_title(title):
@@ -49,45 +55,86 @@ class KataScoreSheetPDF(object):
     def set_sourcefile(sourcefile):
         KataScoreSheetPDF.sourcefile = sourcefile
 
-    def put_dataframe_on_pdfpage(self, df, ring_number, event_time, division_name, age, belts):
+    def convert_inputdf_to_outputdf(self,inputdf):
+        columns = ['Compettitors Name', 'Form', 'Scores', '', 'Total', 'Place']
+        data=[]
+        outputdf = pd.DataFrame(data, columns=columns)
+
+        for index, row in inputdf.iterrows():
+            outputdf.at[index, 'Compettitors Name'] = inputdf.at[index, 'First Name'] + " " + inputdf.at[index, 'Last Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            outputdf.at[index, 'Form'] = ''
+            outputdf.at[index,'Scores'] = ''
+            outputdf.at[index,''] = ''
+            outputdf.at[index,'Total'] = ''
+            outputdf.at[index, 'Place'] = ''
+
+        return outputdf
+
+    def put_dataframe_on_pdfpage(self, inputdf, ring_number, event_time, division_name, age, belts):
+        # put args in class variables so the static page header functions can use them
+        KataScoreSheetPDF.ring_number = ring_number
+        KataScoreSheetPDF.event_time = event_time
+        KataScoreSheetPDF.division_name = division_name
+        KataScoreSheetPDF.age = age
+        KataScoreSheetPDF.belts = belts
+
         elements = []
-        #   elements = [Spacer(1,2*inch)]
 
-        # Title
-        #    style = styles["Title"]
-        #    normal.alignmnet = TA_RIGHT
-        #    normal.fontName = "Helvetica"
-        #    normal.fontSize = 28
-        #    normal.leading = 15
-        #    p = Paragraph("Ring Number: "+ring_number, style)
-        #    elements.append(p)
-        #    p = Paragraph(division_name, style)
-        #    elements.append(p)
-        #    p = Paragraph("Age: "+age+".............."+belts, style)
-        #    elements.append(p)
-        #    elements.append(Spacer(1,0.2*inch))
+        headerdata1 = [[KataScoreSheetPDF.Title,'Score Sheet']]
 
-        headerdata = [["Ring: " + ring_number + " " + event_time, division_name],
-                      ["Age: " + age, belts]]
-        t = Table(headerdata)
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Helvetica"),
+        t = Table(headerdata1)
+
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
-                               ('FONTSIZE', (0, 0), (1, -1), 28),
-                               ('RIGHTPADDING', (0, 0), (1, 1), 50),
-                               ('LEADING', (0, 0), (1, -1), 40)]))
+                               ('FONTSIZE', (0, 0), (1, -1), 20),
+                               ('ALIGN', (0, 0), (1, 0), 'CENTER'),
+                               ('LEADING', (0, 0), (1, -1), 9)]))
+
         elements.append(t)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
+
+        headerdata2 =[['RING',ring_number+ '   ' + event_time],
+                      ['DIVISION',division_name],
+                      ['AGE',age],
+                      ['RANKS',belts]]
+
+        t = Table(headerdata2)
+
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                               ('LEADING', (0, 0), (1, -1), 7)]))
+
+        elements.append(t)
+        elements.append(Spacer(1, 0.1 * inch))
 
         # Data Frame
+        outputdf=self.convert_inputdf_to_outputdf(inputdf)
+
         #  Convert data fram to a list format
-        data_list = [df.columns[:, ].values.astype(str).tolist()] + df.values.tolist()
+        data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                ('FONTSIZE', (0, 0), (-1, -1), 8),
                                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                               ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
+                               ('ALIGN',(0,0),(-1,0),'CENTER'),
                                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                               ('SPAN',(2,0),(3,0)),
                                ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        t._argW[0] = 3 *inch
+        t._argW[1] = 1.75 * inch
+        t._argW[2] = 0.625 * inch
+        t._argW[3] = 0.625 * inch
+        t._argW[4] = 1 * inch
+        t._argW[5] = 1 * inch
+#        t._argH[1] = .4375 * inch
+
+
+
         elements.append(t)
         elements.append(Spacer(1, 0.2 * inch))
         elements.append(PageBreak())
@@ -100,30 +147,110 @@ class KataScoreSheetPDF(object):
         return elements;
 
     def write_pdfpage(self):
-        self.doc.build(self.docElements, onFirstPage=first_page_layout, onLaterPages=page_layout)
+        self.doc.build(self.docElements, onFirstPage=first_page_layout, onLaterPages=first_page_layout)
 
 
 # define layout for first page
 def first_page_layout(canvas, doc):
     canvas.saveState()
-    logo = ImageReader('../Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
-    canvas.setFont('Times-Bold', 16)
-    #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 8 * inch, "Forms")
-    canvas.setFont('Times-Bold', 9)
-    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 8 * inch, "Score Sheet")
+
+    #####
+    # Logo
+    logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
+
+    # #####
+    # # Report Header
+    # canvas.setFont('Times-Bold',28)
+    # #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
+    # canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheetPDF.Title)
+    # canvas.setFont('Times-Bold', 12)
+    # canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
+    #
+    # #####
+    # # Ring and Divisional Details
+    # y=10.75
+    # canvas.setFont('Times-Bold', 12)
+    # canvas.drawString(5.95 *inch, y * inch, "RING")
+    # canvas.drawString(6.5 *inch, y * inch, KataScoreSheetPDF.ring_number)
+    # canvas.drawString(7*inch, y * inch, KataScoreSheetPDF.event_time)
+    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.55
+    # canvas.setFont('Times-Bold', 12)
+    # canvas.drawString(5.6 * inch, y * inch, "DIVISION")
+    # canvas.setFont('Times-Bold', 10)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.division_name)
+    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.35
+    # canvas.setFont('Times-Bold', 10)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.age)
+    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.15
+    # canvas.setFont('Times-Bold', 12)
+    # canvas.drawString(5.8 * inch, y * inch, "RANKS")
+    # canvas.setFont('Times-Bold', 10)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.belts)
+    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
 
 
+    #####
+    # Footer
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "First Page / %s" % KataScoreSheetPDF.pageinfo)
+    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+                      "Page: %d     Generated: %s     From file: %s" % (
+                          doc.page, KataScoreSheetPDF.timestamp, KataScoreSheetPDF.sourcefile))
+
     canvas.restoreState()
 
 # define layout for subsequent pages
 def later_page_layout(canvas, doc):
     canvas.saveState()
+    #####
+    # Logo
+    #logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    #canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
+
+    #####
+    ## Report Header
+    #canvas.setFont('Times-Bold',28)
+    ##    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
+    #canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheetPDF.Title)
+    #canvas.setFont('Times-Bold', 12)
+    #canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
+
+    # #####
+    # # Ring and Divisional Details
+    # y=10.75
+    # canvas.setFont('Times-Bold', 12)
+    # canvas.drawString(6.45 *inch, y * inch, "RING")
+    # canvas.drawString(7 *inch, y * inch, KataScoreSheetPDF.ring_number)
+    # canvas.drawString(7.5*inch, y * inch, KataScoreSheetPDF.event_time)
+    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.55
+    # canvas.drawString(6.1 * inch, y * inch, "DIVISION")
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.division_name)
+    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.35
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.age)
+    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+    #
+    # y=10.15
+    # canvas.drawString(6.3 * inch, y * inch, "RANKS")
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.belts)
+    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
+
+
+    # Footer
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, KataScoreSheetPDF.pageinfo))
+    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+                             "Page: %d     Generated: %s     From file: %s" % (
+                                 doc.page, KataScoreSheetPDF.timestamp, KataScoreSheetPDF.sourcefile))
+
     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -141,16 +268,57 @@ def page_layout(canvas, doc):
 if __name__ == "__main__":
   #setup the Kata Score Sheet PDF
   kata_score_sheet=KataScoreSheetPDF()
-  KataScoreSheetPDF.set_title("Kata Score Sheet")
+  KataScoreSheetPDF.set_title("Forms")
   KataScoreSheetPDF.set_sourcefile("testing//no//file//name")
 
-  # create a test data frame
-  index = ['a', 'b', 'c', 'd']
-  columns = ['one', 'two', 'three', 'four']
-  df = pd.DataFrame(np.random.randn(4, 4), index=index, columns=columns)
-  data = [df.columns[:, ].values.astype(str).tolist()] + df.values.tolist()
+  # # create a test data frame
+  # index = ['a', 'b', 'c', 'd']
+  # columns = ['one', 'two', 'three', 'four']
+  # df = pd.DataFrame(np.random.randn(4, 4), index=index, columns=columns)
+  # data = [df.columns[:, ].values.astype(str).tolist()] + df.values.tolist()
 
-  kata_score_sheet.put_dataframe_on_pdfpage(df,"Ring1","22:22","KataDivision","12-22","Black")
-  # divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Weapons Division 6")
+  # create a test data frame with what we will get passed
+  columns = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
+             'BMI', 'Events', 'Weapons']
+  data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
+           '2 Events - Forms & Sparring ($75)', 'None'),
+          (194, 'jake', 'coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)')]
+  df = pd.DataFrame(data, columns=columns)
+
+  # # create a test data frame with what we want to present
+  # columns=['Compettitors Name','Form','Scores','','Total','Place']
+  # data=[('1) Lucas May, CO-Parker\n','','','','',''),
+  #       ('2) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('3) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('4) Lucas May, CO-Parker\n', '', '', '', '', ''),
+  #       ('5) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('6) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('7) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('8) Lucas May, CO-Parker\n', '', '', '', '', ''),
+  #       ('9) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('11) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('12) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('13) Lucas May, CO-Parker\n', '', '', '', '', ''),
+  #       ('14) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('15) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('16) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('17) Lucas May, CO-Parker\n', '', '', '', '', ''),
+  #       ('18) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('19) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('20) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('21) Lucas May, CO-Parker\n', '', '', '', '', ''),
+  #       ('22) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('23) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('24) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
+  #       ('25) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', '')]
+  # df = pd.DataFrame(data, columns=columns)
+
+  kata_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black")
+
 
   kata_score_sheet.write_pdfpage()
+
+## setup test data frame

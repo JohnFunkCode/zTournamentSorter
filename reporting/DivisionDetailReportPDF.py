@@ -25,7 +25,7 @@ from reportlab.lib.utils import ImageReader
 
 class DivisionDetailReportPDF(object):
     def __init__(self):
-        self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter))
+        self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
@@ -67,16 +67,47 @@ class DivisionDetailReportPDF(object):
         #    elements.append(p)
         #    elements.append(Spacer(1,0.2*inch))
 
-        headerdata = [["Ring: " + ring_number + " " + event_time, division_name],
-                      ["Age: " + age, belts]]
-        t = Table(headerdata)
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Helvetica"),
+        headerdata1 = [['Division Detail Report','']]
+
+        t = Table(headerdata1)
+
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
-                               ('FONTSIZE', (0, 0), (1, -1), 28),
-                               ('RIGHTPADDING', (0, 0), (1, 1), 50),
-                               ('LEADING', (0, 0), (1, -1), 40)]))
+                               ('FONTSIZE', (0, 0), (1, -1), 20),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('LEADING', (0, 0), (1, -1), 9)]))
+
         elements.append(t)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
+
+        headerdata2 = [['RING', ring_number + '   ' + event_time],
+                       ['DIVISION', division_name],
+                       ['AGE', age],
+                       ['RANKS', belts]]
+
+        t = Table(headerdata2)
+
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                               ('LEADING', (0, 0), (1, -1), 7)]))
+
+
+        elements.append(t)
+        elements.append(Spacer(1, 0.1 * inch))
+
+        # headerdata = [["Ring: " + ring_number + " " + event_time, division_name],
+        #               ["Age: " + age, belts]]
+        # t = Table(headerdata)
+        # t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Helvetica"),
+        #                        ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+        #                        ('FONTSIZE', (0, 0), (1, -1), 28),
+        #                        ('RIGHTPADDING', (0, 0), (1, 1), 50),
+        #                        ('LEADING', (0, 0), (1, -1), 40)]))
+        # elements.append(t)
+        # elements.append(Spacer(1, 0.2 * inch))
 
         # Data Frame
         #  Convert data fram to a list format
@@ -112,14 +143,18 @@ def first_page_layout(canvas, doc):
     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
     canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 8 * inch, DivisionDetailReportPDF.Title)
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "First Page / %s" % DivisionDetailReportPDF.pageinfo)
+    canvas.canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % DivisionDetailReportPDF.pageinfo)
     canvas.restoreState()
 
 # define layout for subsequent pages
 def later_page_layout(canvas, doc):
     canvas.saveState()
+    #logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    #canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, DivisionDetailReportPDF.pageinfo))
+    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+                      "Page: %d   Generated: %s   From file: %s" % (
+                          doc.page, DivisionDetailReportPDF.timestamp, DivisionDetailReportPDF.sourcefile))
     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -128,8 +163,8 @@ def page_layout(canvas, doc):
     logo = ImageReader('Z_LOGO_HalfInch.jpg')
     canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawString(inch * 3, 0.75 * inch,
-                      "Page: %d     Generated: %s     From file: %s" % (
+    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+                      "Page: %d   Generated: %s   From file: %s" % (
                           doc.page, DivisionDetailReportPDF.timestamp, DivisionDetailReportPDF.sourcefile))
     canvas.restoreState()
 

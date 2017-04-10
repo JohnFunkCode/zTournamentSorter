@@ -60,13 +60,15 @@ class KataScoreSheetPDF(object):
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
+        counter=1
         for index, row in inputdf.iterrows():
-            outputdf.at[index, 'Compettitors Name'] = inputdf.at[index, 'First Name'] + " " + inputdf.at[index, 'Last Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First Name'] + " " + inputdf.at[index, 'Last Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
             outputdf.at[index, 'Form'] = ''
             outputdf.at[index,'Scores'] = ''
             outputdf.at[index,''] = ''
             outputdf.at[index,'Total'] = ''
             outputdf.at[index, 'Place'] = ''
+            counter = counter+1
 
         return outputdf
 

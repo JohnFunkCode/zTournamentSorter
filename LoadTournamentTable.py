@@ -2146,7 +2146,7 @@ writePattern3ToKataScoreSheet(6, "9:00am", "Youth Kata", "7-9", compositMask)
 compositMask=mask_Sparring & mask_Age10to12 & mask_Male
 writePattern6ToExcel( "BoysSparring.xlsx", compositMask )
 writePattern6ToDetailReport(12, "9:00am", "Boy's Sparring", "10-12", compositMask)
-writePattern6ToKataScoreSheet(12, "9:00am", "Boy's Sparring", "10-12", compositMask)
+#writePattern6ToKataScoreSheet(12, "9:00am", "Boy's Sparring", "10-12", compositMask)
 #writeSparingTreeToExcel( "BoysSparringTree.xlsx", compositMask )
 
 ### 9:45 Events
@@ -2239,8 +2239,8 @@ writePattern6ToKataScoreSheet(1, "1:30pm", "Men & Womens Kata", "18-39", composi
 #
 compositMask=mask_Forms & mask_Age13to15
 writePattern6ToExcel( "TeenKata.xlsx", compositMask )
-writePattern6ToDetailReport(8, "1:30pm", "Teen Kata", "18-39", compositMask)
-writePattern6ToKataScoreSheet(8, "1:30pm", "Teen Kata", "18-39", compositMask)
+writePattern6ToDetailReport(8, "1:30pm", "Teen Kata", "13-15", compositMask)
+writePattern6ToKataScoreSheet(8, "1:30pm", "Teen Kata", "13-15", compositMask)
 
 ### 2:15 Events
 

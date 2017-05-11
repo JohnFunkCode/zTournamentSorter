@@ -61,185 +61,26 @@
 # Event Stats - how many people in each event as per the event guide
 #
 
-import pandas as pd
-import numpy as np
+import os
+# from pandas import ExcelWriter
+# from pandas import XlsxWriter
+import time
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
-import os
-import sys
-#from pandas import ExcelWriter
-#from pandas import XlsxWriter
-import time
+
+import pandas as pd
+
+
+from cleaninput import cleaninput
+
 from reporting import DivisionDetailReportPDF as DivisionDetailReportPDF
 from reporting import KataScoreSheetPDF as kata_score_sheet_pdf
+
 
 #import sys
 #matplotlib inline
 
 
-###############################################################################
-# fixInput
-#  This function scans indiviual rows looking for input errors
-#  at first, it will just point out errors to the user
-#  arguments:  none
-#  return:   "\\" if it's windows, "/" if it's unix
-#
-def fixInput( inputDataFrame, errorLogFile ):
-    errorCount = 0
-    # first use Ria's technique to remove bogus lines from the data frame
-
-    print "  " + time.strftime("%X") + " Cleaning out garbage rows"
-    cleanDataFrame = df[np.isfinite(df['Registrant ID'])]
-
-    #next check for non-numeric data in the age field
-    print "  " + time.strftime("%X") + " Checking for non-numeric data in numeric fields"
-    for index, row in cleanDataFrame.iterrows():
-        try:
-            int(row['Competitor\'s Age?'])
-        except ValueError:
-            errorCount+=1
-            errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has something other than a number in Age field"
-            errorLogFile.write(errorString+"\r\f")
-            print errorString
-
-    #Test Rank - looking for 'Please Select'
-    print "  " + time.strftime("%X") + " Looking for invalid Rank data"
-    mask_NoBelt=(cleanDataFrame['Current Belt Rank?']=='Please Select')
-    #df_NoBelt=cleanDataFrame[['Registrant ID','First Name','Last Name','Select Your Z Ultimate Studio','Email','Phone','Mobile Phone']][mask_NoBelt]
-    df_NoBelt=cleanDataFrame[['Registrant ID','First Name','Last Name','Select Your Z Ultimate Studio']][mask_NoBelt]
-    beltErrorCount = df_NoBelt.shape[0]
-    if beltErrorCount > 0:
-      errorCount+=beltErrorCount
-      errorLogFile.write( "The Following People did not select a valid rank:\r\n" )
-      print "The Following People did not select a valid rank:"
-      for index, row in df_NoBelt.iterrows():
-            errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has something other than a number in Age field"
-            errorLogFile.write(errorString+"\r\f")
-            print errorString
-
-
-#        errorLogFile.write( "Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"]) + " did not contain a valid rank " )
-
-    print "  " + time.strftime("%X") + " Looking for invalid weight"
-    #Convert weight to digits with regex and generate an error if not valid
-    import re
-    compiledRegex=re.compile('\d+')
-    for index, row in cleanDataFrame.iterrows():
-        rawWeightString=row['Competitor\'s Weight (eg. 73lbs.)?']
-        matchList=compiledRegex.match(rawWeightString)
-        cleanWeightString=matchList.group()
-#        cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
-        cleanDataFrame.at[index,'Competitor\'s Weight (eg. 73lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
-
-        #print cleanWeightString
-        cleanWeight=int(cleanWeightString)
-        if (0==cleanWeight) or (350 < cleanWeight):
-            errorCount+=1
-            errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has an invalid Weight field:" + rawWeightString
-            errorLogFile.write(errorString+"\r\f")
-            print errorString
-
-
-#    #Check for non-numeric data in the Weight Field
-#    for index, row in cleanDataFrame.iterrows():
-#        try:
-#            int(row['Competitor\'s Weight (eg. 73lbs.)?'])
-#        except ValueError:
-#            errorCount+=1
-#            errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has something other than a number in Weight field"
-#            errorLogFile.write(errorString+"\r\f")
-#            print errorString
-
-#good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
-#import re
-#wString="98 lbs"
-#p=re.compile('\d+')
-#s=p.match(wString)
-#print s.group()
-
-#Height
-    print "  " + time.strftime("%X") + " Looking for invalid height"
-#    import re
-    compiledRegex=re.compile('\d+')
-    for index, row in cleanDataFrame.iterrows():
-        splitString=row['Competitor\'s Height (e.g. 4 ft. 2 in. )?']
- #        print splitString
-        matchList=compiledRegex.findall(splitString)
-        l=len(matchList)
-        if l>=2:
-            feet=matchList[0]
-            inches=matchList[1]
-        if l==1:
-            if(int(matchList[0])<12):
-                #single digit less than 12
-                feet=matchList[0]
-                inches=0
-            else:
-                #single digit greater than 12
-                feet= 0
-                inches=matchList[0]
-                if inches>12:
-                    feet=int(inches)/12
-                    inches=int(inches)%12
-        if l==0:
-            feet=0
-            inches=0
-
-        #resonability test
-        if (int(feet) < 2) or (int(feet) > 7):
-           #print splitString, "|", feet, "|", inches, "is not reasonable"
-           errorCount+=1
-           errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has bad data in the height field: " + splitString
-           errorLogFile.write(errorString+"\r\f")
-           print errorString
-
-        #Write it to new columns in the data frame
-        cleanDataFrame.loc[index,'Feet']=feet
-        cleanDataFrame.loc[index,'Inches']=inches
-        heightInInches = (int(feet)*12)+int(inches)
-        cleanDataFrame.loc[index,'HeightInInches']=heightInInches
-        bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Competitor\'s Weight (eg. 73lbs.)?'])
-        cleanDataFrame.loc[index,'BMI']=bodyMassIndex
-        #print splitString, "|", feet, "|", inches
-
-#---test version
-        cleanDataFrame.at[index,'Feet']=feet
-        cleanDataFrame.at[index,'Inches']=inches
-        heightInInches = (int(feet)*12)+int(inches)
-        cleanDataFrame.at[index,'HeightInInches']=heightInInches
-        bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Competitor\'s Weight (eg. 73lbs.)?'])
-        cleanDataFrame.at[index,'BMI']=bodyMassIndex
-        #print splitString, "|", feet, "|", inches
-
-    #Look for out of state dojos and move them into the 'Select Your Z Ultimate Studio' column
-    print "  " + time.strftime("%X") + " Looking for out of state dojos"
-    for index, row in cleanDataFrame.iterrows():
-        theString=row['Select Your Z Ultimate Studio']
-        if( theString=="Out of State" ):
-            outofstateString=row['Out of State Studio Name']
-            if(pd.isnull(outofstateString)):
-                errorCount+=1
-                errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " says the student is from Out of State, but there is no out of State Studio provided"
-                errorLogFile.write(errorString+"\r\f")
-                #print errorString
-            else:
-                #print outofstateString
-                cleanDataFrame.at[index,'Select Your Z Ultimate Studio']="** "+outofstateString
-                         
-                     
-                     
-
-   # if there are errors exit
-    if( errorCount > 0):
-        errorLogFile.write( str(errorCount)+" "+"errors found" )
-        errorLogFile.close()
-        print str(errorCount)+" "+"errors found"
-        sys.exit("Exiting - The input must be fixed manually")
-    else:
-         errorLogFile.write( "No errors found" )
-
-
-    return cleanDataFrame
 
 
 
@@ -268,18 +109,18 @@ def newDataFrameFromMask( mask ):
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","HeightInInches","Competitor\'s Weight (in lbs.)?","BodyMassIndex", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
 #    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (eg. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
-    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (eg. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
+    newdf = clean_df[["First Name", "Last Name", "Gender", "Select Your Z Ultimate Studio", "Competitor\'s Age?", "Current Belt Rank?", "Feet", "Inches", "Competitor\'s Height (e.g. 4 ft. 2 in. )?", "Competitor\'s Weight (eg. 73lbs.)?", "BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
     newdf.sort_values('BMI',inplace=True)
 #    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Out of State Studio Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
     newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
 
     ## update the hitcount every time we touch someone
-    for index, row in cdf[mask].iterrows():
+    for index, row in clean_df[mask].iterrows():
          name=row['First Name'] + " " + row['Last Name']
          hc=row['hitcount']
          newhc=hc+1
      #    print name + " has a row count of " + str(newhc)
-         cdf.at[index, 'hitcount']=newhc
+         clean_df.at[index, 'hitcount']=newhc
 
     return newdf
 
@@ -1944,15 +1785,14 @@ root.update() # Prevent the askfilename() window doesn't stay open
 print time.strftime("%X") + " Reading the data...."
 
 
-df=pd.read_csv(filename)
+raw_df=pd.read_csv(filename)
 #cdf = df[np.isfinite(df['Registrant ID'])]
 
 errorLogFileName=filename[0:len(filename)-4]+"-Error.txt"
 errorLogFile= open(errorLogFileName, "w")
 
-print time.strftime("%X") + " Checking for errors in the data...."
-
-cdf = fixInput(df,errorLogFile)
+clean_df = cleaninput.clean_all_input_errors(raw_df, errorLogFile)
+del raw_df  # make sure we don't use the raw_df again
 
 
 ###############################################################################
@@ -1998,43 +1838,43 @@ cdf = fixInput(df,errorLogFile)
 #  Define all the atomic masks
 
 # Atomic masks for Belts
-mask_WhiteBelt=cdf['Current Belt Rank?']=='White'
-mask_YellowBelt=cdf['Current Belt Rank?']=='Yellow'
-mask_OrangeBelt=cdf['Current Belt Rank?']=='Orange'
-mask_PurpleBelt=cdf['Current Belt Rank?']=='Purple'
-mask_BlueBelt=cdf['Current Belt Rank?']=='Blue'
-mask_BlueStripeBelt=cdf['Current Belt Rank?']=='Blue w/Stripe'
+mask_WhiteBelt= clean_df['Current Belt Rank?'] == 'White'
+mask_YellowBelt= clean_df['Current Belt Rank?'] == 'Yellow'
+mask_OrangeBelt= clean_df['Current Belt Rank?'] == 'Orange'
+mask_PurpleBelt= clean_df['Current Belt Rank?'] == 'Purple'
+mask_BlueBelt= clean_df['Current Belt Rank?'] == 'Blue'
+mask_BlueStripeBelt= clean_df['Current Belt Rank?'] == 'Blue w/Stripe'
 mask_AllBlueBelt = mask_BlueBelt | mask_BlueStripeBelt #all blue and blue stripe
 #testBluedf=newDataFrameFromMask( mask_AllBlueBelt )
-mask_GreenBelt=cdf['Current Belt Rank?']=='Green'
-mask_GreenStripeBelt=cdf['Current Belt Rank?']=='Green w/Stripe'
+mask_GreenBelt= clean_df['Current Belt Rank?'] == 'Green'
+mask_GreenStripeBelt= clean_df['Current Belt Rank?'] == 'Green w/Stripe'
 mask_AllGreenBelt = mask_GreenBelt | mask_GreenStripeBelt #all Green and Green stripe
 #testGreendf=newDataFrameFromMask( mask_AllGreenBelt )
-mask_3rdBrownBelt=cdf['Current Belt Rank?']=='Brown 3rd Degree'
-mask_2ndBrownBelt=cdf['Current Belt Rank?']=='Brown 2nd Degree'
-mask_1stBrownBelt=cdf['Current Belt Rank?']=='Brown 1st Degree'
+mask_3rdBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 3rd Degree'
+mask_2ndBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 2nd Degree'
+mask_1stBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 1st Degree'
 mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt #all 1st 2nd and 3rd Brown
 #testBrowndf=newDataFrameFromMask( mask_AllBrownBelt )
-mask_1stBlackBelt=cdf['Current Belt Rank?']=='Black 1st Degree'
-mask_2ndBlackBelt=cdf['Current Belt Rank?']=='Black 2nd Degree'
-mask_3rdBlackBelt=cdf['Current Belt Rank?']=='Black 3rd Degree'
-mask_4thBlackBelt=cdf['Current Belt Rank?']=='Black 4th Degree'
-mask_5thBlackBelt=cdf['Current Belt Rank?']=='Black 5th Degree'
-mask_JrBlackBelt=cdf['Current Belt Rank?']=='Black Junior'
+mask_1stBlackBelt= clean_df['Current Belt Rank?'] == 'Black 1st Degree'
+mask_2ndBlackBelt= clean_df['Current Belt Rank?'] == 'Black 2nd Degree'
+mask_3rdBlackBelt= clean_df['Current Belt Rank?'] == 'Black 3rd Degree'
+mask_4thBlackBelt= clean_df['Current Belt Rank?'] == 'Black 4th Degree'
+mask_5thBlackBelt= clean_df['Current Belt Rank?'] == 'Black 5th Degree'
+mask_JrBlackBelt= clean_df['Current Belt Rank?'] == 'Black Junior'
 mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt #all Jr, 1st, 2nd, and 3rd degree black
 #testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
 
 # Atomic mask for Gender
-mask_Male=cdf['Gender']=='Male'
-mask_Female=cdf['Gender']=='Female'
+mask_Male= clean_df['Gender'] == 'Male'
+mask_Female= clean_df['Gender'] == 'Female'
 
 # Atomic and composit mask for which event Sparring, Kata, Weapons
-mask_SparringAndForms=cdf['Choose Forms, Sparring or Both.']=='2 Events - Forms & Sparring ($75)'
-mask_FormsOnly=cdf['Choose Forms, Sparring or Both.']=='1 Event - Forms ($75)'
-mask_SparringOnly=cdf['Choose Forms, Sparring or Both.']=='1 Event - Sparring ($75)'
+mask_SparringAndForms= clean_df['Choose Forms, Sparring or Both.'] == '2 Events - Forms & Sparring ($75)'
+mask_FormsOnly= clean_df['Choose Forms, Sparring or Both.'] == '1 Event - Forms ($75)'
+mask_SparringOnly= clean_df['Choose Forms, Sparring or Both.'] == '1 Event - Sparring ($75)'
 # Mask for Weapons
-mask_Weapons=cdf['Choose Weapons.']=='Weapons ($35)'
-testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (eg. 73lbs.)?','Competitor\'s Height (e.g. 4 ft. 2 in. )?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Weapons]
+mask_Weapons= clean_df['Choose Weapons.'] == 'Weapons ($35)'
+testdf=clean_df[['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?', 'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?', 'Choose Forms, Sparring or Both.', 'Choose Weapons.']][mask_Weapons]
 
 
 # Composit Masks for Sparring or Forms
@@ -2044,66 +1884,66 @@ mask_Forms= mask_SparringAndForms | mask_FormsOnly
 
 # Atomic mask for age groups found in the tournament guide
 # 4-6 used for kids kata, kids sparring,
-maskLowAge=cdf["Competitor\'s Age?"]>=4
-maskHighAge=cdf["Competitor\'s Age?"]<=6
+maskLowAge= clean_df["Competitor\'s Age?"] >= 4
+maskHighAge= clean_df["Competitor\'s Age?"] <= 6
 mask_Age4to6 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age4to6]
 
 # 7-9 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring
-maskLowAge=cdf["Competitor\'s Age?"]>=7
-maskHighAge=cdf["Competitor\'s Age?"]<=9
+maskLowAge= clean_df["Competitor\'s Age?"] >= 7
+maskHighAge= clean_df["Competitor\'s Age?"] <= 9
 mask_Age7to9 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age7to9]
 
 # 10-12 used in Boys Sparring, Boys & Girls Kata, Girls Sparring
-maskLowAge=cdf["Competitor\'s Age?"]>=10
-maskHighAge=cdf["Competitor\'s Age?"]<=12
+maskLowAge= clean_df["Competitor\'s Age?"] >= 10
+maskHighAge= clean_df["Competitor\'s Age?"] <= 12
 mask_Age10to12 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age10to12]
 
 # 13-15 used in Teen Girls Sparring, Teen Kata, Teen Boys Sparring,
-maskLowAge=cdf["Competitor\'s Age?"]>=13
-maskHighAge=cdf["Competitor\'s Age?"]<=15
+maskLowAge= clean_df["Competitor\'s Age?"] >= 13
+maskHighAge= clean_df["Competitor\'s Age?"] <= 15
 mask_Age13to15 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13to15]
 
 # 4-9 used in Weapons Division 1
-maskLowAge=cdf["Competitor\'s Age?"]>=4
-maskHighAge=cdf["Competitor\'s Age?"]<=9
+maskLowAge= clean_df["Competitor\'s Age?"] >= 4
+maskHighAge= clean_df["Competitor\'s Age?"] <= 9
 mask_Age4to9 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age4to9]
 
 # 18-39 used in Womans Sprring, Men and Womens Kata
-maskLowAge=cdf["Competitor\'s Age?"]>=18
-maskHighAge=cdf["Competitor\'s Age?"]<=39
+maskLowAge= clean_df["Competitor\'s Age?"] >= 18
+maskHighAge= clean_df["Competitor\'s Age?"] <= 39
 mask_Age18to39 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age18to39]
 
 # 40 plus used in Senior Mens Sparring, Senior Womens Sparring, Senior Kata
-mask_Age40Plus=cdf["Competitor\'s Age?"]>=40
+mask_Age40Plus= clean_df["Competitor\'s Age?"] >= 40
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age40Plus]
 
 # 16-17 used in Young Adult Kata, Young Mens Sparring, Young Adult Womens Sparring
-maskLowAge=cdf["Competitor\'s Age?"]>=16
-maskHighAge=cdf["Competitor\'s Age?"]<=17
+maskLowAge= clean_df["Competitor\'s Age?"] >= 16
+maskHighAge= clean_df["Competitor\'s Age?"] <= 17
 mask_Age16to17 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age16to17]
 
 # 13-17 used in Weapons Division 3
-maskLowAge=cdf["Competitor\'s Age?"]>=13
-maskHighAge=cdf["Competitor\'s Age?"]<=17
+maskLowAge= clean_df["Competitor\'s Age?"] >= 13
+maskHighAge= clean_df["Competitor\'s Age?"] <= 17
 mask_Age13to17 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13to17]
 
 # 18 plus used in Weapons Division 4 and 5
-mask_Age18Plus=cdf["Competitor\'s Age?"]>=18
+mask_Age18Plus= clean_df["Competitor\'s Age?"] >= 18
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age18Plus]
 
 # 13 plus used in Weapons Division 6
-mask_Age13Plus=cdf["Competitor\'s Age?"]>=13
+mask_Age13Plus= clean_df["Competitor\'s Age?"] >= 13
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
 
-cdf['hitcount']=0   #setup a new column for hit rate.
+clean_df['hitcount']=0   #setup a new column for hit rate.
 
 print time.strftime("%X") + " Generating the output results..."
 
@@ -2349,7 +2189,7 @@ divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 
 print "Here is how many times we touched each person:"
-for index, row in cdf.iterrows():
+for index, row in clean_df.iterrows():
     name = row['First Name'] + " " + row['Last Name']
     hc = row['hitcount']
     print "  " + name + ": " + str(hc)

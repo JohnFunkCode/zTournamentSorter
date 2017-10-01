@@ -3,11 +3,7 @@
 # There are 6 patterns in the Denver Tournament Guide
 #
 #Pattern1
-#  White
-#  Yellow
-#  Orange
-#  Purple, Blue, Blue Stripe
-#  Green, Green Stripe
+#
 #
 #Pattern2
 #  White
@@ -62,6 +58,7 @@
 #
 
 import os
+import sys
 # from pandas import ExcelWriter
 # from pandas import XlsxWriter
 import time
@@ -1772,15 +1769,21 @@ def writeSparingTreeToExcel( filename, compositMask):
 #
 # Main Function
 #
-#Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-root = Tk()
-root.withdraw() # we don't want a full GUI, so keep the root window from appearing
-root.update() # Prevent the askfilename() window doesn't stay open
-filename = askopenfilename()
-root.update() # Prevent the askfilename() window doesn't stay open
+number_of_args=len(sys.argv)
+print sys.argv
 
-#filename="/Volumes/1TB/Dropbox/TournamentProject/CleanRegistrantExport.csv" #For John Debugging
+if(number_of_args) >1 :
+    filename = sys.argv[1]
+else:
+    #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    root = Tk()
+    root.withdraw() # we don't want a full GUI, so keep the root window from appearing
+    root.update() # Prevent the askfilename() window doesn't stay open
+    filename = askopenfilename()
+    root.update() # Prevent the askfilename() window doesn't stay open
+
 #filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
+#filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
 
 print time.strftime("%X") + " Reading the data...."
 
@@ -1894,6 +1897,27 @@ maskLowAge= clean_df["Competitor\'s Age?"] >= 7
 maskHighAge= clean_df["Competitor\'s Age?"] <= 9
 mask_Age7to9 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age7to9]
+
+# 7-8 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 7
+maskHighAge= clean_df["Competitor\'s Age?"] <= 8
+mask_Age7to8 = maskLowAge & maskHighAge
+
+# 9-11 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 9
+maskHighAge= clean_df["Competitor\'s Age?"] <= 11
+mask_Age9to11 = maskLowAge & maskHighAge
+
+# 12-14 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 12
+maskHighAge= clean_df["Competitor\'s Age?"] <= 14
+mask_Age12to14 = maskLowAge & maskHighAge
+
+# 15-17 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 15
+maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+mask_Age15to17 = maskLowAge & maskHighAge
+
 
 # 10-12 used in Boys Sparring, Boys & Girls Kata, Girls Sparring
 maskLowAge= clean_df["Competitor\'s Age?"] >= 10
@@ -2196,3 +2220,4 @@ for index, row in clean_df.iterrows():
 
 localtime = time.asctime( time.localtime(time.time()) )
 print  time.strftime("%X") + " Done!"
+

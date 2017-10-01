@@ -1996,21 +1996,21 @@ writePattern1ToKataScoreSheet(1, "9:00am", "Kids Kata", "4-6", compositMask)
 
 
 ###############################################################################
-# Youth Kata Spreadsheet - 7-9 year olds one sheet per rank
+# Youth Kata Spreadsheet - 7-8 year olds one sheet per rank
 #
-compositMask=mask_Forms & mask_Age7to9
+compositMask=mask_Forms & mask_Age7to8
 writePattern3ToExcel( "YouthKata.xlsx", compositMask )
-writePattern3ToDetailReport(6, "9:00am", "Youth Kata", "7-9", compositMask)
-writePattern3ToKataScoreSheet(6, "9:00am", "Youth Kata", "7-9", compositMask)
+writePattern3ToDetailReport(6, "9:00am", "Youth Kata", "7-8", compositMask)
+writePattern3ToKataScoreSheet(6, "9:00am", "Youth Kata", "7-8", compositMask)
 
 
 ###############################################################################
-# Boy's Sparring Spreadsheet - 10-12 year olds one sheet per rank
+# Boy's Sparring Spreadsheet - 9-11 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Age10to12 & mask_Male
+compositMask=mask_Sparring & mask_Age9to11 & mask_Male
 writePattern6ToExcel( "BoysSparring.xlsx", compositMask )
-writePattern6ToDetailReport(12, "9:00am", "Boy's Sparring", "10-12", compositMask)
-#writePattern6ToKataScoreSheet(12, "9:00am", "Boy's Sparring", "10-12", compositMask)
+writePattern6ToDetailReport(12, "9:00am", "Boy's Sparring", "9-11", compositMask)
+#writePattern6ToKataScoreSheet(12, "9:00am", "Boy's Sparring", "9-11", compositMask)
 #writeSparingTreeToExcel( "BoysSparringTree.xlsx", compositMask )
 
 ### 9:45 Events
@@ -2023,45 +2023,45 @@ writePattern2ToExcel( "KidsSparring.xlsx", compositMask )
 writePattern2ToDetailReport(1, "9:45am", "Kids Sparring", "4-6", compositMask)
 
 ###############################################################################
-# Boys & Girls Kata Spreadsheet - 10-12 year olds one sheet per rank
+# Boys & Girls Kata Spreadsheet - 9-11 year olds one sheet per rank
 #
-compositMask=mask_Forms & mask_Age10to12
+compositMask=mask_Forms & mask_Age9to11
 writePattern6ToExcel( "BoysGirlsKata.xlsx", compositMask )
-#writePattern6ToPDF(6,"9:45am","Boy's & Girls Kata","10-12",compositMask)
-writePattern6WithSplitToDetailReport(6, "9:45am", "Boy's & Girls Kata", "10-12", compositMask)
-writePattern6WithSplitToKataScoreSheetlReport(6, "9:45am", "Boy's & Girls Kata", "10-12", compositMask)
+#writePattern6ToPDF(6,"9:45am","Boy's & Girls Kata","9-11",compositMask)
+writePattern6WithSplitToDetailReport(6, "9:45am", "Boy's & Girls Kata", "9-11", compositMask)
+writePattern6WithSplitToKataScoreSheetlReport(6, "9:45am", "Boy's & Girls Kata", "9-11", compositMask)
 
 ### 10:30 Events
 
 ###############################################################################
-# Youth Girls Sparring Spreadsheet - 7-9 year olds one sheet per rank
+# Youth Girls Sparring Spreadsheet - 7-8 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Female & mask_Age7to9
+compositMask=mask_Sparring & mask_Female & mask_Age7to8
 writePattern5ToExcel( "YouthGirlSparring.xlsx", compositMask )
-writePattern5ToDetailReport(1, "10:30am", "Youth Girl Sparring", "7-9", compositMask)
+writePattern5ToDetailReport(1, "10:30am", "Youth Girl Sparring", "7-8", compositMask)
 
 ###############################################################################
-# Youth Boys Sparring Spreadsheet - 7-9 year olds one sheet per rank
+# Youth Boys Sparring Spreadsheet - 7-8 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Male & mask_Age7to9
+compositMask=mask_Sparring & mask_Male & mask_Age7to8
 writePattern5ToExcel( "YouthBoysSparring.xlsx", compositMask )
-writePattern5ToDetailReport(6, "10:30am", "Youth Boys Sparring", "7-9", compositMask)
+writePattern5ToDetailReport(6, "10:30am", "Youth Boys Sparring", "7-8", compositMask)
 
 ###############################################################################
-# Girl's Sparring Spreadsheet - 10-12 year olds one sheet per rank
+# Girl's Sparring Spreadsheet - 9-11 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Age10to12 & mask_Female
+compositMask=mask_Sparring & mask_Age9to11 & mask_Female
 writePattern4ToExcel( "GirlsSparring.xlsx", compositMask )
-writePattern4ToDetailReport(11, "10:30am", "Girls Sparring", "10-12", compositMask)
+writePattern4ToDetailReport(11, "10:30am", "Girls Sparring", "9-11", compositMask)
 
 ### 11:15 Events
 
 ###############################################################################
-# Teen Girls Sparring Spreadsheet - 13-15 year olds one sheet per rank
+# Teen Girls Sparring Spreadsheet - 12-14 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Female & mask_Age13to15
+compositMask=mask_Sparring & mask_Female & mask_Age12to14
 writePattern4ToExcel( "TeenGirlSparring.xlsx", compositMask )
-writePattern4ToDetailReport(1, "11:15am", "Teen Girls Sparring", "13-15", compositMask)
+writePattern4ToDetailReport(1, "11:15am", "Teen Girls Sparring", "12-14", compositMask)
 
 ###############################################################################
 # Womans Sparring Spreadsheet - 18-39 year olds one sheet per rank
@@ -2072,7 +2072,7 @@ writePattern4ToDetailReport(5, "11:15am", "Women's Sparring", "18-39", compositM
 
 
 ###############################################################################
-# Weapons Division 1 - 13-15 year olds one sheet per rank
+# Weapons Division 1 - 4-9 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age4to9
 writeWeaponsDivision1ToExcel( "WeaponsDivision1.xlsx", compositMask )
@@ -2080,7 +2080,7 @@ writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-9", comp
 writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-9", compositMask)
 
 ###############################################################################
-# Weapons Division 1 - 10-12 year olds one sheet per rank
+# Weapons Division 2 - 10-12 year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age10to12
 writeWeaponsDivision2ToExcel( "WeaponsDivision2.xlsx", compositMask )
@@ -2099,12 +2099,12 @@ writePattern6ToKataScoreSheet(1, "1:30pm", "Men & Womens Kata", "18-39", composi
 
 
 ###############################################################################
-# Teen Kata - 13-15 year olds one sheet per rank
+# Teen Kata - 12-14 year olds one sheet per rank
 #
-compositMask=mask_Forms & mask_Age13to15
+compositMask=mask_Forms & mask_Age12to14
 writePattern6ToExcel( "TeenKata.xlsx", compositMask )
-writePattern6ToDetailReport(8, "1:30pm", "Teen Kata", "13-15", compositMask)
-writePattern6ToKataScoreSheet(8, "1:30pm", "Teen Kata", "13-15", compositMask)
+writePattern6ToDetailReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
+writePattern6ToKataScoreSheet(8, "1:30pm", "Teen Kata", "12-14", compositMask)
 
 ### 2:15 Events
 
@@ -2124,12 +2124,12 @@ writePattern4ToDetailReport(5, "2:15pm", "Senior Women's Sparring", "40 +", comp
 
 
 ###############################################################################
-# Young Adult Kata - 16-17 year olds one sheet per rank
+# Young Adult Kata - 15-17 year olds one sheet per rank
 #
-compositMask=mask_Forms & mask_Age16to17
+compositMask=mask_Forms & mask_Age15to17
 writePattern4ToExcel( "YoungAdultKata.xlsx", compositMask )
-writePattern4ToDetailReport(9, "2:15pm", "Young Adult Kata", "16-17", compositMask)
-writePattern4ToKataScoreSheet(9, "2:15pm", "Young Adult Kata", "16-17", compositMask)
+writePattern4ToDetailReport(9, "2:15pm", "Young Adult Kata", "15-17", compositMask)
+writePattern4ToKataScoreSheet(9, "2:15pm", "Young Adult Kata", "15-17", compositMask)
 
 ### 3:00 Events
 
@@ -2141,18 +2141,18 @@ writePattern4ToExcel( "MensSparring.xlsx", compositMask )
 writePattern4ToDetailReport(1, "3:00pm", "Mens Sparring", "18-39", compositMask)
 
 ###############################################################################
-#  Teen Boys Sparring - 13-15 year olds one sheet per rank
+#  Teen Boys Sparring - 120-14 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Male & mask_Age13to15
+compositMask=mask_Sparring & mask_Male & mask_Age12to14
 writePattern4ToExcel( "TeenBoysSparring.xlsx", compositMask )
-writePattern4ToDetailReport(5, "3:00pm", "Teen Boys Sparring", "13-15", compositMask)
+writePattern4ToDetailReport(5, "3:00pm", "Teen Boys Sparring", "12-14", compositMask)
 
 ###############################################################################
-#  Young Adult Mens Sparring - 16-17 year olds one sheet per rank
+#  Young Adult Mens Sparring - 15-17 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Male & mask_Age16to17
+compositMask=mask_Sparring & mask_Male & mask_Age15to17
 writePattern4ToExcel( "YoungAdultMensSparring.xlsx", compositMask )
-writePattern4ToDetailReport(9, "3:00pm", "YoungAdultMensSparring Sparring", "16-17", compositMask)
+writePattern4ToDetailReport(9, "3:00pm", "YoungAdultMensSparring Sparring", "15-17", compositMask)
 
 ### 3:45 Events
 
@@ -2165,11 +2165,11 @@ writePattern6ToDetailReport(1, "3:45pm", "Senior Kata", "40+", compositMask)
 writePattern6ToKataScoreSheet(1, "3:45pm", "Senior Kata", "40+", compositMask)
 
 ###############################################################################
-#  Young Adult Womens Sparring - 16-17 year olds one sheet per rank
+#  Young Adult Womens Sparring - 15-17 year olds one sheet per rank
 #
-compositMask=mask_Sparring & mask_Female & mask_Age16to17
+compositMask=mask_Sparring & mask_Female & mask_Age15to17
 writePattern7ToExcel( "YoungAdultWomensSparring.xlsx", compositMask )
-writePattern7ToDetailReport(8, "3:45pm", "Young Adult Womens Sparring", "16-17", compositMask)
+writePattern7ToDetailReport(8, "3:45pm", "Young Adult Womens Sparring", "15-17", compositMask)
 
 
 ### 4:15 Events
@@ -2200,15 +2200,14 @@ writeWeaponsDivision5ToDetailReport("4:15pm", "Weapons Division 5", "18+", compo
 writeWeaponsDivision5ToKataScoreSheet("4:15pm", "Weapons Division 5", "18+", compositMask)
 
 ###############################################################################
-#  WeaponsDivision6 18+ year olds one sheet per rank
+#  WeaponsDivision6 13+ year olds one sheet per rank
 #
 compositMask=mask_Weapons & mask_Age13Plus
 writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
 writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "13+", compositMask)
 writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "13+", compositMask)
 
-print time.strftime("%X") + " Saving PDFs to disk...."
-
+print time.strftime("%X") + " Saving PDFs to d
 divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 

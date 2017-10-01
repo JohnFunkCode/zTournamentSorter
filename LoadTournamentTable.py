@@ -1,4 +1,4 @@
-# V20 - added PDF report containing the details of each division
+# V 10/1/2017 - Changed reports to use new age groups for Fall 2017 Tournament
 
 # There are 6 patterns in the Denver Tournament Guide
 #

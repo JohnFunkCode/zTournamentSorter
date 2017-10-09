@@ -6,22 +6,17 @@ Created on Sat Nov  5 20:36:56 2016
 @author: john funk
 """
 
-#
-import pandas as pd
-import numpy as np
+import datetime
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import PageBreak
-from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
-import datetime
 from reportlab.lib.utils import ImageReader
+from reportlab.platypus import PageBreak
+from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.rl_config import defaultPageSize
+
 
 class DivisionDetailReportPDF(object):
     def __init__(self):

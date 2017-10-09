@@ -6,23 +6,19 @@ Created on Wed April 5 2017
 @author: john funk
 """
 
+import datetime
+
 #
 import pandas as pd
-import numpy as np
-
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter, portrait
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.rl_config import defaultPageSize
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter, landscape, portrait
-from reportlab.platypus import PageBreak
-from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
-import datetime
 from reportlab.lib.utils import ImageReader
-from reportlab.pdfgen import canvas
+from reportlab.platypus import PageBreak
+from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.rl_config import defaultPageSize
+
 
 class KataScoreSheetPDF(object):
     def __init__(self):

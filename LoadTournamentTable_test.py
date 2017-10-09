@@ -8,22 +8,56 @@ import sys
 from mock import patch
 
 import LoadTournamentTable
+import os
 
 
 class TestLoadTournamentTable(unittest.TestCase):
 
     def setUp(self):
+        # filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
+        os.putenv("tournament_filename","/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv")
         return
 
-    def test_Age7to8_mask_returns_7_and_8_year_olds(self):
+    def test_Age7to8_mask_returns_only_7_and_8_year_olds(self):
         testdf=LoadTournamentTable.clean_df[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (eg. 73lbs.)?','Competitor\'s Height (e.g. 4 ft. 2 in. )?','Choose Forms, Sparring or Both.','Choose Weapons.']][LoadTournamentTable.mask_Age7to8]
-        print "Here are the ages"
         for index, row in testdf.iterrows():
             #name = row['First Name'] + " " + row['Last Name']
             age = row['Competitor\'s Age?']
-            self.assertTrue( age >=7 & age <=8)
+            self.assertTrue( (age >=7) & (age <=8))
 
-    # def test_participants_has_correct_number_of_entries(self):
+    def test_Age9to11_mask_returns_only_9_to_11_year_olds(self):
+        testdf = LoadTournamentTable.clean_df[
+            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
+             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age9to11]
+        for index, row in testdf.iterrows():
+            # name = row['First Name'] + " " + row['Last Name']
+            age = row['Competitor\'s Age?']
+            self.assertTrue( (age >=9) & (age <=11))
+
+    def test_Age12to14_mask_returns_only_12_to_14_year_olds(self):
+        testdf = LoadTournamentTable.clean_df[
+            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
+             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age12to14]
+        for index, row in testdf.iterrows():
+            # name = row['First Name'] + " " + row['Last Name']
+            age = row['Competitor\'s Age?']
+            self.assertTrue((age >= 12) & (age <= 14))
+
+    def test_Age15to17_mask_returns_only_15_to_17_year_olds(self):
+        testdf = LoadTournamentTable.clean_df[
+            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
+             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age15to17]
+        for index, row in testdf.iterrows():
+            # name = row['First Name'] + " " + row['Last Name']
+            age = row['Competitor\'s Age?']
+            self.assertTrue((age >= 15) & (age <= 17))
+
+
+
+                    # def test_participants_has_correct_number_of_entries(self):
     #     p = parts.Participants()
     #     #print p._participant_list
     #     shape=p._participant_list.shape

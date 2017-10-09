@@ -1124,6 +1124,7 @@ def writePattern6ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #  This method provides a re-usable method to write output to PDF
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe
@@ -1159,8 +1160,8 @@ def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_nam
     pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
     MtoZ = wmk[wmk['Last Name'].str.contains(pattern)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)","*** PLEASE NOTE - These are contestants A - L")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)","*** PLEASE NOTE - These are contestants M - Z")
 
 
     mask = mask_AllGreenBelt & compositMask
@@ -1216,8 +1217,8 @@ def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, div
     pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
     MtoZ = wmk[wmk['Last Name'].str.contains(pattern)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)")
+    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)", "*** PLEASE NOTE - These are contestants A - L")
+    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)", "*** PLEASE NOTE - These are contestants M - Z")
 
 
     mask = mask_AllGreenBelt & compositMask
@@ -1769,18 +1770,21 @@ def writeSparingTreeToExcel( filename, compositMask):
 #
 # Main Function
 #
-number_of_args=len(sys.argv)
-print sys.argv
 
-if(number_of_args) >1 :
-    filename = sys.argv[1]
-else:
+#get the filename from the environment var named  tourname_filename
+filename=os.getenv("tournament_filename")
+
+if filename is None :
     #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     root = Tk()
     root.withdraw() # we don't want a full GUI, so keep the root window from appearing
     root.update() # Prevent the askfilename() window doesn't stay open
     filename = askopenfilename()
     root.update() # Prevent the askfilename() window doesn't stay open
+else:
+    print "Using the file " + filename + "from the environment"
+
+
 
 #filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
 #filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
@@ -2207,7 +2211,7 @@ writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
 writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "13+", compositMask)
 writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "13+", compositMask)
 
-print time.strftime("%X") + " Saving PDFs to d
+print time.strftime("%X") + " Saving PDFs to disk"
 divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 

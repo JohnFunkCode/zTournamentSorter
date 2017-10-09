@@ -72,7 +72,7 @@ class KataScoreSheetPDF(object):
 
         return outputdf
 
-    def put_dataframe_on_pdfpage(self, inputdf, ring_number, event_time, division_name, age, belts):
+    def put_dataframe_on_pdfpage(self, inputdf, ring_number, event_time, division_name, age, belts, split_warning_text=None):
         # put args in class variables so the static page header functions can use them
         KataScoreSheetPDF.ring_number = ring_number
         KataScoreSheetPDF.event_time = event_time
@@ -86,6 +86,8 @@ class KataScoreSheetPDF(object):
 
         t = Table(headerdata1)
 
+        # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+        # - see reportlab users guide chapter 7, page 78 for details
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
                                ('FONTSIZE', (0, 0), (1, -1), 20),
@@ -95,12 +97,38 @@ class KataScoreSheetPDF(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
-        headerdata2 =[['RING',ring_number+ '   ' + event_time],
-                      ['DIVISION',division_name],
-                      ['AGE',age],
-                      ['RANKS',belts]]
+        if split_warning_text is None:
+            headerdata2 = [['RING', ring_number + '   ' + event_time],
+                           ['DIVISION', division_name],
+                           ['AGE', age],
+                           ['RANKS', belts]]
+            t = Table(headerdata2)
 
-        t = Table(headerdata2)
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                                   ('FONTSIZE', (0, 0), (1, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (1, -1), 7)]))
+        else:
+            headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
+                           ['DIVISION', division_name, '' ],
+                           ['AGE', age,''],
+                           ['RANKS', belts,split_warning_text]]
+            t = Table(headerdata2)
+
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
+                                   ('FONTSIZE', (0, 0), (2, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('ALIGN', (2, 0), (2, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (-1, -1), 7)]))
+
 
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
@@ -115,7 +143,7 @@ class KataScoreSheetPDF(object):
         # Data Frame
         outputdf=self.convert_inputdf_to_outputdf(inputdf)
 
-        #  Convert data fram to a list format
+        #  Convert data frame to a list format
         data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)

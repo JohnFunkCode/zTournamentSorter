@@ -49,7 +49,7 @@ class DivisionDetailReportPDF(object):
     def set_sourcefile(sourcefile):
         DivisionDetailReportPDF.sourcefile = sourcefile
 
-    def put_dataframe_on_pdfpage(self, df, ring_number, event_time, division_name, age, belts):
+    def put_dataframe_on_pdfpage(self, df, ring_number, event_time, division_name, age, belts, split_warning_text=None):
         elements = []
         #   elements = [Spacer(1,2*inch)]
 
@@ -80,19 +80,51 @@ class DivisionDetailReportPDF(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
-        headerdata2 = [['RING', ring_number + '   ' + event_time],
-                       ['DIVISION', division_name],
-                       ['AGE', age],
-                       ['RANKS', belts]]
+        if split_warning_text is None:
+            headerdata2 = [['RING', ring_number + '   ' + event_time],
+                           ['DIVISION', division_name],
+                           ['AGE', age],
+                           ['RANKS', belts]]
+            t = Table(headerdata2)
 
-        t = Table(headerdata2)
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                                   ('FONTSIZE', (0, 0), (1, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (1, -1), 7)]))
+        else:
+            headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
+                           ['DIVISION', division_name, ''],
+                           ['AGE', age, ''],
+                           ['RANKS', belts, split_warning_text]]
+            t = Table(headerdata2)
 
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
-                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
-                               ('FONTSIZE', (0, 0), (1, -1), 10),
-                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                               ('LEADING', (0, 0), (1, -1), 7)]))
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
+                                   ('FONTSIZE', (0, 0), (2, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('ALIGN', (2, 0), (2, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (-1, -1), 7)]))
+
+        # headerdata2 = [['RING', ring_number + '   ' + event_time],
+        #                ['DIVISION', division_name],
+        #                ['AGE', age],
+        #                ['RANKS', belts]]
+        #
+        # t = Table(headerdata2)
+        #
+        # t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+        #                        ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+        #                        ('FONTSIZE', (0, 0), (1, -1), 10),
+        #                        ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+        #                        ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+        #                        ('LEADING', (0, 0), (1, -1), 7)]))
 
 
         elements.append(t)

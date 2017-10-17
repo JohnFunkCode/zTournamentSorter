@@ -1451,11 +1451,12 @@ def writeWeaponsDivision2ToExcel( filename, compositMask ):
     mask3= mask_OrangeBelt & compositMask
     mask4= mask_PurpleBelt & compositMask
     mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
-    mask7= mask_AllBrownBelt & compositMask
-    mask8= mask_AllBlackBelt & compositMask
+#    mask6= mask_AllGreenBelt & compositMask
+#    mask7= mask_AllBrownBelt & compositMask
+#    mask8= mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Weapons Division 2')
@@ -1476,14 +1477,15 @@ def writeWeaponsDivision2ToDetailReport(event_time, division_name, age, composit
     mask3= mask_OrangeBelt & compositMask
     mask4= mask_PurpleBelt & compositMask
     mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
-    mask7= mask_AllBrownBelt & compositMask
-    mask8= mask_AllBlackBelt & compositMask
+#    mask6= mask_AllGreenBelt & compositMask
+#    mask7= mask_AllBrownBelt & compositMask
+#    mask8= mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 
 ###############################################################################
@@ -1498,14 +1500,15 @@ def writeWeaponsDivision2ToKataScoreSheet(event_time, division_name, age, compos
     mask3= mask_OrangeBelt & compositMask
     mask4= mask_PurpleBelt & compositMask
     mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
-    mask7= mask_AllBrownBelt & compositMask
-    mask8= mask_AllBlackBelt & compositMask
+#    mask6= mask_AllGreenBelt & compositMask
+#    mask7= mask_AllBrownBelt & compositMask
+#    mask8= mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 
 
@@ -1520,14 +1523,11 @@ def writeWeaponsDivision3ToExcel(filename, compositMask):
     writer=pd.ExcelWriter(fullpath)
     print time.strftime("%X") +" Generating " + fullpath
 
-    mask1= mask_WhiteBelt & compositMask
-    mask2= mask_YellowBelt & compositMask
-    mask3= mask_OrangeBelt & compositMask
-    mask4= mask_PurpleBelt & compositMask
-    mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
+    mask3= mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6
+    mask = mask1 | mask2 | mask3
 
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Weapons Division 3')
@@ -1544,17 +1544,14 @@ def writeWeaponsDivision3ToDetailReport(event_time, division_name, age, composit
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
-    mask1= mask_WhiteBelt & compositMask
-    mask2= mask_YellowBelt & compositMask
-    mask3= mask_OrangeBelt & compositMask
-    mask4= mask_PurpleBelt & compositMask
-    mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask3 = mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6
+    mask = mask1 | mask2 | mask3
 
     wmk=newDataFrameFromMask( mask )
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Green w/Stripe")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green - Jr. Black")
 
 ###############################################################################
 # writeWeaponsDivision3ToKataScoreSheet
@@ -1564,17 +1561,14 @@ def writeWeaponsDivision3ToKataScoreSheet(event_time, division_name, age, compos
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
-    mask1= mask_WhiteBelt & compositMask
-    mask2= mask_YellowBelt & compositMask
-    mask3= mask_OrangeBelt & compositMask
-    mask4= mask_PurpleBelt & compositMask
-    mask5= mask_AllBlueBelt & compositMask
-    mask6= mask_AllGreenBelt & compositMask
+    mask1 = mask_AllGreenBelt & compositMask
+    mask2 = mask_AllBrownBelt & compositMask
+    mask3 = mask_AllBlackBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6
+    mask = mask1 | mask2 | mask3
 
     wmk=newDataFrameFromMask( mask )
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Green w/Stripe")
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green - Jr. Black")
 
 
 
@@ -1593,8 +1587,9 @@ def writeWeaponsDivision4ToExcel(filename, compositMask):
     mask2= mask_YellowBelt & compositMask
     mask3= mask_OrangeBelt & compositMask
     mask4= mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Weapons Division 4')
@@ -1615,11 +1610,12 @@ def writeWeaponsDivision4ToDetailReport(event_time, division_name, age, composit
     mask2 = mask_YellowBelt & compositMask
     mask3 = mask_OrangeBelt & compositMask
     mask4 = mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Purple")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 ###############################################################################
 # writeWeaponsDivision4ToKataScoreSheet
@@ -1633,11 +1629,12 @@ def writeWeaponsDivision4ToKataScoreSheet(event_time, division_name, age, compos
     mask2 = mask_YellowBelt & compositMask
     mask3 = mask_OrangeBelt & compositMask
     mask4 = mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Purple")
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 
 
@@ -1652,9 +1649,14 @@ def writeWeaponsDivision5ToExcel(filename, compositMask):
     print time.strftime("%X") +" Generating " + fullpath
     writer=pd.ExcelWriter(fullpath)
 
-    mask1 = mask_AllBlueBelt & compositMask
-    mask2= mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask3 = mask_OrangeBelt & compositMask
+    mask4 = mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
+
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Weapons Division 5')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 5')
@@ -1670,12 +1672,17 @@ def writeWeaponsDivision5ToDetailReport(event_time, division_name, age, composit
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
-    mask1 = mask_AllBlueBelt & compositMask
-    mask2= mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask3 = mask_OrangeBelt & compositMask
+    mask4 = mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
+
     wmk=newDataFrameFromMask( mask )
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Blue - Green w/Stripe")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 ###############################################################################
 # writeWeaponsDivision5ToKataScoreSheet
@@ -1685,12 +1692,17 @@ def writeWeaponsDivision5ToKataScoreSheet(event_time, division_name, age, compos
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
-    mask1 = mask_AllBlueBelt & compositMask
-    mask2= mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask3 = mask_OrangeBelt & compositMask
+    mask4 = mask_PurpleBelt & compositMask
+    mask5= mask_AllBlueBelt & compositMask
+
+    mask = mask1 | mask2 | mask3 | mask4 | mask5
+
     wmk=newDataFrameFromMask( mask )
 
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Blue - Green w/Stripe")
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 
 
@@ -1705,9 +1717,8 @@ def writeWeaponsDivision6ToFile( filename, compositMask ):
     writer=pd.ExcelWriter(fullpath)
     print time.strftime("%X") +" Generating " + fullpath
 
-    mask1= mask_AllBrownBelt & compositMask
-
-    mask2= mask_AllBlackBelt & compositMask
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 #    wmk.to_excel(writer,'Weapons Division 6')
@@ -1724,13 +1735,12 @@ def writeWeaponsDivision6ToDetailReport(event_time, division_name, age, composit
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
-    mask1= mask_AllBrownBelt & compositMask
-
-    mask2= mask_AllBlackBelt & compositMask
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Brown & Black")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green & Brown")
 
 
 ###############################################################################
@@ -1741,13 +1751,60 @@ def writeWeaponsDivision6ToKataScoreSheet(event_time, division_name, age, compos
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
-    mask1= mask_AllBrownBelt & compositMask
-
-    mask2= mask_AllBlackBelt & compositMask
+    mask1= mask_AllGreenBelt & compositMask
+    mask2= mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
 
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Brown & Black")
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Green & Brown")
+
+###############################################################################
+#  writeWeaponsDivision7ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def writeWeaponsDivision7ToFile( filename, compositMask ):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer=pd.ExcelWriter(fullpath)
+    print time.strftime("%X") +" Generating " + fullpath
+
+    mask1= mask_AllBlackBelt & compositMask
+    mask = mask1
+    wmk=newDataFrameFromMask( mask )
+    writeFormattedExcelSheet(wmk,writer,'Weapons Division 7')
+
+    writer.save()
+    time.sleep(1)
+
+###############################################################################
+# writeWeaponsDivision7ToDetailReport
+#
+def writeWeaponsDivision7ToDetailReport(event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+
+    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
+
+    mask1= mask_AllBlackBelt & compositMask
+    mask = mask1
+    wmk=newDataFrameFromMask( mask )
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Black")
+
+
+###############################################################################
+# writeWeaponsDivision7ToKataScoreSheet
+#
+def writeWeaponsDivision7ToKataScoreSheet(event_time, division_name, age, compositMask):
+    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+
+    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+
+    mask1= mask_AllBlackBelt & compositMask
+    mask = mask1
+    wmk=newDataFrameFromMask( mask )
+
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Black")
 
 
 def writeSparingTreeToExcel( filename, compositMask):
@@ -1902,6 +1959,13 @@ maskHighAge= clean_df["Competitor\'s Age?"] <= 9
 mask_Age7to9 = maskLowAge & maskHighAge
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age7to9]
 
+
+# 4-8 used for Weapons Division 1 - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 4
+maskHighAge= clean_df["Competitor\'s Age?"] <= 8
+mask_Age4to8 = maskLowAge & maskHighAge
+
+
 # 7-8 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
 maskLowAge= clean_df["Competitor\'s Age?"] >= 7
 maskHighAge= clean_df["Competitor\'s Age?"] <= 8
@@ -1916,6 +1980,12 @@ mask_Age9to11 = maskLowAge & maskHighAge
 maskLowAge= clean_df["Competitor\'s Age?"] >= 12
 maskHighAge= clean_df["Competitor\'s Age?"] <= 14
 mask_Age12to14 = maskLowAge & maskHighAge
+
+# 12-17 used in Weapons Division 4 - new added for Fall 2017
+maskLowAge= clean_df["Competitor\'s Age?"] >= 12
+maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+mask_Age12to17 = maskLowAge & maskHighAge
+
 
 # 15-17 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
 maskLowAge= clean_df["Competitor\'s Age?"] >= 15
@@ -1970,6 +2040,11 @@ mask_Age18Plus= clean_df["Competitor\'s Age?"] >= 18
 # 13 plus used in Weapons Division 6
 mask_Age13Plus= clean_df["Competitor\'s Age?"] >= 13
 #testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
+
+# 12 plus used in Weapons Division 6 and Weapons Division 7 - new added for Fall 2017
+mask_Age12Plus= clean_df["Competitor\'s Age?"] >= 12
+#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
+
 
 clean_df['hitcount']=0   #setup a new column for hit rate.
 
@@ -2078,18 +2153,27 @@ writePattern4ToDetailReport(5, "11:15am", "Women's Sparring", "18-39", compositM
 ###############################################################################
 # Weapons Division 1 - 4-9 year olds one sheet per rank
 #
-compositMask=mask_Weapons & mask_Age4to9
+compositMask=mask_Weapons & mask_Age4to8
 writeWeaponsDivision1ToExcel( "WeaponsDivision1.xlsx", compositMask )
-writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-9", compositMask)
-writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-9", compositMask)
+writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-8", compositMask)
+writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-8", compositMask)
 
 ###############################################################################
 # Weapons Division 2 - 10-12 year olds one sheet per rank
 #
-compositMask=mask_Weapons & mask_Age10to12
+compositMask=mask_Weapons & mask_Age9to11
 writeWeaponsDivision2ToExcel( "WeaponsDivision2.xlsx", compositMask )
-writeWeaponsDivision2ToDetailReport("11:15am", "Weapons Division 2", "10-12", compositMask)
-writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2", "10-12", compositMask)
+writeWeaponsDivision2ToDetailReport("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
+writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
+
+###############################################################################
+#  WeaponsDivision3 13-17 year olds one sheet per rank
+#
+compositMask=mask_Weapons & mask_Age9to11
+writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
+writeWeaponsDivision3ToDetailReport("4:15pm", "Weapons Division 2 Green - Jr. Black", "9-11", compositMask)
+writeWeaponsDivision3ToKataScoreSheet("4:15pm", "Weapons Division 2 Green - Jr. Black", "9-11", compositMask)
+
 
 ### 1:30 Events
 
@@ -2156,7 +2240,7 @@ writePattern4ToDetailReport(5, "3:00pm", "Teen Boys Sparring", "12-14", composit
 #
 compositMask=mask_Sparring & mask_Male & mask_Age15to17
 writePattern4ToExcel( "YoungAdultMensSparring.xlsx", compositMask )
-writePattern4ToDetailReport(9, "3:00pm", "YoungAdultMensSparring Sparring", "15-17", compositMask)
+writePattern4ToDetailReport(9, "3:00pm", "Young Adult Mens Sparring", "15-17", compositMask)
 
 ### 3:45 Events
 
@@ -2179,20 +2263,12 @@ writePattern7ToDetailReport(8, "3:45pm", "Young Adult Womens Sparring", "15-17",
 ### 4:15 Events
 
 ###############################################################################
-#  WeaponsDivision3 13-17 year olds one sheet per rank
+#  WeaponsDivision4 12-17 White-Blue Stripe year olds one sheet per rank
 #
-compositMask=mask_Weapons & mask_Age13to17
-writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
-writeWeaponsDivision3ToDetailReport("4:15pm", "Weapons Division 3", "13-17", compositMask)
-writeWeaponsDivision3ToKataScoreSheet("4:15pm", "Weapons Division 3", "13-17", compositMask)
-
-###############################################################################
-#  WeaponsDivision4 18+ year olds one sheet per rank
-#
-compositMask=mask_Weapons & mask_Age18Plus
+compositMask=mask_Weapons & mask_Age12to17
 writeWeaponsDivision4ToExcel("WeaponsDivision4.xlsx", compositMask)
-writeWeaponsDivision4ToDetailReport("4:15pm", "Weapons Division 4", "18+", compositMask)
-writeWeaponsDivision4ToKataScoreSheet("4:15pm", "Weapons Division 4", "18+", compositMask)
+writeWeaponsDivision4ToDetailReport("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
+writeWeaponsDivision4ToKataScoreSheet("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
 
 
 ###############################################################################
@@ -2204,12 +2280,20 @@ writeWeaponsDivision5ToDetailReport("4:15pm", "Weapons Division 5", "18+", compo
 writeWeaponsDivision5ToKataScoreSheet("4:15pm", "Weapons Division 5", "18+", compositMask)
 
 ###############################################################################
-#  WeaponsDivision6 13+ year olds one sheet per rank
+#  WeaponsDivision6 12+ year olds one sheet per rank
 #
-compositMask=mask_Weapons & mask_Age13Plus
+compositMask=mask_Weapons & mask_Age12Plus
 writeWeaponsDivision6ToFile( "WeaponsDivision6.xlsx", compositMask )
-writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "13+", compositMask)
-writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "13+", compositMask)
+writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "12+", compositMask)
+writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "12+", compositMask)
+
+###############################################################################
+#  WeaponsDivision7 12+ year olds one sheet per rank
+#
+compositMask=mask_Weapons & mask_Age12Plus
+writeWeaponsDivision7ToFile( "WeaponsDivision7.xlsx", compositMask )
+writeWeaponsDivision7ToDetailReport("4:15pm", "Weapons Division 7", "12+", compositMask)
+writeWeaponsDivision7ToKataScoreSheet("4:15pm", "Weapons Division 7", "12+", compositMask)
 
 print time.strftime("%X") + " Saving PDFs to disk"
 divison_detail_report_pdf.write_pdfpage()

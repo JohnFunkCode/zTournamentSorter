@@ -21,9 +21,47 @@ class RenameColumns:
     def dump_raw_df(self):
         print(self.raw_df)
 
-    def print_index(self):
-        self.l = list(self.raw_df.index)
-        print self.l
+    def print_column_names(self):
+        headers = list(self.raw_df.columns)
+        for header in headers:
+            print header
+
+    def is_YourSudio_a_column_name(self):
+        import re
+        searchstring=".*State.*Studio.*"
+
+        compiled_regx=re.compile(searchstring)
+
+        headers = list(self.raw_df.columns)
+
+        #m=[x for x in headers if compiled_regx.match(x)]
+
+        newlist = filter(compiled_regx.match,headers)
+        print newlist[0]
+        print len(newlist)
+
+    def get_column_name_containing(self,reg_ex_seach_string):
+        import re
+        compiled_regx=re.compile(reg_ex_seach_string)
+
+        headers = list(self.raw_df.columns)
+        newlist = filter(compiled_regx.match,headers)
+        if(len(newlist)==1):
+            return newlist[0]
+        else:
+            return None
+
+    def replace_column_name_containing(self,reg_ex_seach_string, new_column_name):
+        old_column_name=r.get_column_name_containing(reg_ex_seach_string)
+        if(old_column_name != None):
+            print "Replacing "+old_column_name+" with "+ new_column_name
+            self.raw_df.rename( columns={old_column_name:new_column_name} )
+        else:
+            print "Column not found"
+
+    def test(self,string1,string2):
+        print string1
+        print string2
 
 if __name__ == '__main__':
     #get the filename from the environment var named  tourname_filename
@@ -41,4 +79,18 @@ if __name__ == '__main__':
 
     r=RenameColumns(filename)
     #r.dump_raw_df()
-    r.print_index()
+    r.print_column_names()
+    #r.is_YourSudio_a_column_name()
+    print r.get_column_name_containing(".*Competitor.*Age.*")
+    print "-----"
+    r.replace_column_name_containing(".*Competitor.*Age.*","Age")
+    r.print_column_names()
+
+
+
+# newdf.rename(
+#     columns={'Select Your Z Ultimate Studio': 'Dojo', 'Competitor\'s Age?': 'Age', 'Current Belt Rank?': 'Rank',
+#              'Competitor\'s Height (e.g. 4 ft. 2 in. )?': 'Height',
+#              'Competitor\'s Weight (eg. 73lbs.)?': 'Weight', 'Choose Forms, Sparring or Both.': 'Events',
+#              'Choose Weapons.': 'Weapons'}, inplace=True)
+

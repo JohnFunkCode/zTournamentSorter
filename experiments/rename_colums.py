@@ -6,9 +6,12 @@ Created on Sun Sept 10 13:11:00 2017
 @author: John Funk
 """
 
-import pandas as pd
-import numpy as np
 import os
+import sys
+import pandas as pd
+import time
+from Tkinter import Tk
+from tkFileDialog import askopenfilename
 
 class RenameColumns:
     def __new__(cls):
@@ -51,11 +54,12 @@ class RenameColumns:
         else:
             return None
 
-    def replace_column_name_containing(self,reg_ex_seach_string, new_column_name):
+    def replace_column_name_containing(self,reg_ex_seach_string, new_column_name,verbose=False):
         old_column_name=r.get_column_name_containing(reg_ex_seach_string)
         if(old_column_name != None):
-            print "Replacing "+old_column_name+" with "+ new_column_name
-            self.raw_df.rename( columns={old_column_name:new_column_name} )
+            if(verbose):
+                print "Replacing "+old_column_name+" with "+ new_column_name
+            self.raw_df.rename( columns={old_column_name:new_column_name},inplace=True)
         else:
             print "Column not found"
 
@@ -68,6 +72,8 @@ if __name__ == '__main__':
     filename=os.getenv("tournament_filename")
 
     if filename is None :
+        from Tkinter import Tk
+
         #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         root = Tk()
         root.withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -80,10 +86,25 @@ if __name__ == '__main__':
     r=RenameColumns(filename)
     #r.dump_raw_df()
     r.print_column_names()
+    print "-----"
     #r.is_YourSudio_a_column_name()
+    print "r.get_column_name_containing('.*Competitor.*Age.*')"
     print r.get_column_name_containing(".*Competitor.*Age.*")
     print "-----"
+
     r.replace_column_name_containing(".*Competitor.*Age.*","Age")
+    r.replace_column_name_containing('.*Select.*Your.*Studio.*','Dojo')
+    r.replace_column_name_containing(".*Competitor.*Weight.*","Weight")
+    r.replace_column_name_containing(".*Competitor.*Height.*","Height")
+    r.replace_column_name_containing(".*Rank.*","Rank")
+    r.replace_column_name_containing(".*Division.*Based.*Age.*","Division")
+    r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
+    r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
+    r.replace_column_name_containing(".*Weapons.*", "Weapons")
+    r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator Tickets")
+
+
+    print "-----"
     r.print_column_names()
 
 

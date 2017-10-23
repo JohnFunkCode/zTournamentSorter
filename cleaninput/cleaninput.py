@@ -18,15 +18,23 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
     cleanDataFrame = inputDataFrame[np.isfinite(inputDataFrame['Registrant ID'])]
 
     #next check for non-numeric data in the age field
-    print "  " + time.strftime("%X") + " Checking for non-numeric data in numeric fields"
+    print "  " + time.strftime("%X") + " Checking the age field"
     for index, row in cleanDataFrame.iterrows():
         try:
-            int(row['Competitor\'s Age?'])
+            age=int(row['Competitor\'s Age?'])
+            if (age < 4):
+                errorCount += 1
+                errorString = "Error: The row: " + str(row["Registrant ID"]) + " " + str(row["First Name"]) + " " + str(
+                    row["Last Name"]) + " has an age field of "+str(age)+" which is less than the age in our youngest division"
+                errorLogFile.write(errorString + "\r\f")
+                print errorString
+
         except ValueError:
             errorCount+=1
             errorString="Error: The row: "+str(row["Registrant ID"])+" "+str(row["First Name"])+" "+str(row["Last Name"])+ " has something other than a number in Age field"
             errorLogFile.write(errorString+"\r\f")
             print errorString
+
 
     #Test Rank - looking for 'Please Select'
     print "  " + time.strftime("%X") + " Looking for invalid Rank data"
@@ -151,6 +159,33 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
             bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Competitor\'s Weight (e.g. 73lbs.)?'])
             cleanDataFrame.at[index,'BMI']=bodyMassIndex
             #print splitString, "|", feet, "|", inches
+
+# Rank - this is the field that has caused us the most problem in the 2017 tournaments
+    print "  " + time.strftime("%X") + " Looking for invalid Ranks"
+    valid_ranks=['Black Belt 1st Degree','Black Belt 2nd Degree','Black Belt 3rd Degree',
+                 'Black Belt 4th Degree','Black Belt 5th Degree',
+                 'Black Belt Junior',
+                 'Brown 3rd Degree','Brown 2nd Degree','Brown 1st Degree',
+                 'Green','Green w/Stripe',
+                 'Blue', 'Blue w/Stripe',
+                 'Purple',
+                 'Orange',
+                 'Yellow',
+                 'White']
+    for index, row in cleanDataFrame.iterrows():
+        rank = row["Current Belt Rank?"]
+        if pd.isnull(rank):
+            errorCount += 1
+            errorString = "Error: The row: " + str(row["Registrant ID"]) + " " + str(row["First Name"]) + " " + str(
+                row["Last Name"]) + " has an empty Current Belt Rank field"
+            errorLogFile.write(errorString + "\r\f")
+            print errorString
+        if rank not in valid_ranks:
+            errorCount += 1
+            errorString = "Error: The row: " + str(row["Registrant ID"]) + " " + str(row["First Name"]) + " " + str(
+                row["Last Name"]) + " has an invalid  Belt Rank field: "+rank
+            errorLogFile.write(errorString + "\r\f")
+            print errorString
 
     #Look for out of state dojos and move them into the 'Select Your Z Ultimate Studio' column
     print "  " + time.strftime("%X") + " Looking for out of state dojos"

@@ -15,11 +15,12 @@ class TestLoadTournamentTable(unittest.TestCase):
 
     def setUp(self):
         # filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
-        os.putenv("tournament_filename","/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv")
+#        os.putenv("tournament_filename","/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv")
+        os.putenv("tournament_filename","/users/johnfunk/CloudStation/TournamentProject/CleanerTournamentParticipantsNOTTHEFINALLIST-10-15-17.csv")
         return
 
     def test_Age7to8_mask_returns_only_7_and_8_year_olds(self):
-        testdf=LoadTournamentTable.clean_df[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (eg. 73lbs.)?','Competitor\'s Height (e.g. 4 ft. 2 in. )?','Choose Forms, Sparring or Both.','Choose Weapons.']][LoadTournamentTable.mask_Age7to8]
+        testdf=LoadTournamentTable.clean_df[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (e.g. 73lbs.)?','Competitor\'s Height (e.g. 4 ft. 2 in. )?','Choose Forms, Sparring or Both.','Choose Weapons.']][LoadTournamentTable.mask_Age7to8]
         for index, row in testdf.iterrows():
             #name = row['First Name'] + " " + row['Last Name']
             age = row['Competitor\'s Age?']
@@ -28,7 +29,7 @@ class TestLoadTournamentTable(unittest.TestCase):
     def test_Age9to11_mask_returns_only_9_to_11_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
             ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
              'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age9to11]
         for index, row in testdf.iterrows():
             # name = row['First Name'] + " " + row['Last Name']
@@ -38,7 +39,7 @@ class TestLoadTournamentTable(unittest.TestCase):
     def test_Age12to14_mask_returns_only_12_to_14_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
             ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
              'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age12to14]
         for index, row in testdf.iterrows():
             # name = row['First Name'] + " " + row['Last Name']
@@ -48,7 +49,7 @@ class TestLoadTournamentTable(unittest.TestCase):
     def test_Age15to17_mask_returns_only_15_to_17_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
             ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (eg. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
+             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
              'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age15to17]
         for index, row in testdf.iterrows():
             # name = row['First Name'] + " " + row['Last Name']

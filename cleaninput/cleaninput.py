@@ -172,6 +172,11 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                  'Orange',
                  'Yellow',
                  'White']
+    print "Valid Ranks at this time are:"
+    for index in valid_ranks[:]:
+        print " " + index
+
+
     for index, row in cleanDataFrame.iterrows():
         rank = row["Current Belt Rank?"]
         if pd.isnull(rank):

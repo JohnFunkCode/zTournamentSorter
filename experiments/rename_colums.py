@@ -3,6 +3,8 @@
 """
 Created on Sun Sept 10 13:11:00 2017
 
+Experiment to rename columns in a dataframe
+
 @author: John Funk
 """
 

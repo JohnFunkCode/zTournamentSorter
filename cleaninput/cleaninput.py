@@ -7,6 +7,26 @@ import pandas as pd
 #from LoadTournamentTable import df
 
 ###############################################################################
+# clean_unicode_from_file
+#  This function removes unicode characters from the input file and writes a warning to the error file
+def clean_unicode_from_file(inputFileName, errorLogFile):
+    import io
+    with io.open(inputFileName, 'r+b') as f:
+        while True:
+            b = f.read(1)
+            if not b:
+                break
+            if (b > b'\x7f'):
+                errorString="Warning:  Replaced garbage character {} with # character".format(ord(b))
+                print(errorString)
+                errorLogFile.write(errorString + "\r\f")
+                b = b'\x23'
+                f.seek(-1, 1)
+                f.write(b)
+
+
+
+###############################################################################
 # clean_all_input_errors
 #  This function scans indiviual rows looking for input errors
 def clean_all_input_errors(inputDataFrame, errorLogFile):

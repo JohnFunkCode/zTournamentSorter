@@ -1848,12 +1848,12 @@ else:
 
 print time.strftime("%X") + " Reading the data...."
 
+errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
+errorLogFile = open(errorLogFileName, "w")
+
+cleaninput.clean_unicode_from_file(filename, errorLogFile)
 
 raw_df=pd.read_csv(filename)
-#cdf = df[np.isfinite(df['Registrant ID'])]
-
-errorLogFileName=filename[0:len(filename)-4]+"-Error.txt"
-errorLogFile= open(errorLogFileName, "w")
 
 clean_df = cleaninput.clean_all_input_errors(raw_df, errorLogFile)
 del raw_df  # make sure we don't use the raw_df again

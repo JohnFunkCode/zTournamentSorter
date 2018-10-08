@@ -74,13 +74,6 @@ from reporting import DivisionDetailReportPDF as DivisionDetailReportPDF
 from reporting import KataScoreSheetPDF as kata_score_sheet_pdf
 
 
-#import sys
-#matplotlib inline
-
-
-
-
-
 ###############################################################################
 # pathDelimiter()
 #  arguments:  none
@@ -101,19 +94,12 @@ def pathDelimiter():
 #  return:   new data frame
 #
 def newDataFrameFromMask( mask ):
-#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons.","Parent or Guardian Name (if competitor is under 18)?","Phone","Mobile Phone"]][mask].sort("Competitor\'s Age?")
-#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort("Competitor\'s Age?")
-#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Competitor\'s Weight (in lbs.)?", "Competitor\'s Height (in feet and inches)?", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
-#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","HeightInInches","Competitor\'s Weight (in lbs.)?","BodyMassIndex", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
-#    newdf = cdf[["First Name", "Last Name", "Gender","Select Your Z Ultimate Studio","Out of State Studio Name", "Competitor\'s Age?", "Current Belt Rank?", "Feet","Inches","Competitor\'s Height (e.g. 4 ft. 2 in. )?","Competitor\'s Weight (e.g. 73lbs.)?","BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
-    newdf = clean_df[["First Name", "Last Name", "Gender", "Select Your Z Ultimate Studio", "Competitor\'s Age?", "Current Belt Rank?", "Feet", "Inches", "Competitor\'s Height (e.g. 4 ft. 2 in. )?", "Competitor\'s Weight (e.g. 73lbs.)?", "BMI", "Choose Forms, Sparring or Both.", "Choose Weapons."]][mask].sort_values("Competitor\'s Age?")
+    newdf = clean_df[["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI", "Events", "Weapons"]][mask].sort_values("Age")
     newdf.sort_values('BMI',inplace=True)
-#    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Out of State Studio Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (e.g. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
-    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (e.g. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
 
     ## update the hitcount every time we touch someone
     for index, row in clean_df[mask].iterrows():
-         name=row['First Name'] + " " + row['Last Name']
+         name=row['First_Name'] + " " + row['Last_Name']
          hc=row['hitcount']
          newhc=hc+1
      #    print name + " has a row count of " + str(newhc)
@@ -154,21 +140,6 @@ def writeFormattedExcelSheet( df, writer, sheetname ):
     #set the format of a few columns
     worksheet.set_column('A:O',0,full_border)  #column A:O is everything
 
-#    worksheet.set_column('A:A',5,align_left)  #column A is the index
-#    worksheet.set_column('B:B',15)  #column B is First Name
-#    worksheet.set_column('C:C',20)  #column C is Last Name
-#    worksheet.set_column('D:D',7)  #column D is Gender
-#    worksheet.set_column('E:E',20)  #column E is Dojo
-#    worksheet.set_column('F:F',20)  #column F is Out of State Dojo
-#    worksheet.set_column('G:G',3,align_center)  #column G is age
-#    worksheet.set_column('H:H',15)  #column H is rank
-#    worksheet.set_column('I:I',4,align_center)  #column I is feet
-#    worksheet.set_column('J:J',5,align_center)  #column J is Inches
-#    worksheet.set_column('L:L',6,align_center)  #column L is Weight
-#    worksheet.set_column('M:M',4,align_center)  #column I is BMI
-#    worksheet.set_column('N:N',25)  #column I is Events
-#    worksheet.set_column('O:O',12)  #column I is Weapons
-
     worksheet.set_column('A:A',5,align_left)  #column A is the index
     worksheet.set_column('B:B',15)  #column B is First Name
     worksheet.set_column('C:C',20)  #column C is Last Name
@@ -199,43 +170,35 @@ def writeEventToFile( filename, compositMask ):
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White')
     writeFormattedExcelSheet(wmk,writer,'White')
 
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#   wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask= mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
 
     mask= mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Blue')
     writeFormattedExcelSheet(wmk,writer,'Blue')
 
     mask= mask_AllGreenBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green')
     writeFormattedExcelSheet(wmk,writer,'Green')
 
     mask= mask_AllBrownBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#   wmk.to_excel(writer,'Brown')
     writeFormattedExcelSheet(wmk,writer,'Brown')
 
     mask= mask_AllBlackBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
     writeFormattedExcelSheet(wmk,writer,'Black')
 
 
@@ -266,36 +229,30 @@ def writePattern1ToExcel( filename, compositMask ):
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
     writeFormattedExcelSheet(wmk,writer,'White')
-#    wmk.to_excel(writer,'White')
 
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-  #  wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask1 = mask_PurpleBelt & compositMask
     mask2 = mask_AllBlueBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
- #   wmk.to_excel(writer,'Purple, Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
 
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 #
 #    mask= mask_AllBlackBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
 
     writer.save()
     time.sleep(1)
@@ -412,31 +369,26 @@ def writePattern2ToExcel( filename, compositMask ):
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White')
     writeFormattedExcelSheet(wmk,writer,'White')
 
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask1 = mask_PurpleBelt & compositMask
     mask2 = mask_AllBlueBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple, Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
 
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 
 #
@@ -560,34 +512,28 @@ def writePattern3ToExcel( filename, compositMask ):
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White')
     writeFormattedExcelSheet(wmk,writer,'White')
 
     mask= mask_YellowBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Yellow')
     writeFormattedExcelSheet(wmk,writer,'Yellow')
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask = mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
 
     mask = mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Blue, Blue Stripe')
 
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 
     writer.save()
@@ -703,38 +649,31 @@ def writePattern4ToExcel( filename, compositMask ):
     mask3= mask_OrangeBelt & compositMask
     mask = mask1 | mask2 | mask3
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White, Yellow, Orange')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow, Orange')
 
 #    mask= mask_OrangeBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Orange')
 
 #    mask= mask_PurpleBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple')
 
     mask1= mask_PurpleBelt & compositMask
     mask2= mask_AllBlueBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple, Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue, Blue Stripe')
 
     mask1= mask_AllBrownBelt & compositMask
     mask2= mask_AllGreenBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 
 #    mask= mask_AllBrownBelt & compositMask
 #    wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'All Brown')
 
     mask= mask_AllBlackBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
     writeFormattedExcelSheet(wmk,writer,'Black')
 
     writer.save()
@@ -855,29 +794,24 @@ def writePattern5ToExcel( filename, compositMask ):
     mask2= mask_YellowBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White, Yellow')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow')
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask= mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
 
     mask = mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Blue, Blue Stripe')
 
     mask1 = mask_AllGreenBelt & compositMask
     mask2 = mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 
     writer.save()
@@ -987,37 +921,30 @@ def writePattern6ToExcel( filename, compositMask ):
     mask2= mask_YellowBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White, Yellow')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow')
 
     mask= mask_OrangeBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Orange')
     writeFormattedExcelSheet(wmk,writer,'Orange')
 
     mask= mask_PurpleBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple')
     writeFormattedExcelSheet(wmk,writer,'Purple')
 
     mask = mask_AllBlueBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Blue, Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Blue, Blue Stripe')
 
     mask = mask_AllGreenBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe')
 
     mask = mask_AllBrownBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Brown')
     writeFormattedExcelSheet(wmk,writer,'Brown')
 
     mask= mask_AllBlackBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
     writeFormattedExcelSheet(wmk,writer,'Black')
 
     writer.save()
@@ -1154,11 +1081,11 @@ def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_nam
     wmk = newDataFrameFromMask(mask)
     #filter to only keep the ones that start with a-l A-L
     pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last Name'].str.contains(pattern)]
+    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
 
     #filter to only keep the ones that start with m-z M-Z
     pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last Name'].str.contains(pattern)]
+    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
 
     divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)","*** PLEASE NOTE - These are contestants A - L")
     divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)","*** PLEASE NOTE - These are contestants M - Z")
@@ -1211,11 +1138,11 @@ def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, div
     wmk = newDataFrameFromMask(mask)
     #filter to only keep the ones that start with a-l A-L
     pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last Name'].str.contains(pattern)]
+    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
 
     #filter to only keep the ones that start with m-z M-Z
     pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last Name'].str.contains(pattern)]
+    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
 
     kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age, "Blue, Blue Stripe (A-L)", "*** PLEASE NOTE - These are contestants A - L")
     kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age, "Blue, Blue Stripe (M-Z)", "*** PLEASE NOTE - These are contestants M - Z")
@@ -1258,26 +1185,22 @@ def writePattern7ToExcel( filename, compositMask ):
     mask3= mask_OrangeBelt & compositMask
     mask = mask1 | mask2 | mask3
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'White, Yellow & Orange')
     writeFormattedExcelSheet(wmk,writer,'White, Yellow & Orange')
 
     mask1= mask_PurpleBelt & compositMask
     mask2= mask_AllBlueBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Purple, Blue & Blue Stripe')
     writeFormattedExcelSheet(wmk,writer,'Purple, Blue & Blue Stripe')
 
     mask1= mask_AllGreenBelt & compositMask
     mask2= mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Green, Green Stripe, Brown')
     writeFormattedExcelSheet(wmk,writer,'Green, Green Stripe, Brown')
 
     mask= mask_AllBlackBelt & compositMask
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Black')
     writeFormattedExcelSheet(wmk,writer,'Black')
 
     writer.save()
@@ -1384,7 +1307,6 @@ def writeWeaponsDivision1ToExcel( filename, compositMask ):
     mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
 
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Weapons Division 1')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 1')
 
     writer.save()
@@ -1530,7 +1452,6 @@ def writeWeaponsDivision3ToExcel(filename, compositMask):
     mask = mask1 | mask2 | mask3
 
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Weapons Division 3')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 3')
 
     writer.save()
@@ -1592,7 +1513,6 @@ def writeWeaponsDivision4ToExcel(filename, compositMask):
     mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Weapons Division 4')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 4')
 
     writer.save()
@@ -1658,7 +1578,6 @@ def writeWeaponsDivision5ToExcel(filename, compositMask):
     mask = mask1 | mask2 | mask3 | mask4 | mask5
 
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Weapons Division 5')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 5')
 
     writer.save()
@@ -1721,7 +1640,6 @@ def writeWeaponsDivision6ToFile( filename, compositMask ):
     mask2= mask_AllBrownBelt & compositMask
     mask = mask1 | mask2
     wmk=newDataFrameFromMask( mask )
-#    wmk.to_excel(writer,'Weapons Division 6')
     writeFormattedExcelSheet(wmk,writer,'Weapons Division 6')
 
     writer.save()
@@ -1814,7 +1732,6 @@ def writeSparingTreeToExcel( filename, compositMask):
 
     wmk=newDataFrameFromMask( compositMask )
 
-    byDojo = wmk.groupby('Select Your Z Ultimate Studio')
     byDojo = wmk.groupby('Dojo')
 
     print byDojo.size()
@@ -1855,41 +1772,16 @@ cleaninput.clean_unicode_from_file(filename, errorLogFile)
 
 raw_df=pd.read_csv(filename)
 
-clean_df = cleaninput.clean_all_input_errors(raw_df, errorLogFile)
+from cleaninput import rename_colums as RN
+
+# rename all the columns in the dataframe to usable names
+r = RN.RenameColumns(filename)
+r.rename_all_columns()
+renamed_df = r.get_dataframe_copy()
+
+clean_df = cleaninput.clean_all_input_errors(renamed_df, errorLogFile)
 del raw_df  # make sure we don't use the raw_df again
 
-
-###############################################################################
-# test to see if the Age column is all numeric
-#testdf = cdf.copy();
-#try:
-#  testdf[['Competitor\'s Age?']]=testdf[['Competitor\'s Age?']].astype(int)
-#except ValueError:
-#   print "The Age Column has non numeric data in it"
-#   sys.exit("Exiting - The Age Column has non numeric data in it")
-#print testdf.dtypes
-
-################################################################################
-##  Test Rank - looking for "Please Select"
-#mask_NoBelt=(cdf['Current Belt Rank?']=='Please Select')
-#df_NoBelt=cdf[['First Name','Last Name','Select Your Z Ultimate Studio','Email','Phone','Mobile Phone']][mask_NoBelt]
-#errorCount = df_NoBelt.shape[0]
-#if errorCount > 0:
-#  print "The Following People did not select a valid rank:"
-#  print df_NoBelt.values
-#  sys.exit("Exiting - Not Everyone has a valid belt selected")
-
-
-
-################################################################################
-##  Test Event - looking for "Please Select"
-#mask_NoEvent=cdf['Choose Forms, Sparring or Both.']=='Please Select'
-#df_NoEvent=cdf[['First Name','Last Name','Select Your Z Ultimate Studio','Email','Phone','Mobile Phone']][mask_NoEvent]
-#errorCount = df_NoEvent.shape[0]
-#if errorCount > 0:
-#  print "The Following People did not select a valid event:"
-#  print df_NoEvent.values
-#  sys.exit("Exiting - Not Everyone has a valid event")
 
 
 
@@ -1902,29 +1794,29 @@ del raw_df  # make sure we don't use the raw_df again
 #  Define all the atomic masks
 
 # Atomic masks for Belts
-mask_WhiteBelt= clean_df['Current Belt Rank?'] == 'White'
-mask_YellowBelt= clean_df['Current Belt Rank?'] == 'Yellow'
-mask_OrangeBelt= clean_df['Current Belt Rank?'] == 'Orange'
-mask_PurpleBelt= clean_df['Current Belt Rank?'] == 'Purple'
-mask_BlueBelt= clean_df['Current Belt Rank?'] == 'Blue'
-mask_BlueStripeBelt= clean_df['Current Belt Rank?'] == 'Blue w/Stripe'
+mask_WhiteBelt= clean_df['Rank'] == 'White'
+mask_YellowBelt= clean_df['Rank'] == 'Yellow'
+mask_OrangeBelt= clean_df['Rank'] == 'Orange'
+mask_PurpleBelt= clean_df['Rank'] == 'Purple'
+mask_BlueBelt= clean_df['Rank'] == 'Blue'
+mask_BlueStripeBelt= clean_df['Rank'] == 'Blue w/Stripe'
 mask_AllBlueBelt = mask_BlueBelt | mask_BlueStripeBelt #all blue and blue stripe
 #testBluedf=newDataFrameFromMask( mask_AllBlueBelt )
-mask_GreenBelt= clean_df['Current Belt Rank?'] == 'Green'
-mask_GreenStripeBelt= clean_df['Current Belt Rank?'] == 'Green w/Stripe'
+mask_GreenBelt= clean_df['Rank'] == 'Green'
+mask_GreenStripeBelt= clean_df['Rank'] == 'Green w/Stripe'
 mask_AllGreenBelt = mask_GreenBelt | mask_GreenStripeBelt #all Green and Green stripe
 #testGreendf=newDataFrameFromMask( mask_AllGreenBelt )
-mask_3rdBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 3rd Degree'
-mask_2ndBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 2nd Degree'
-mask_1stBrownBelt= clean_df['Current Belt Rank?'] == 'Brown 1st Degree'
+mask_3rdBrownBelt= clean_df['Rank'] == 'Brown 3rd Degree'
+mask_2ndBrownBelt= clean_df['Rank'] == 'Brown 2nd Degree'
+mask_1stBrownBelt= clean_df['Rank'] == 'Brown 1st Degree'
 mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt #all 1st 2nd and 3rd Brown
 #testBrowndf=newDataFrameFromMask( mask_AllBrownBelt )
-mask_1stBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt 1st Degree'
-mask_2ndBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt 2nd Degree'
-mask_3rdBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt 3rd Degree'
-mask_4thBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt 4th Degree'
-mask_5thBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt 5th Degree'
-mask_JrBlackBelt= clean_df['Current Belt Rank?'] == 'Black Belt Junior'
+mask_1stBlackBelt= clean_df['Rank'] == 'Black Belt 1st Degree'
+mask_2ndBlackBelt= clean_df['Rank'] == 'Black Belt 2nd Degree'
+mask_3rdBlackBelt= clean_df['Rank'] == 'Black Belt 3rd Degree'
+mask_4thBlackBelt= clean_df['Rank'] == 'Black Belt 4th Degree'
+mask_5thBlackBelt= clean_df['Rank'] == 'Black Belt 5th Degree'
+mask_JrBlackBelt= clean_df['Rank'] == 'Black Belt Junior'
 mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt #all Jr, 1st, 2nd, and 3rd degree black
 #testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
 
@@ -1933,117 +1825,117 @@ mask_Male= clean_df['Gender'] == 'Male'
 mask_Female= clean_df['Gender'] == 'Female'
 
 # Atomic and composit mask for which event Sparring, Kata, Weapons
-mask_SparringAndForms= clean_df['Choose Forms, Sparring or Both.'] == '2 Events - Forms & Sparring ($75)'
-mask_FormsOnly= clean_df['Choose Forms, Sparring or Both.'] == '1 Event - Forms ($75)'
-mask_SparringOnly= clean_df['Choose Forms, Sparring or Both.'] == '1 Event - Sparring ($75)'
+mask_SparringAndForms= clean_df['Events'] == '2 Events - Forms & Sparring ($75)'
+mask_FormsOnly= clean_df['Events'] == '1 Event - Forms ($75)'
+mask_SparringOnly= clean_df['Events'] == '1 Event - Sparring ($75)'
 # Mask for Weapons
-mask_Weapons= clean_df['Choose Weapons.'] == 'Weapons ($35)'
-testdf=clean_df[['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?', 'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?', 'Choose Forms, Sparring or Both.', 'Choose Weapons.']][mask_Weapons]
+mask_Weapons= clean_df['Weapons'] == 'Weapons ($35)'
+testdf=clean_df[['First_Name', 'Last_Name', 'Gender', 'Rank', 'Age', 'Weight', 'Height', 'Events', 'Weapons']][mask_Weapons]
 
 
 # Composit Masks for Sparring or Forms
 mask_Sparring= mask_SparringAndForms | mask_SparringOnly
 mask_Forms= mask_SparringAndForms | mask_FormsOnly
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Forms]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Forms]
 
 # Atomic mask for age groups found in the tournament guide
 # 4-6 used for kids kata, kids sparring,
-maskLowAge= clean_df["Competitor\'s Age?"] >= 4
-maskHighAge= clean_df["Competitor\'s Age?"] <= 6
+maskLowAge= clean_df["Age"] >= 4
+maskHighAge= clean_df["Age"] <= 6
 mask_Age4to6 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age4to6]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to6]
 
 # 7-9 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring
-maskLowAge= clean_df["Competitor\'s Age?"] >= 7
-maskHighAge= clean_df["Competitor\'s Age?"] <= 9
+maskLowAge= clean_df["Age"] >= 7
+maskHighAge= clean_df["Age"] <= 9
 mask_Age7to9 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age7to9]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age7to9]
 
 
 # 4-8 used for Weapons Division 1 - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 4
-maskHighAge= clean_df["Competitor\'s Age?"] <= 8
+maskLowAge= clean_df["Age"] >= 4
+maskHighAge= clean_df["Age"] <= 8
 mask_Age4to8 = maskLowAge & maskHighAge
 
 
 # 7-8 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 7
-maskHighAge= clean_df["Competitor\'s Age?"] <= 8
+maskLowAge= clean_df["Age"] >= 7
+maskHighAge= clean_df["Age"] <= 8
 mask_Age7to8 = maskLowAge & maskHighAge
 
 # 9-11 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 9
-maskHighAge= clean_df["Competitor\'s Age?"] <= 11
+maskLowAge= clean_df["Age"] >= 9
+maskHighAge= clean_df["Age"] <= 11
 mask_Age9to11 = maskLowAge & maskHighAge
 
 # 12-14 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 12
-maskHighAge= clean_df["Competitor\'s Age?"] <= 14
+maskLowAge= clean_df["Age"] >= 12
+maskHighAge= clean_df["Age"] <= 14
 mask_Age12to14 = maskLowAge & maskHighAge
 
 # 12-17 used in Weapons Division 4 - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 12
-maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+maskLowAge= clean_df["Age"] >= 12
+maskHighAge= clean_df["Age"] <= 17
 mask_Age12to17 = maskLowAge & maskHighAge
 
 
 # 15-17 used in Youth Kata, Young Girls Sparring, Youth Boys Sparring - new added for Fall 2017
-maskLowAge= clean_df["Competitor\'s Age?"] >= 15
-maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+maskLowAge= clean_df["Age"] >= 15
+maskHighAge= clean_df["Age"] <= 17
 mask_Age15to17 = maskLowAge & maskHighAge
 
 
 # 10-12 used in Boys Sparring, Boys & Girls Kata, Girls Sparring
-maskLowAge= clean_df["Competitor\'s Age?"] >= 10
-maskHighAge= clean_df["Competitor\'s Age?"] <= 12
+maskLowAge= clean_df["Age"] >= 10
+maskHighAge= clean_df["Age"] <= 12
 mask_Age10to12 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age10to12]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age10to12]
 
 # 13-15 used in Teen Girls Sparring, Teen Kata, Teen Boys Sparring,
-maskLowAge= clean_df["Competitor\'s Age?"] >= 13
-maskHighAge= clean_df["Competitor\'s Age?"] <= 15
+maskLowAge= clean_df["Age"] >= 13
+maskHighAge= clean_df["Age"] <= 15
 mask_Age13to15 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13to15]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to15]
 
 # 4-9 used in Weapons Division 1
-maskLowAge= clean_df["Competitor\'s Age?"] >= 4
-maskHighAge= clean_df["Competitor\'s Age?"] <= 9
+maskLowAge= clean_df["Age"] >= 4
+maskHighAge= clean_df["Age"] <= 9
 mask_Age4to9 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age4to9]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to9]
 
 # 18-39 used in Womans Sprring, Men and Womens Kata
-maskLowAge= clean_df["Competitor\'s Age?"] >= 18
-maskHighAge= clean_df["Competitor\'s Age?"] <= 39
+maskLowAge= clean_df["Age"] >= 18
+maskHighAge= clean_df["Age"] <= 39
 mask_Age18to39 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age18to39]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18to39]
 
 # 40 plus used in Senior Mens Sparring, Senior Womens Sparring, Senior Kata
-mask_Age40Plus= clean_df["Competitor\'s Age?"] >= 40
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age40Plus]
+mask_Age40Plus= clean_df["Age"] >= 40
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age40Plus]
 
 # 16-17 used in Young Adult Kata, Young Mens Sparring, Young Adult Womens Sparring
-maskLowAge= clean_df["Competitor\'s Age?"] >= 16
-maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+maskLowAge= clean_df["Age"] >= 16
+maskHighAge= clean_df["Age"] <= 17
 mask_Age16to17 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age16to17]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age16to17]
 
 # 13-17 used in Weapons Division 3
-maskLowAge= clean_df["Competitor\'s Age?"] >= 13
-maskHighAge= clean_df["Competitor\'s Age?"] <= 17
+maskLowAge= clean_df["Age"] >= 13
+maskHighAge= clean_df["Age"] <= 17
 mask_Age13to17 = maskLowAge & maskHighAge
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13to17]
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to17]
 
 # 18 plus used in Weapons Division 4 and 5
-mask_Age18Plus= clean_df["Competitor\'s Age?"] >= 18
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age18Plus]
+mask_Age18Plus= clean_df["Age"] >= 18
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18Plus]
 
 # 13 plus used in Weapons Division 6
-mask_Age13Plus= clean_df["Competitor\'s Age?"] >= 13
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
+mask_Age13Plus= clean_df["Age"] >= 13
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
 
 # 12 plus used in Weapons Division 6 and Weapons Division 7 - new added for Fall 2017
-mask_Age12Plus= clean_df["Competitor\'s Age?"] >= 12
-#testdf=cdf[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Choose Forms, Sparring or Both.','Choose Weapons.']][mask_Age13Plus]
+mask_Age12Plus= clean_df["Age"] >= 12
+#testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
 
 
 clean_df['hitcount']=0   #setup a new column for hit rate.
@@ -2301,7 +2193,7 @@ kata_score_sheet.write_pdfpage()
 
 print "Here is how many times we touched each person:"
 for index, row in clean_df.iterrows():
-    name = row['First Name'] + " " + row['Last Name']
+    name = row['First_Name'] + " " + row['Last_Name']
     hc = row['hitcount']
     print "  " + name + ": " + str(hc)
 

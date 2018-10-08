@@ -23,6 +23,9 @@ class RenameColumns:
         #super(RenameColumns, self).__init__()
         self.raw_df = pd.read_csv(filename)
 
+    def get_dataframe_copy(self):
+        return self.raw_df
+
     def dump_raw_df(self):
         print(self.raw_df)
 
@@ -57,17 +60,30 @@ class RenameColumns:
             return None
 
     def replace_column_name_containing(self,reg_ex_seach_string, new_column_name,verbose=False):
-        old_column_name=r.get_column_name_containing(reg_ex_seach_string)
+        old_column_name=self.get_column_name_containing(reg_ex_seach_string)
         if(old_column_name != None):
             if(verbose):
                 print "Replacing "+old_column_name+" with "+ new_column_name
             self.raw_df.rename( columns={old_column_name:new_column_name},inplace=True)
         else:
-            print "Column not found"
+            print "Column not found: {}".format(reg_ex_seach_string)
 
-    def test(self,string1,string2):
-        print string1
-        print string2
+    def rename_all_columns(self):
+        self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
+        self.replace_column_name_containing(".*Registrant.*", "Registrant_ID")
+        self.replace_column_name_containing(".*First.*Name.*", "First_Name")
+        self.replace_column_name_containing(".*Last.*Name.*", "Last_Name")
+        self.replace_column_name_containing(".*Competitor.*Age.*", "Age")
+        self.replace_column_name_containing('.*Select.*Your.*Studio.*', 'Dojo')
+        self.replace_column_name_containing('.*Out.*State.*Studio.*', 'Out_of_State_Dojo')
+        self.replace_column_name_containing(".*Competitor.*Weight.*", "Weight")
+        self.replace_column_name_containing(".*Competitor.*Height.*", "Height")
+        self.replace_column_name_containing(".*Rank.*", "Rank")
+        self.replace_column_name_containing(".*Division.*Based.*Age.*", "Division")
+        self.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
+        self.replace_column_name_containing(".*Weapons.*", "Weapons")
+        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
+        return
 
 if __name__ == '__main__':
     #get the filename from the environment var named  tourname_filename
@@ -94,21 +110,29 @@ if __name__ == '__main__':
     print r.get_column_name_containing(".*Competitor.*Age.*")
     print "-----"
 
-    r.replace_column_name_containing(".*Competitor.*Age.*","Age")
-    r.replace_column_name_containing('.*Select.*Your.*Studio.*','Dojo')
-    r.replace_column_name_containing(".*Competitor.*Weight.*","Weight")
-    r.replace_column_name_containing(".*Competitor.*Height.*","Height")
-    r.replace_column_name_containing(".*Rank.*","Rank")
-    r.replace_column_name_containing(".*Division.*Based.*Age.*","Division")
-    r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
-    r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
-    r.replace_column_name_containing(".*Weapons.*", "Weapons")
-    r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator Tickets")
+    r.rename_all_columns()
+
+    # r.replace_column_name_containing(".*Event.*Date.*","Event_Date")
+    # r.replace_column_name_containing(".*Registrant.*","Registrant_ID")
+    # r.replace_column_name_containing(".*First.*Name.*","First_Name")
+    # r.replace_column_name_containing(".*Last.*Name.*","Last_Name")
+    # r.replace_column_name_containing(".*Competitor.*Age.*","Age")
+    # r.replace_column_name_containing('.*Select.*Your.*Studio.*','Dojo')
+    # r.replace_column_name_containing('.*Out.*State.*Studio.*','Out_of_State_Studio')
+    # r.replace_column_name_containing(".*Competitor.*Weight.*","Weight")
+    # r.replace_column_name_containing(".*Competitor.*Height.*","Height")
+    # r.replace_column_name_containing(".*Rank.*","Rank")
+    # r.replace_column_name_containing(".*Division.*Based.*Age.*","Division")
+    # r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
+    # r.replace_column_name_containing(".*Weapons.*", "Weapons")
+    # r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator_Tickets")
 
 
     print "-----"
     r.print_column_names()
 
+    newdf = r.get_dataframe_copy()
+    print(newdf)
 
 
 # newdf.rename(

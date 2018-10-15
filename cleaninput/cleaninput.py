@@ -182,9 +182,9 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
 
 # Rank - this is the field that has caused us the most problem in the 2017 tournaments
     print "  " + time.strftime("%X") + " Looking for invalid Ranks"
-    valid_ranks=['Black Belt 1st Degree','Black Belt 2nd Degree','Black Belt 3rd Degree',
-                 'Black Belt 4th Degree','Black Belt 5th Degree',
-                 'Black Belt Junior',
+    valid_ranks=['Black 1st Degree','Black 2nd Degree','Black 3rd Degree',
+                 'Black 4th Degree','Black 5th Degree',
+                 'Black Junior',
                  'Brown 3rd Degree','Brown 2nd Degree','Brown 1st Degree',
                  'Green','Green w/Stripe',
                  'Blue', 'Blue w/Stripe',

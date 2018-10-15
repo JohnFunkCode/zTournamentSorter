@@ -2114,12 +2114,12 @@ mask_2ndBrownBelt= clean_df['Rank'] == 'Brown 2nd Degree'
 mask_1stBrownBelt= clean_df['Rank'] == 'Brown 1st Degree'
 mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt #all 1st 2nd and 3rd Brown
 #testBrowndf=newDataFrameFromMask( mask_AllBrownBelt )
-mask_1stBlackBelt= clean_df['Rank'] == 'Black Belt 1st Degree'
-mask_2ndBlackBelt= clean_df['Rank'] == 'Black Belt 2nd Degree'
-mask_3rdBlackBelt= clean_df['Rank'] == 'Black Belt 3rd Degree'
-mask_4thBlackBelt= clean_df['Rank'] == 'Black Belt 4th Degree'
-mask_5thBlackBelt= clean_df['Rank'] == 'Black Belt 5th Degree'
-mask_JrBlackBelt= clean_df['Rank'] == 'Black Belt Junior'
+mask_1stBlackBelt= clean_df['Rank'] == 'Black 1st Degree'
+mask_2ndBlackBelt= clean_df['Rank'] == 'Black 2nd Degree'
+mask_3rdBlackBelt= clean_df['Rank'] == 'Black 3rd Degree'
+mask_4thBlackBelt= clean_df['Rank'] == 'Black 4th Degree'
+mask_5thBlackBelt= clean_df['Rank'] == 'Black 5th Degree'
+mask_JrBlackBelt= clean_df['Rank'] == 'Black Junior'
 mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt #all Jr, 1st, 2nd, and 3rd degree black
 #testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
 

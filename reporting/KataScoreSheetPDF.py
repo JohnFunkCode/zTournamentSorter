@@ -168,7 +168,7 @@ class KataScoreSheetPDF(object):
         #    # write the document to disk
         #    doc.build(elements)
 
-        ####tbd - fiture out how to add a page break, and also add headers and footers
+        ####tbd - figure out how to add a page break, and also add headers and footers
         self.docElements.extend(elements)
         return elements;
 

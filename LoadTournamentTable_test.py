@@ -7,7 +7,7 @@ import unittest
 import sys
 from mock import patch
 
-import LoadTournamentTable
+from . import LoadTournamentTable
 import os
 
 

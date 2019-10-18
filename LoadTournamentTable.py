@@ -62,8 +62,8 @@ import sys
 # from pandas import ExcelWriter
 # from pandas import XlsxWriter
 import time
-from Tkinter import Tk
-from tkFileDialog import askopenfilename
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
 import pandas as pd
 
@@ -166,7 +166,7 @@ def writeEventToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
 
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -224,7 +224,7 @@ def writeEventToFile( filename, compositMask ):
 def writePattern1ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath,engine='xlsxwriter')
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -272,7 +272,7 @@ def writePattern1ToExcel( filename, compositMask ):
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 def writePattern1ToDivisionDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -317,7 +317,7 @@ def writePattern1ToDivisionDetailReport(starting_ring, event_time, division_name
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 def writePattern1WithSplitToDivisionDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -395,7 +395,7 @@ def writePattern1WithSplitToDivisionDetailReport(starting_ring, event_time, divi
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -440,7 +440,7 @@ def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #  filename - the filename without path to write
 #  compsitMask - a mask made up of everything but the belts that you want
 def writePattern1WithSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -519,7 +519,7 @@ def writePattern1WithSplitToKataScoreSheet(starting_ring, event_time, division_n
 def writePattern2ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -565,7 +565,7 @@ def writePattern2ToExcel( filename, compositMask ):
 #
 #  arguments:
 def writePattern2ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -611,7 +611,7 @@ def writePattern2ToDetailReport(starting_ring, event_time, division_name, age, c
 #
 #  arguments:
 def writePattern2ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -662,7 +662,7 @@ def writePattern2ToKataScoreSheet(starting_ring, event_time, division_name, age,
 def writePattern3ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask= mask_WhiteBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -706,7 +706,7 @@ def writePattern3ToExcel( filename, compositMask ):
 #    Green, Green Stripe, Brown
 #
 def writePattern3ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -748,7 +748,7 @@ def writePattern3ToDetailReport(starting_ring, event_time, division_name, age, c
 #    Green, Green Stripe, Brown
 #
 def writePattern3WithSplitToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -822,7 +822,7 @@ def writePattern3WithSplitToDetailReport(starting_ring, event_time, division_nam
 #    Green, Green Stripe, Brown
 #
 def writePatternSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -864,7 +864,7 @@ def writePatternSplitToKataScoreSheet(starting_ring, event_time, division_name, 
 #    Green, Green Stripe, Brown
 #
 def writePattern3WithSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -945,7 +945,7 @@ def writePattern3WithSplitToKataScoreSheet(starting_ring, event_time, division_n
 def writePattern4ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -993,7 +993,7 @@ def writePattern4ToExcel( filename, compositMask ):
 #    Black
 #
 def writePattern4ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -1040,7 +1040,7 @@ def writePattern4ToDetailReport(starting_ring, event_time, division_name, age, c
 #    Black
 #
 def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -1091,7 +1091,7 @@ def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age,
 def writePattern5ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1131,7 +1131,7 @@ def writePattern5ToExcel( filename, compositMask ):
 #    Green, Green Stripe, Brown
 #
 def writePattern5ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -1170,7 +1170,7 @@ def writePattern5ToDetailReport(starting_ring, event_time, division_name, age, c
 #    Green, Green Stripe, Brown
 #
 def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -1218,7 +1218,7 @@ def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age,
 def writePattern6ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1266,7 +1266,7 @@ def writePattern6ToExcel( filename, compositMask ):
 #    Black
 #
 def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -1313,7 +1313,7 @@ def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, c
 #    Black
 #
 def writePattern6ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -1362,7 +1362,7 @@ def writePattern6ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #    Black
 #
 def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -1419,7 +1419,7 @@ def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_nam
 #    Black
 #
 def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -1481,7 +1481,7 @@ def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, div
 def writePattern7ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1519,7 +1519,7 @@ def writePattern7ToExcel( filename, compositMask ):
 #    Black
 #
 def writePattern7ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 
@@ -1557,7 +1557,7 @@ def writePattern7ToDetailReport(starting_ring, event_time, division_name, age, c
 #    Black
 #
 def writePattern7ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
@@ -1596,7 +1596,7 @@ def writePattern7ToKataScoreSheet(starting_ring, event_time, division_name, age,
 def writeWeaponsDivision1ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1619,7 +1619,7 @@ def writeWeaponsDivision1ToExcel( filename, compositMask ):
 # writeWeaponsDivision1ToDetailReport
 #
 def writeWeaponsDivision1ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -1641,7 +1641,7 @@ def writeWeaponsDivision1ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision1ToKataScoreSheet
 #
 def writeWeaponsDivision1ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1669,7 +1669,7 @@ def writeWeaponsDivision1ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision2ToExcel( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1694,7 +1694,7 @@ def writeWeaponsDivision2ToExcel( filename, compositMask ):
 # writeWeaponsDivision2ToDetailReport
 #
 def writeWeaponsDivision2ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
     mask1= mask_WhiteBelt & compositMask
@@ -1716,7 +1716,7 @@ def writeWeaponsDivision2ToDetailReport(event_time, division_name, age, composit
 ###############################################################################
 # writeWeaponsDivision2ToKataScoreSheet
 def writeWeaponsDivision2ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1746,7 +1746,7 @@ def writeWeaponsDivision2ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision3ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_AllGreenBelt & compositMask
     mask2= mask_AllBrownBelt & compositMask
@@ -1764,7 +1764,7 @@ def writeWeaponsDivision3ToExcel(filename, compositMask):
 # writeWeaponsDivision3ToDetailReport
 #
 def writeWeaponsDivision3ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -1781,7 +1781,7 @@ def writeWeaponsDivision3ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision3ToKataScoreSheet
 #
 def writeWeaponsDivision3ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1805,7 +1805,7 @@ def writeWeaponsDivision3ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision4ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_WhiteBelt & compositMask
     mask2= mask_YellowBelt & compositMask
@@ -1825,7 +1825,7 @@ def writeWeaponsDivision4ToExcel(filename, compositMask):
 # writeWeaponsDivision4ToDetailReport
 #
 def writeWeaponsDivision4ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -1844,7 +1844,7 @@ def writeWeaponsDivision4ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision4ToKataScoreSheet
 #
 def writeWeaponsDivision4ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1869,7 +1869,7 @@ def writeWeaponsDivision4ToKataScoreSheet(event_time, division_name, age, compos
 #
 def writeWeaponsDivision5ToExcel(filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
     writer=pd.ExcelWriter(fullpath)
 
     mask1 = mask_WhiteBelt & compositMask
@@ -1890,7 +1890,7 @@ def writeWeaponsDivision5ToExcel(filename, compositMask):
 # writeWeaponsDivision5ToDetailReport
 #
 def writeWeaponsDivision5ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -1910,7 +1910,7 @@ def writeWeaponsDivision5ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision5ToKataScoreSheet
 #
 def writeWeaponsDivision5ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1937,7 +1937,7 @@ def writeWeaponsDivision5ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision6ToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_AllGreenBelt & compositMask
     #mask2= mask_AllBrownBelt & compositMask
@@ -1952,7 +1952,7 @@ def writeWeaponsDivision6ToFile( filename, compositMask ):
 # writeWeaponsDivision6ToDetailReport
 #
 def writeWeaponsDivision6ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -1968,7 +1968,7 @@ def writeWeaponsDivision6ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision6ToKataScoreSheet
 #
 def writeWeaponsDivision6ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -1989,7 +1989,7 @@ def writeWeaponsDivision6ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision7ToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask= mask_AllBrownBelt & compositMask
     wmk=newDataFrameFromMask( mask )
@@ -2002,7 +2002,7 @@ def writeWeaponsDivision7ToFile( filename, compositMask ):
 # writeWeaponsDivision7ToDetailReport
 #
 def writeWeaponsDivision7ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -2016,7 +2016,7 @@ def writeWeaponsDivision7ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision7ToKataScoreSheet
 #
 def writeWeaponsDivision7ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -2037,7 +2037,7 @@ def writeWeaponsDivision7ToKataScoreSheet(event_time, division_name, age, compos
 def writeWeaponsDivision8ToFile( filename, compositMask ):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     mask1= mask_AllBlackBelt & compositMask
     mask = mask1
@@ -2051,7 +2051,7 @@ def writeWeaponsDivision8ToFile( filename, compositMask ):
 # writeWeaponsDivision8ToDetailReport
 #
 def writeWeaponsDivision8ToDetailReport(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 
@@ -2066,7 +2066,7 @@ def writeWeaponsDivision8ToDetailReport(event_time, division_name, age, composit
 # writeWeaponsDivision8ToKataScoreSheet
 #
 def writeWeaponsDivision8ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age
+    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
 
     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
 
@@ -2080,13 +2080,13 @@ def writeWeaponsDivision8ToKataScoreSheet(event_time, division_name, age, compos
 def writeSparingTreeToExcel( filename, compositMask):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
     writer=pd.ExcelWriter(fullpath)
-    print time.strftime("%X") +" Generating " + fullpath
+    print(time.strftime("%X") +" Generating " + fullpath)
 
     wmk=newDataFrameFromMask( compositMask )
 
     byDojo = wmk.groupby('Dojo')
 
-    print byDojo.size()
+    print(byDojo.size())
 
     writer.save()
     time.sleep(1)
@@ -2108,14 +2108,14 @@ if filename is None :
     filename = askopenfilename()
     root.update() # Prevent the askfilename() window doesn't stay open
 else:
-    print "Using the file " + filename + "from the environment"
+    print("Using the file " + filename + "from the environment")
 
 
 
 #filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
 #filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
 
-print time.strftime("%X") + " Reading the data...."
+print(time.strftime("%X") + " Reading the data....")
 
 errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
 errorLogFile = open(errorLogFileName, "w")
@@ -2292,7 +2292,7 @@ mask_Age12Plus= clean_df["Age"] >= 12
 
 clean_df['hitcount']=0   #setup a new column for hit rate.
 
-print time.strftime("%X") + " Generating the output results..."
+print(time.strftime("%X") + " Generating the output results...")
 
 ###############################################################################
 # Setup a few things for the Division Detail PDF report
@@ -2548,16 +2548,15 @@ writeWeaponsDivision8ToFile( "WeaponsDivision8.xlsx", compositMask )
 writeWeaponsDivision8ToDetailReport("4:15pm", "Weapons Division 8", "12+", compositMask)
 writeWeaponsDivision8ToKataScoreSheet("4:15pm", "Weapons Division 8", "12+", compositMask)
 
-print time.strftime("%X") + " Saving PDFs to disk"
+print(time.strftime("%X") + " Saving PDFs to disk")
 divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 
-print "Here is how many times we touched each person:"
+print("Here is how many times we touched each person:")
 for index, row in clean_df.iterrows():
     name = row['First_Name'] + " " + row['Last_Name']
     hc = row['hitcount']
-    print "  " + name + ": " + str(hc)
+    print("  " + name + ": " + str(hc))
 
 localtime = time.asctime( time.localtime(time.time()) )
-print  time.strftime("%X") + " Done!"
-
+print(time.strftime("%X") + " Done!")

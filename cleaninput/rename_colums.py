@@ -12,12 +12,12 @@ import os
 import sys
 import pandas as pd
 import time
-from Tkinter import Tk
-from tkFileDialog import askopenfilename
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
 class RenameColumns:
-    def __new__(cls):
-        return super(RenameColumns, cls).__new__(cls)
+    #def __new__(cls):
+    #    return super(RenameColumns, cls).__new__(cls)
 
     def __init__(self, filename):
         #super(RenameColumns, self).__init__()
@@ -27,12 +27,12 @@ class RenameColumns:
         return self.raw_df
 
     def dump_raw_df(self):
-        print(self.raw_df)
+        print((self.raw_df))
 
     def print_column_names(self):
         headers = list(self.raw_df.columns)
         for header in headers:
-            print header
+            print(header)
 
     def is_YourSudio_a_column_name(self):
         import re
@@ -44,16 +44,16 @@ class RenameColumns:
 
         #m=[x for x in headers if compiled_regx.match(x)]
 
-        newlist = filter(compiled_regx.match,headers)
-        print newlist[0]
-        print len(newlist)
+        newlist = list(filter(compiled_regx.match,headers))
+        print(newlist[0])
+        print(len(newlist))
 
     def get_column_name_containing(self,reg_ex_seach_string):
         import re
         compiled_regx=re.compile(reg_ex_seach_string)
 
         headers = list(self.raw_df.columns)
-        newlist = filter(compiled_regx.match,headers)
+        newlist = list(filter(compiled_regx.match,headers))
         if(len(newlist)==1):
             return newlist[0]
         else:
@@ -63,10 +63,10 @@ class RenameColumns:
         old_column_name=self.get_column_name_containing(reg_ex_seach_string)
         if(old_column_name != None):
             if(verbose):
-                print "Replacing "+old_column_name+" with "+ new_column_name
+                print("Replacing "+old_column_name+" with "+ new_column_name)
             self.raw_df.rename( columns={old_column_name:new_column_name},inplace=True)
         else:
-            print "Column not found: {}".format(reg_ex_seach_string)
+            print("Column not found: {}".format(reg_ex_seach_string))
 
     def rename_all_columns(self):
         self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     filename=os.getenv("tournament_filename")
 
     if filename is None :
-        from Tkinter import Tk
+        from tkinter import Tk
 
         #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         root = Tk()
@@ -99,16 +99,16 @@ if __name__ == '__main__':
         filename = askopenfilename()
         root.update() # Prevent the askfilename() window doesn't stay open
     else:
-        print "Using the file " + filename + "from the environment"
+        print("Using the file " + filename + "from the environment")
 
     r=RenameColumns(filename)
     #r.dump_raw_df()
     r.print_column_names()
-    print "-----"
+    print("-----")
     #r.is_YourSudio_a_column_name()
-    print "r.get_column_name_containing('.*Competitor.*Age.*')"
-    print r.get_column_name_containing(".*Competitor.*Age.*")
-    print "-----"
+    print("r.get_column_name_containing('.*Competitor.*Age.*')")
+    print(r.get_column_name_containing(".*Competitor.*Age.*"))
+    print("-----")
 
     r.rename_all_columns()
 
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     # r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator_Tickets")
 
 
-    print "-----"
+    print("-----")
     r.print_column_names()
 
     newdf = r.get_dataframe_copy()
@@ -140,4 +140,3 @@ if __name__ == '__main__':
 #              'Competitor\'s Height (e.g. 4 ft. 2 in. )?': 'Height',
 #              'Competitor\'s Weight (eg. 73lbs.)?': 'Weight', 'Choose Forms, Sparring or Both.': 'Events',
 #              'Choose Weapons.': 'Weapons'}, inplace=True)
-

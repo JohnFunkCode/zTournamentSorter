@@ -1,5 +1,6 @@
 import sys
 import time
+import math
 
 import numpy as np
 import pandas as pd
@@ -31,14 +32,14 @@ def clean_unicode_from_file(inputFileName, errorLogFile):
 #  This function scans indiviual rows looking for input errors
 def clean_all_input_errors(inputDataFrame, errorLogFile):
     errorCount = 0
-    print time.strftime("%X") + " Checking for errors in the data...."
+    print(time.strftime("%X") + " Checking for errors in the data....")
 
     # first use Ria's technique to remove bogus lines from the data frame
-    print "  " + time.strftime("%X") + " Cleaning out garbage rows"
+    print("  " + time.strftime("%X") + " Cleaning out garbage rows")
     cleanDataFrame = inputDataFrame[np.isfinite(inputDataFrame['Registrant_ID'])]
 
     #next check for non-numeric data in the age field
-    print "  " + time.strftime("%X") + " Checking the age field"
+    print("  " + time.strftime("%X") + " Checking the age field")
     for index, row in cleanDataFrame.iterrows():
         try:
             age=int(row['Age'])
@@ -47,17 +48,17 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                 errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                     row["Last_Name"]) + " has an age field of "+str(age)+" which is less than the age in our youngest division"
                 errorLogFile.write(errorString + "\r\f")
-                print errorString
+                print(errorString)
 
         except ValueError:
             errorCount+=1
             errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has something other than a number in Age field"
             errorLogFile.write(errorString+"\r\f")
-            print errorString
+            print(errorString)
 
 
     #Test Rank - looking for 'Please Select'
-    print "  " + time.strftime("%X") + " Looking for invalid Rank data"
+    print("  " + time.strftime("%X") + " Looking for invalid Rank data")
     mask_NoBelt=(cleanDataFrame['Rank']=='Please Select')
     #df_NoBelt=cleanDataFrame[['Registrant_ID','First_Name','Last_Name','Dojo','Email','Phone','Mobile Phone']][mask_NoBelt]
     df_NoBelt=cleanDataFrame[['Registrant_ID','First_Name','Last_Name','Dojo']][mask_NoBelt]
@@ -65,16 +66,16 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
     if beltErrorCount > 0:
       errorCount+=beltErrorCount
       errorLogFile.write( "The Following People did not select a valid rank:\r\n" )
-      print "The Following People did not select a valid rank:"
+      print("The Following People did not select a valid rank:")
       for index, row in df_NoBelt.iterrows():
             errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has something other than a number in Age field"
             errorLogFile.write(errorString+"\r\f")
-            print errorString
+            print(errorString)
 
 
 #        errorLogFile.write( "Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"]) + " did not contain a valid rank " )
 
-    print "  " + time.strftime("%X") + " Looking for invalid weight"
+    print("  " + time.strftime("%X") + " Looking for invalid weight")
     #Convert weight to digits with regex and generate an error if not valid
     import re
     compiledRegex=re.compile('\d+')
@@ -85,7 +86,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
             errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                 row["Last_Name"]) + " has an empty Weight field"
             errorLogFile.write(errorString + "\r\f")
-            print errorString
+            print(errorString)
         else:
             matchList=compiledRegex.match(rawWeightString)
             if matchList is None:
@@ -101,7 +102,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                 errorCount+=1
                 errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has an invalid Weight field:" + rawWeightString
                 errorLogFile.write(errorString+"\r\f")
-                print errorString
+                print(errorString)
 
 
 #    #Check for non-numeric data in the Weight Field
@@ -122,7 +123,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
 #print s.group()
 
 #Height
-    print "  " + time.strftime("%X") + " Looking for invalid height"
+    print("  " + time.strftime("%X") + " Looking for invalid height")
 #    import re
     compiledRegex=re.compile('\d+')
     for index, row in cleanDataFrame.iterrows():
@@ -132,7 +133,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
             errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                 row["Last_Name"]) + " has an empty Height field"
             errorLogFile.write(errorString + "\r\f")
-            print errorString
+            print(errorString)
         else:
             matchList=compiledRegex.findall(splitString)
             l=len(matchList)
@@ -148,8 +149,8 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                     #single digit greater than 12
                     feet= 0
                     inches=matchList[0]
-                    if inches>12:
-                        feet=int(inches)/12
+                    if int(inches)>12:
+                        feet=math.floor(int(inches)/12)
                         inches=int(inches)%12
             if l==0:
                 feet=0
@@ -161,7 +162,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                errorCount+=1
                errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has bad data in the height field: " + splitString
                errorLogFile.write(errorString+"\r\f")
-               print errorString
+               print(errorString)
 
             #Write it to new columns in the data frame
             cleanDataFrame.loc[index,'Feet']=feet
@@ -181,7 +182,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
             #print splitString, "|", feet, "|", inches
 
 # Rank - this is the field that has caused us the most problem in the 2017 tournaments
-    print "  " + time.strftime("%X") + " Looking for invalid Ranks"
+    print("  " + time.strftime("%X") + " Looking for invalid Ranks")
     valid_ranks=['Black 1st Degree','Black 2nd Degree','Black 3rd Degree',
                  'Black 4th Degree','Black 5th Degree',
                  'Black Junior',
@@ -192,9 +193,9 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
                  'Orange',
                  'Yellow',
                  'White']
-    print "Valid Ranks at this time are:"
+    print("Valid Ranks at this time are:")
     for index in valid_ranks[:]:
-        print " " + index
+        print(" " + index)
 
 
     for index, row in cleanDataFrame.iterrows():
@@ -204,16 +205,16 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
             errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                 row["Last_Name"]) + " has an empty Current Belt Rank field"
             errorLogFile.write(errorString + "\r\f")
-            print errorString
+            print(errorString)
         if rank not in valid_ranks:
             errorCount += 1
             errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                 row["Last_Name"]) + " has an invalid  Belt Rank field: "+rank
             errorLogFile.write(errorString + "\r\f")
-            print errorString
+            print(errorString)
 
     #Look for out of state dojos and move them into the 'Dojo' column
-    print "  " + time.strftime("%X") + " Looking for out of state dojos"
+    print("  " + time.strftime("%X") + " Looking for out of state dojos")
     for index, row in cleanDataFrame.iterrows():
         theString=row['Dojo']
         if( theString=="Out of State" ):
@@ -234,7 +235,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
     if( errorCount > 0):
         errorLogFile.write( str(errorCount)+" "+"errors found" )
         errorLogFile.close()
-        print str(errorCount)+" "+"errors found"
+        print(str(errorCount)+" "+"errors found")
         sys.exit("Exiting - The input must be fixed manually")
     else:
          errorLogFile.write( "No errors found" )

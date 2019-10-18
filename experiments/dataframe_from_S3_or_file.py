@@ -18,7 +18,7 @@ bucket='jpf-python-datastore'
 
 f=s3.open('{}/{}'.format(bucket,filename),mode='rb')
 s3df=pd.read_csv(f)
-print s3df
+print(s3df)
 
 # or using simplified url handling - don't know how permissions work here yet
 #file='S3://{}/{}'.format(bucket,filename)
@@ -29,7 +29,7 @@ print s3df
 filename = "/users/johnfunk/CloudStation/TournamentProject/CleanerTournamentParticipantsNOTTHEFINALLIST-10-15-17.csv"
 f=open(filename,mode='rb')
 fsdf=pd.read_csv(f)
-print fsdf
+print(fsdf)
 
 # or using simplified url handling
 #file='file://{}'.format(filename)

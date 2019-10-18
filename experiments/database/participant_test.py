@@ -18,13 +18,13 @@ class TestParticipants(unittest.TestCase):
         #print p._participant_list
         shape=p._participant_list.shape
         #print shape[0]
-        self.assertEquals(3, shape[0])
+        self.assertEqual(3, shape[0])
 
     def test_participants_from_mask_returns_correct_results(self):
         p = parts.Participants()
         df = p.participants_from_mask(p.yellow_belt_mask)
         x = df.shape
-        self.assertEquals(2, x[0])
+        self.assertEqual(2, x[0])
 
 if __name__ == '__main__':
     unittest.main()

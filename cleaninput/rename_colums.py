@@ -9,9 +9,7 @@ Experiment to rename columns in a dataframe
 """
 
 import os
-import sys
 import pandas as pd
-import time
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
@@ -36,7 +34,7 @@ class RenameColumns:
 
     def is_YourSudio_a_column_name(self):
         import re
-        searchstring=".*State.*Studio.*"
+        searchstring = ".*State.*Studio.*"
 
         compiled_regx=re.compile(searchstring)
 
@@ -61,7 +59,7 @@ class RenameColumns:
 
     def replace_column_name_containing(self,reg_ex_seach_string, new_column_name,verbose=False):
         old_column_name=self.get_column_name_containing(reg_ex_seach_string)
-        if(old_column_name != None):
+        if(old_column_name is not None):
             if(verbose):
                 print("Replacing "+old_column_name+" with "+ new_column_name)
             self.raw_df.rename( columns={old_column_name:new_column_name},inplace=True)
@@ -90,8 +88,6 @@ if __name__ == '__main__':
     filename=os.getenv("tournament_filename")
 
     if filename is None :
-        from tkinter import Tk
-
         #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         root = Tk()
         root.withdraw() # we don't want a full GUI, so keep the root window from appearing

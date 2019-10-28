@@ -10,7 +10,7 @@ import compettitors
 class TestCompettitors(unittest.TestCase):
 
     def setUp(self):
-        return
+        pass
 
     def test_competttitors_has_correct_number_of_entries(self):
         columns = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',

@@ -7,7 +7,7 @@ import unittest
 import sys
 from mock import patch
 
-from . import LoadTournamentTable
+import LoadTournamentTable
 import os
 
 
@@ -20,40 +20,39 @@ class TestLoadTournamentTable(unittest.TestCase):
         return
 
     def test_Age7to8_mask_returns_only_7_and_8_year_olds(self):
-        testdf=LoadTournamentTable.clean_df[['First Name','Last Name', 'Gender','Current Belt Rank?','Competitor\'s Age?','Competitor\'s Weight (e.g. 73lbs.)?','Competitor\'s Height (e.g. 4 ft. 2 in. )?','Choose Forms, Sparring or Both.','Choose Weapons.']][LoadTournamentTable.mask_Age7to8]
+        testdf = LoadTournamentTable.clean_df[
+            ["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+             "Events", "Weapons"]][LoadTournamentTable.mask_Age7to8]
         for index, row in testdf.iterrows():
             #name = row['First Name'] + " " + row['Last Name']
-            age = row['Competitor\'s Age?']
+            age = row['Age']
             self.assertTrue( (age >=7) & (age <=8))
 
     def test_Age9to11_mask_returns_only_9_to_11_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
-            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
-             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age9to11]
+            ["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+             "Events", "Weapons"]][LoadTournamentTable.mask_Age9to11]
         for index, row in testdf.iterrows():
             # name = row['First Name'] + " " + row['Last Name']
-            age = row['Competitor\'s Age?']
+            age = row['Age']
             self.assertTrue( (age >=9) & (age <=11))
 
     def test_Age12to14_mask_returns_only_12_to_14_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
-            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
-             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age12to14]
+            ["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+             "Events", "Weapons"]][LoadTournamentTable.mask_Age12to14]
+
         for index, row in testdf.iterrows():
-            # name = row['First Name'] + " " + row['Last Name']
-            age = row['Competitor\'s Age?']
+            age = row['Age']
             self.assertTrue((age >= 12) & (age <= 14))
 
     def test_Age15to17_mask_returns_only_15_to_17_year_olds(self):
         testdf = LoadTournamentTable.clean_df[
-            ['First Name', 'Last Name', 'Gender', 'Current Belt Rank?', 'Competitor\'s Age?',
-             'Competitor\'s Weight (e.g. 73lbs.)?', 'Competitor\'s Height (e.g. 4 ft. 2 in. )?',
-             'Choose Forms, Sparring or Both.', 'Choose Weapons.']][LoadTournamentTable.mask_Age15to17]
+            ["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+             "Events", "Weapons"]][LoadTournamentTable.mask_Age15to17]
         for index, row in testdf.iterrows():
             # name = row['First Name'] + " " + row['Last Name']
-            age = row['Competitor\'s Age?']
+            age = row['Age']
             self.assertTrue((age >= 15) & (age <= 17))
 
 

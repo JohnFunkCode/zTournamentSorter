@@ -17,6 +17,7 @@ REMOVE_TEST_FILES = False
 
 class TestEightCompetitorTree(unittest.TestCase):
     ''' class to test the EightCompettitorTree code'''
+
     def setUp(self):
         ''' setup code for the tests'''
         return
@@ -51,6 +52,23 @@ class TestEightCompetitorTree(unittest.TestCase):
 
         self.assertTrue(test_canvas.__dict__['_pageNumber'] == 3)  # Make sure we have 2 pages
         test_canvas.save()
+        if REMOVE_TEST_FILES:
+            os.remove(test_file_name)
+
+    def test_initialize_text_coordinates(self):
+        ''' test to make sure the text coordinates are initialized '''
+        test_file_name = "8PersonTree.pdf"
+        test_canvas = canvas.Canvas(test_file_name)
+        tree = EightCompetitorTree(test_canvas)
+        self.assertTrue(len(tree._first_column_text_coordinates) == 8)
+        self.assertTrue(len(tree._second_column_text_coordinates) == 4)
+
+        # draw the tree just for the heck of it
+        tree.draw_static_template()
+        tree.close()
+        test_canvas.save()
+        # test to see if the PDF file was created
+        self.assertTrue(os.path.exists(test_file_name))
         if REMOVE_TEST_FILES:
             os.remove(test_file_name)
 

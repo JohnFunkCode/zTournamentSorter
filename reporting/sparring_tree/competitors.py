@@ -2,17 +2,21 @@
 
 import pandas as pd
 
+
 class Competitors(pd.DataFrame):
     ''' class to manage a list of competitor'''
 
-    def __init__(self,data=None, index=None, columns=None, dtype=None, copy=False):
+    def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
         '''setup instance variables'''
         super().__init__(data, index, columns, dtype, copy)
 
     def get_number_of_competitors(self):
         '''convenience  method to get the number of competitors'''
-        s = self.shape[0]
-        return s
+        return self.shape[0]
+
+    def sort_by_body_mass_index_and_dojo(self):
+        ''' sort the competitors by ascending BMI and Dojo'''
+        self.sort_values(by=['BMI', 'Dojo'], inplace=True)
 
 
 if __name__ == '__main__':
@@ -27,7 +31,7 @@ if __name__ == '__main__':
              '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0)]
     df = pd.DataFrame(data, columns=cols)
     #      c = competitors.Competitors(df)
-    #c = Competitors()
-    c = Competitors(data,columns=cols)
+    # c = Competitors()
+    c = Competitors(data, columns=cols)
     s = c.get_number_of_competitors()
     print(s)

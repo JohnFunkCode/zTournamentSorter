@@ -1,10 +1,14 @@
 """ this module contains code to create an 8 person sparring tree"""
 
-
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import cm
 
 from reportlab.pdfgen import canvas
+
+from reporting.sparring_tree import bracket_position_map as BPM
+from reporting.sparring_tree.competitor_to_tree_mapper import CompetitorsToTreeMapper
+
+C_STUFF = CompetitorsToTreeMapper()
 
 
 class EightCompetitorTree():
@@ -44,17 +48,32 @@ class EightCompetitorTree():
         # calculate first column text coordinates top of the page to the bottom
         self._first_column_text_coordinates = []
         initial_first_column_text_coords = [[.9, 20.4 + self._SPACE_BELOW_TEXT],
-                                       [.9, 18.2 + self._SPACE_BELOW_TEXT]]
+                                            [.9, 18.2 + self._SPACE_BELOW_TEXT]]
         for i in range(4):
             offset = self.truncate(i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE, 1)
-            self._first_column_text_coordinates.append([initial_first_column_text_coords[0][0], self.truncate(initial_first_column_text_coords[0][1] - offset)])
-            self._first_column_text_coordinates.append([initial_first_column_text_coords[1][0], self.truncate(initial_first_column_text_coords[1][1] - offset)])
+            self._first_column_text_coordinates.append([initial_first_column_text_coords[0][0],
+                                                        self.truncate(initial_first_column_text_coords[0][1] - offset, 1)])
+            self._first_column_text_coordinates.append([initial_first_column_text_coords[1][0],
+                                                        self.truncate(initial_first_column_text_coords[1][1] - offset, 1)])
 
         self._second_column_text_coordinates = []
-        initial_second_column_text_coords = [7.2 + self._SPACE_BELOW_TEXT, 19.4 + self._SPACE_BELOW_TEXT]
+        initial_second_column_text_coords = [7.2, 19.4 + self._SPACE_BELOW_TEXT]
         for i in range(4):
-            offset = i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE
-            self._second_column_text_coordinates.append([initial_second_column_text_coords[0], initial_second_column_text_coords[1] - offset])
+            offset = self.truncate(i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE, 1)
+            self._second_column_text_coordinates.append(
+                [initial_second_column_text_coords[0], self.truncate(initial_second_column_text_coords[1] - offset, 1)])
+        i = 0
+
+    def get_canvas_coord_for_nth_competitor_in_column1(self, competitor_index):
+        '''returns the x,y coordinates on the canvas for the given competitor index
+        for example the 2nd compettitor in column 1 will be placed at x,y on the canvas '''
+        px, py = self._first_column_text_coordinates[competitor_index]
+        return self._first_column_text_coordinates[competitor_index]
+
+    def get_canvas_coord_for_nth_competitor_in_column2(self, competitor_index):
+        '''returns the x,y coordinates on the canvas for the given competitor index
+        for example the 2nd compettitor in column 2 will be placed at x,y on the canvas '''
+        return self._second_column_text_coordinates[competitor_index]
 
     def draw_box(self, left, top):
         ''' draw a single checkbox at the coordinates provided '''
@@ -85,7 +104,7 @@ class EightCompetitorTree():
 
         # Second bracket
         for i in range(2):
-            offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE *2)
+            offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 2)
             self._path.moveTo(7.2 * cm, (5 + offset) * cm)  # 2.75 inch to the right, 2 inches up
             self._path.lineTo(12.4 * cm, (5 + offset) * cm)
             self._path.lineTo(15.2 * cm, (7.5 + offset) * cm)
@@ -103,12 +122,34 @@ class EightCompetitorTree():
         self.draw_boxes(15.5, 9)  # 9/16 inches to the right and 4 inches up
         self.draw_boxes(15.5, 18.7)  # 9/16 inches to the right and 4 inches up
 
-    def render_compettitors_into_tree(self,compettitors):
-        ''' draws the compettitors names (tbd: and other info) onto the tree '''
-        # determine number of competitors
-        # for each compettitor
-        #   get the physical coordinates for the name
-        #   draw the name onto the tree
+    def calculate_canvas_coordinates_from_competitor_index(self, competitor_count: int, competitor_index: int):
+        print(competitor_index)
+        column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
+        print('backet coordinate: ', column, row)
+        if column == 1:
+            x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column1(row - 1)
+        else:
+            x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column2(row - 1)
+        x_coordinate = x_coordinate * cm
+        y_coordinate = y_coordinate * cm
+        print('canvas coordinate: ', x_coordinate, y_coordinate)
+        return x_coordinate, y_coordinate
+
+    def draw_competitors_on_tree(self, competitor_to_tree_mapper: CompetitorsToTreeMapper) -> object:
+        ''' draw the competitors on the tree
+        :type competitor_to_tree_mapper: object
+        '''
+        comps = competitor_to_tree_mapper.get_competitors()
+        print(comps)
+        competitor_count = comps.get_number_of_competitors()
+        i = 0
+        for index, competitor in comps.iterrows():
+            name = competitor['First Name'] + ' ' + competitor['Last Name']
+            print('\n' + name)
+            px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
+            self._c.drawString(px, py, name)
+            i = i + 1
+
 
 if __name__ == '__main__':
     ''' Very simple test try to create a tree and check that the file exists '''

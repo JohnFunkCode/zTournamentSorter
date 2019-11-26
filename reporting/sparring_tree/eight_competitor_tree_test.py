@@ -86,7 +86,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -112,7 +112,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -138,7 +138,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -164,7 +164,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -190,7 +190,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -216,7 +216,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -242,7 +242,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -268,7 +268,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            print('\n' + names[i])
+            # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 

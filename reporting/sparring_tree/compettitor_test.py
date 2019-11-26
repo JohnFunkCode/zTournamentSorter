@@ -8,7 +8,7 @@ import unittest
 from reporting.sparring_tree import competitors as competitors
 
 
-class CompetitorToTreeMapper(unittest.TestCase):
+class TestCompetitors(unittest.TestCase):
     ''' class to test the Competitor code'''
 
     def setUp(self):
@@ -48,6 +48,45 @@ class CompetitorToTreeMapper(unittest.TestCase):
             self.assertTrue(competitor.BMI >= last_bmi)
             last_bmi = competitor.BMI
 
+    def test_arrange_competitors_for_sparring(self):
+        cols = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
+                      'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
+        data = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, '4', 65, 161,
+                       '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
+                      (2, 'Lucas', 'May', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
+                       '2 Events - Forms & Sparring ($75)', 'None', 0),
+                      (3, 'Jake', 'Coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
+                       '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
+                      (4, 'Allen', 'Whitaker', 'Male', 'CO- Arvada', 10, 'Yellow', 4, 0, '4', 55, 151,
+                       '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
+                      (5, 'Bill', 'Kable', 'Male', 'CO- Parker', 10, 'Yellow', 4, 1, '4', 63, 161,
+                       '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0)]
+        some_competitors = competitors.Competitors(data, columns=cols)
+
+        # import pandas as pd
+        # pd.set_option('display.max_columns', None)  # or 1000
+        # pd.set_option('display.max_rows', None)  # or 1000
+        # pd.set_option('display.max_colwidth', -1)  # or 199
+        # pd.set_option('display.width',200)
+        #
+        # print( "Initial Competitors:")
+        # print(some_competitors)
+
+        some_competitors.arrange_competitors_for_sparring()
+        # print( "Sorted Competitors:")
+        # print(some_competitors)
+
+        self.assertTrue(some_competitors.get_number_of_competitors() == 5)
+
+        n = some_competitors.get_number_of_competitors()
+
+        for i in range(0, n - 1, 2):
+            dojo_1 = some_competitors.iloc[i]['Dojo']
+            bmi_1 = some_competitors.iloc[i]['BMI']
+            dojo_2 = some_competitors.iloc[i + 1]['Dojo']
+            bmi_2 = some_competitors.iloc[i + 1]['BMI']
+            self.assertTrue(dojo_1 != dojo_2)
+            self.assertTrue(bmi_1 < bmi_2)
 
 if __name__ == '__main__':
     unittest.main()

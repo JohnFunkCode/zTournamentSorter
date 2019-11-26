@@ -6,10 +6,7 @@ from reportlab.lib.units import cm
 from reportlab.pdfgen import canvas
 
 from reporting.sparring_tree import bracket_position_map as BPM
-from reporting.sparring_tree.competitor_to_tree_mapper import CompetitorsToTreeMapper
-
-C_STUFF = CompetitorsToTreeMapper()
-
+from reporting.sparring_tree.competitors import Competitors
 
 class EightCompetitorTree():
     """ Creates an 8 compettitor sparring tree"""
@@ -30,7 +27,7 @@ class EightCompetitorTree():
         self._c.setPageSize(letter)  # defaults to 72 pointer per inch
         self._path = self._c.beginPath()
         # print(self._c.__dict__)
-        print('EightCompetitorTree initialized with filename:' + self._c.__dict__['_filename'])
+        # print('EightCompetitorTree initialized with filename:' + self._c.__dict__['_filename'])
         self.initialize_text_coordinates()
 
     def close(self):
@@ -123,29 +120,26 @@ class EightCompetitorTree():
         self.draw_boxes(15.5, 18.7)  # 9/16 inches to the right and 4 inches up
 
     def calculate_canvas_coordinates_from_competitor_index(self, competitor_count: int, competitor_index: int):
-        print(competitor_index)
+        # print(competitor_index)
         column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
-        print('backet coordinate: ', column, row)
+        # print('backet coordinate: ', column, row)
         if column == 1:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column1(row - 1)
         else:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column2(row - 1)
         x_coordinate = x_coordinate * cm
         y_coordinate = y_coordinate * cm
-        print('canvas coordinate: ', x_coordinate, y_coordinate)
+        # print('canvas coordinate: ', x_coordinate, y_coordinate)
         return x_coordinate, y_coordinate
 
-    def draw_competitors_on_tree(self, competitor_to_tree_mapper: CompetitorsToTreeMapper) -> object:
-        ''' draw the competitors on the tree
-        :type competitor_to_tree_mapper: object
-        '''
-        comps = competitor_to_tree_mapper.get_competitors()
-        print(comps)
-        competitor_count = comps.get_number_of_competitors()
+    def draw_competitors_on_tree(self, competitors : Competitors) -> object:
+        ''' draw the competitors on the tree '''
+        # print(competitors)
+        competitor_count = competitors.get_number_of_competitors()
         i = 0
-        for index, competitor in comps.iterrows():
+        for index, competitor in competitors.iterrows():
             name = competitor['First Name'] + ' ' + competitor['Last Name']
-            print('\n' + name)
+            # print('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
             i = i + 1

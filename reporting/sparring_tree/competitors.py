@@ -6,9 +6,12 @@ import pandas as pd
 class Competitors(pd.DataFrame):
     ''' class to manage a list of competitor'''
 
-    def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
-        '''setup instance variables'''
-        super().__init__(data, index, columns, dtype, copy)
+    @property
+    def _constructor(self):
+        return Competitors
+    # def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
+    #     '''setup instance variables'''
+    #     super().__init__(data, index, columns, dtype, copy)
 
     def get_number_of_competitors(self):
         '''convenience  method to get the number of competitors'''
@@ -17,6 +20,54 @@ class Competitors(pd.DataFrame):
     def sort_by_body_mass_index_and_dojo(self):
         ''' sort the competitors by ascending BMI and Dojo'''
         self.sort_values(by=['BMI', 'Dojo'], inplace=True)
+
+    def arrange_competitors_for_sparring(self):
+        ''' arrange competitors by BMI and so ajacent competitors are from different dojos (if possible) '''
+        result_list = []
+
+        comps=self
+
+        comps.sort_by_body_mass_index_and_dojo()
+
+        while comps.shape[0] > 1:
+            name1 = comps.iloc[0]['First Name']
+            dojo1 = comps.iloc[0]['Dojo']
+            name2 = ''
+            # dojo2 = ''
+            for i in range(1, len(comps)):
+                if comps.iloc[i].Dojo != dojo1:
+                    # print(i,"Different Dojo")
+                    name2 = comps.iloc[i]['First Name']
+                    # dojo2 = comps.iloc[i]['Dojo']
+                    break
+                # else:
+                # print(i,"Same Dojo")
+
+            if name2 == '':
+                name2 = comps.iloc[1]['First Name']
+                # dojo2 = comps.iloc[1]['Dojo']
+
+            # print(name1, dojo1, '|', name2, dojo2)
+            result_list.append(comps.iloc[0])
+            result_list.append(comps.iloc[i])
+
+            # remove the two names from the data frame
+            df1 = comps[comps['First Name'] != name1]
+            comps = df1[df1['First Name'] != name2]
+
+        # if there is an odd number process the last one now0
+        if (comps.shape[0] % 2) != 0:
+            name1 = comps.iloc[0]['First Name']
+            dojo1 = comps.iloc[0]['Dojo']
+            # print(name1, dojo1)
+            result_list.append(comps.iloc[0])
+
+        # print(result_list)
+        column_names = comps.columns.values.tolist()
+        # print(column_names)
+        # print(result_list)
+        result_df = Competitors(data=result_list, columns=column_names)
+        return result_df
 
 
 if __name__ == '__main__':

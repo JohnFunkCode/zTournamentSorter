@@ -9,8 +9,12 @@ import pandas as pd
 import numpy as np
 import unittest
 
-class Compettitors(pd.DataFrame):
-    def get_number_of_compettotors(self):
+class Competitors(pd.DataFrame):
+    @property
+    def _constructor(self):
+        return Competitors
+
+    def get_number_of_competitors(self):
         return self.shape[0]
 
 

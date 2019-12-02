@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import unittest
 
-from experiments.database.compettitors import Compettitors
+from experiments.database.compettitors import Competitors
 
 class TestCompettitors(unittest.TestCase):
 
@@ -21,8 +21,8 @@ class TestCompettitors(unittest.TestCase):
                  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
                 (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'White', 4, 0, '4', 65.161,
                  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0)]
-        c = Compettitors(data,columns=columns)
-        s=c.get_number_of_compettotors()
+        c = Competitors(data,columns=columns)
+        s=c.get_number_of_competitors()
         self.assertEquals(3, s)
 
 if __name__ == '__main__':

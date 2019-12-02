@@ -266,7 +266,7 @@ def writePattern1ToExcel( filename, compositMask ):
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+#    Green, Green Stripe, Brown
 #
 #  arguments:
 #  filename - the filename without path to write
@@ -311,7 +311,7 @@ def writePattern1ToDivisionDetailReport(starting_ring, event_time, division_name
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+#    Green, Green Stripe, Brown
 #
 #  arguments:
 #  filename - the filename without path to write
@@ -389,7 +389,7 @@ def writePattern1WithSplitToDivisionDetailReport(starting_ring, event_time, divi
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+#    Green, Green Stripe, Brown
 #
 #  arguments:
 #  filename - the filename without path to write
@@ -434,7 +434,7 @@ def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+#    Green, Green Stripe, Brown
 #
 #  arguments:
 #  filename - the filename without path to write

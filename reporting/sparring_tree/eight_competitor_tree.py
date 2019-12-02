@@ -143,6 +143,9 @@ class EightCompetitorTree():
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
             i = i + 1
+            if(i > 7):
+                assert i > 7, "Should be no more than 8 competitors"
+
 
 
 if __name__ == '__main__':

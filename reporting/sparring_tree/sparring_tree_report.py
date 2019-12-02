@@ -51,12 +51,13 @@ class SparringTreeReportPDF(object):
             Purple, Blue, Blue Stripe
             Green, Green Stripe
          '''
-        tree = EightCompetitorTree(self._canvas)
-        tree.draw_static_template()
 
 
         #white belts are the first division for this report
         division_competitors = event_competitors.query( 'Rank == "Yellow"')
+
+        #Create a tree
+        tree = EightCompetitorTree(self._canvas)
 
         # lay down the template
         tree.draw_static_template()
@@ -64,6 +65,7 @@ class SparringTreeReportPDF(object):
         # draw the competitors onto the tree
         tree.draw_competitors_on_tree(division_competitors)
 
+        #close the tree - causes the page to be written
         tree.close()
 
 

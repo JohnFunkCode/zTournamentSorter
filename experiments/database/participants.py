@@ -11,7 +11,16 @@ import pandas as pd
 import numpy as np
 import unittest
 
+from pandas import DataFrame
+
+
 class Participants(object):
+
+    _participant_list: DataFrame
+
+    def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
+         '''setup instance variables'''
+         super().__init__(data, index, columns, dtype, copy)
 
     def __new__(cls):
         return super(Participants, cls).__new__(cls)
@@ -27,7 +36,9 @@ class Participants(object):
                  '2 Events - Forms & Sparring ($75)', 'None',0),
                 (194, 'jake', 'coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
                  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)',0),
-                (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'White', 4, 0, '4', 65.161,
+                (194, 'payton', 'clark', 'Female', 'CO- Avada', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 66, 166,
+                 '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
+                (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'White', 4, 0, '4', 65,161,
                  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)',0)]
         self._participant_list = pd.DataFrame(data, columns=columns)
 
@@ -172,3 +183,9 @@ class Participants(object):
 
       return participant_subset
 
+
+    def participants_from_query(self, query_string):
+        p = self._participant_list
+
+        participant_subset: DataFrame = p.query(query_string)
+        return participant_subset

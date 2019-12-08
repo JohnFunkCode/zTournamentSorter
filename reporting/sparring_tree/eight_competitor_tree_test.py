@@ -17,7 +17,7 @@ REMOVE_TEST_FILES = False
 # import eight_competitor_tree
 
 # data for the tests
-TEST_DATA_COLUMNS = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
+TEST_DATA_COLUMNS = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
               'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
 
 TEST_DATA = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, '4', 65, 161,
@@ -318,6 +318,30 @@ class TestEightCompetitorTree(unittest.TestCase):
 
         # close out the 8 person tree
         tree.close()
+        test_canvas.save()
+
+        # test to see if the PDF file was created
+        self.assertTrue(os.path.exists(test_file_name))
+        if REMOVE_TEST_FILES:
+            os.remove(test_file_name)
+
+    def test_add_page_with_competitors_on_tree(self):
+        ''' tests that we each compettitor gets assigned physical coordinates '''
+        #create compettitors from our test data
+        #get the first and second column test coordinates from the tree
+        #run the algorythm to map compettitors into the tree
+        # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
+        the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
+
+        # setup an 8 person tree
+        test_file_name = "8PersonTree_full_page.pdf"
+        test_canvas = canvas.Canvas(test_file_name)
+        tree = EightCompetitorTree(test_canvas)
+
+        # draw the competitors onto the tree
+        tree.add_page_with_competitors_on_tree(1, "2:00", "Sr. Mens Sparring", "Black", the_competitors)
+
+        # save the file
         test_canvas.save()
 
         # test to see if the PDF file was created

@@ -119,6 +119,16 @@ class EightCompetitorTree():
         self.draw_boxes(15.5, 9)  # 9/16 inches to the right and 4 inches up
         self.draw_boxes(15.5, 18.7)  # 9/16 inches to the right and 4 inches up
 
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str):
+        self._c.drawString( 13 * cm, 26.5 *cm, "Time:")
+        self._c.drawString( 14.5 * cm, 26.5 *cm, event_time )
+        self._c.drawString( 13 * cm, 25.75 *cm, "Event:")
+        self._c.drawString( 14.5 * cm, 25.75 *cm, event_title )
+        self._c.drawString( 13 * cm, 25 *cm, "Rank:")
+        self._c.drawString( 14.5 * cm, 25 *cm, ranks)
+        self._c.drawString( 13 *cm, 24.25 *cm, "Ring#:")
+        self._c.drawString( 14.5 * cm, 24.25 *cm, str(ring))
+
     def calculate_canvas_coordinates_from_competitor_index(self, competitor_count: int, competitor_index: int):
         # print(competitor_index)
         column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
@@ -135,10 +145,11 @@ class EightCompetitorTree():
     def draw_competitors_on_tree(self, competitors : Competitors) -> object:
         ''' draw the competitors on the tree '''
         # print(competitors)
+
         competitor_count = competitors.get_number_of_competitors()
         i = 0
         for index, competitor in competitors.iterrows():
-            name = competitor['First Name'] + ' ' + competitor['Last Name']
+            name = competitor['First_Name'] + ' ' + competitor['Last_Name']
             # print('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
@@ -146,7 +157,19 @@ class EightCompetitorTree():
             if(i > 7):
                 assert i > 7, "Should be no more than 8 competitors"
 
+    def add_page_with_competitors_on_tree(self,  ring: int, event_time: str, event_title: str, ranks, competitors: Competitors) -> object:
+        ''' adds a compleate page with a tree and the competitors '''
+        # lay down the template
+        self.draw_static_template()
 
+        # lay down the header info
+        self.draw_header_info_on_tree( ring, event_time, event_title, ranks)
+
+        # draw the competitors onto the tree
+        self.draw_competitors_on_tree(competitors)
+
+        # close the tree - causes the page to be written
+        self.close()
 
 if __name__ == '__main__':
     ''' Very simple test try to create a tree and check that the file exists '''

@@ -14,7 +14,7 @@ from reporting.sparring_tree.sparring_tree_report import SparringTreeReportPDF
 
 REMOVE_TEST_FILES = False
 
-TEST_DATA_COLUMNS = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
+TEST_DATA_COLUMNS = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
                      'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
 TEST_DATA = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, '4', 65, 161,
               '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
@@ -37,7 +37,7 @@ class TestSparringTreeReport(unittest.TestCase):
     def test_write_event_to_sparring_report_using_pattern_1(self):
         the_competitors = competitors.Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
         sparring_tree_report = SparringTreeReportPDF()
-        sparring_tree_report.write_event_to_sparring_report_using_pattern_1("9:00am","Kids Kata", the_competitors)
+        sparring_tree_report.write_event_to_sparring_report_using_pattern_1([1,2,3],"9:00am","Kids Kata", the_competitors)
         del sparring_tree_report
 
 

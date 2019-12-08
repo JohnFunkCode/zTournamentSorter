@@ -72,6 +72,7 @@ from cleaninput import cleaninput
 
 from reporting import DivisionDetailReportPDF as DivisionDetailReportPDF
 from reporting import KataScoreSheetPDF as kata_score_sheet_pdf
+import reporting.sparring_tree.sparring_tree_report
 
 
 ###############################################################################
@@ -2306,6 +2307,10 @@ kata_score_sheet=kata_score_sheet_pdf.KataScoreSheetPDF()
 kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 kata_score_sheet_pdf.KataScoreSheetPDF.set_sourcefile(filename)
 
+###############################################################################
+# Setup a few things for the Sparring Tree PDF report
+sparing_tree_pdf = reporting.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
+
 
 ### 9AM Events
 
@@ -2316,7 +2321,6 @@ compositMask=mask_Forms & mask_Age4to6
 writePattern1ToExcel( "KidsKata.xlsx", compositMask )
 writePattern1WithSplitToDivisionDetailReport(1, "9:00am", "Kids Kata", "4-6", compositMask)
 writePattern1WithSplitToKataScoreSheet(1, "9:00am", "Kids Kata", "4-6", compositMask)
-
 
 ###############################################################################
 # Youth Kata Spreadsheet - 7-8 year olds one sheet per rank
@@ -2335,6 +2339,14 @@ writePattern6ToExcel( "BoysSparring.xlsx", compositMask )
 writePattern6ToDetailReport(16, "9:00am", "Boy's Sparring", "9-11", compositMask)
 #writePattern6ToKataScoreSheet(12, "9:00am", "Boy's Sparring", "9-11", compositMask)
 #writeSparingTreeToExcel( "BoysSparringTree.xlsx", compositMask )
+
+import reporting.sparring_tree.competitors as sptc
+
+kids_kata_data_frame=newDataFrameFromMask(compositMask)
+kids_kata_competitors = sptc.Competitors(kids_kata_data_frame)
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_6([16,17,18,19,20,21,22],"9:00am", "Boys Sparring 9-11",kids_kata_competitors)
+
+
 
 ### 9:45 Events
 
@@ -2551,12 +2563,14 @@ writeWeaponsDivision8ToKataScoreSheet("4:15pm", "Weapons Division 8", "12+", com
 print(time.strftime("%X") + " Saving PDFs to disk")
 divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
+del sparing_tree_pdf
 
 print("Here is how many times we touched each person:")
 for index, row in clean_df.iterrows():
     name = row['First_Name'] + " " + row['Last_Name']
     hc = row['hitcount']
     print("  " + name + ": " + str(hc))
+
 
 localtime = time.asctime( time.localtime(time.time()) )
 print(time.strftime("%X") + " Done!")

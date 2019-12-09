@@ -18,7 +18,7 @@ REMOVE_TEST_FILES = False
 
 # data for the tests
 TEST_DATA_COLUMNS = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
-              'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
+                     'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
 
 TEST_DATA = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, '4', 65, 161,
                '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),

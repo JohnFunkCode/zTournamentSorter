@@ -9,6 +9,7 @@ class Competitors(pd.DataFrame):
     @property
     def _constructor(self):
         return Competitors
+
     # def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
     #     '''setup instance variables'''
     #     super().__init__(data, index, columns, dtype, copy)
@@ -25,7 +26,7 @@ class Competitors(pd.DataFrame):
         ''' arrange competitors by BMI and so ajacent competitors are from different dojos (if possible) '''
         result_list = []
 
-        comps=self
+        comps = self
 
         comps.sort_by_body_mass_index_and_dojo()
 

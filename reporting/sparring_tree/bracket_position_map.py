@@ -22,7 +22,7 @@ BRAKET_POSITION_MAP = [[0, 0, None],  # placeholder to make array indexing work
                        [13, 10, 5],
                        [14, 12, 6],
                        [15, 14, 7],
-                       [16, 15, None]]
+                       [16, 16, None]]
 
 
 def calculate_bracket_position_from_competitor_index(number_of_competitors: int, competitor_index: int) -> Tuple[int, int]:
@@ -30,9 +30,8 @@ def calculate_bracket_position_from_competitor_index(number_of_competitors: int,
         for example the 2rd person in a match with 3 competitors will end up in the second position of the first round
     '''
     compettitors_in_column1 = BRAKET_POSITION_MAP[number_of_competitors][1]
-    # print('competitors in column 1:',compettitors_in_column1)
     second_column_starting_index = BRAKET_POSITION_MAP[number_of_competitors][2]
-    # print('starting index for column 2:',second_column_starting_index)
+    print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
     if competitor_index < compettitors_in_column1:
         row = competitor_index + 1
         column = 1

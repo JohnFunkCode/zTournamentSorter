@@ -1,13 +1,13 @@
 '''
 This module tests the eight_compettitor_tree module
-to run this test go to the main directory and run
+to run this test go to the main directory and run 
 nosetests --with-coverage
 '''''
 
 import unittest
 import os
 from reportlab.pdfgen import canvas
-from reporting.sparring_tree.eight_competitor_tree import EightCompetitorTree
+from reporting.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
 from reporting.sparring_tree.competitors import Competitors
 
 REMOVE_TEST_FILES = False
@@ -36,12 +36,16 @@ class TestEightCompetitorTree(unittest.TestCase):
     ''' class to test the EightCompettitorTree code'''
 
     def setUp(self):
-        ''' setup code for the tests'''
+        ''' create a directory for all the test reports'''
+        try:
+            os.mkdir("testoutput")
+        except:
+            print("exptedted error")
         return
 
     def test_creating_a_file(self):
         ''' simple test to make sure we can create a file with the template code in it'''
-        test_file_name = "8PersonTree_Create_File.pdf"
+        test_file_name = "testoutput//8PersonTree_Create_File.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -55,7 +59,7 @@ class TestEightCompetitorTree(unittest.TestCase):
 
     def test_creating_a_file_with_two_tree(self):
         ''' tests that we can create a PDF with multiple sparring trees in it'''
-        test_file_name = "8PersonTree_Two_Trees.pdf"
+        test_file_name = "testoutput//8PersonTree_Two_Trees.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
 
@@ -74,7 +78,7 @@ class TestEightCompetitorTree(unittest.TestCase):
 
     def test_initialize_text_coordinates(self):
         ''' test to make sure the text coordinates are initialized '''
-        test_file_name = "8PersonTree_Init_Text_Coords.pdf"
+        test_file_name = "testoutput//8PersonTree_Init_Text_Coords.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         self.assertTrue(len(tree._first_column_text_coordinates) == 8)
@@ -93,7 +97,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup an 8 person tree
-        test_file_name = "8PersonTree.pdf"
+        test_file_name = "testoutput//8PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -120,7 +124,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup an 7 person tree
-        test_file_name = "7PersonTree.pdf"
+        test_file_name = "testoutput//7PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -146,7 +150,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 6 person tree
-        test_file_name = "6PersonTree.pdf"
+        test_file_name = "testoutput//6PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -172,7 +176,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 5 person tree
-        test_file_name = "5PersonTree.pdf"
+        test_file_name = "testoutput//5PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -198,7 +202,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 4 person tree
-        test_file_name = "4PersonTree.pdf"
+        test_file_name = "testoutput//4PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -224,7 +228,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 3 person tree
-        test_file_name = "3PersonTree.pdf"
+        test_file_name = "testoutput//3PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -250,7 +254,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 2 person tree
-        test_file_name = "2PersonTree.pdf"
+        test_file_name = "testoutput//2PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -276,7 +280,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
         # setup 1 person tree
-        test_file_name = "1PersonTree.pdf"
+        test_file_name = "testoutput//1PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -307,7 +311,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
         # setup an 8 person tree
-        test_file_name = "8PersonTree_from_competitors.pdf"
+        test_file_name = "testoutput//8PersonTree_from_competitors.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -334,7 +338,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
         # setup an 8 person tree
-        test_file_name = "8PersonTree_full_page.pdf"
+        test_file_name = "testoutput//8PersonTree_full_page.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = EightCompetitorTree(test_canvas)
 

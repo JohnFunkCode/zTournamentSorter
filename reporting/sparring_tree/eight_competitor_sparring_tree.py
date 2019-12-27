@@ -7,9 +7,9 @@ from reportlab.pdfgen import canvas
 
 from reporting.sparring_tree import bracket_position_map as BPM
 from reporting.sparring_tree.competitors import Competitors
+from reporting.sparring_tree.base_sparring_tree import SparringTree
 
-
-class EightCompetitorTree():
+class EightCompetitorTree(SparringTree):
     """ Creates an 8 compettitor sparring tree"""
 
     # setup a couple of constants for this tree
@@ -24,22 +24,9 @@ class EightCompetitorTree():
 
     def __init__(self, the_canvas):
         """ sets up instance variables for this tree """
-        self._c = the_canvas
+        SparringTree.__init__(self, the_canvas)
         self._c.setPageSize(letter)  # defaults to 72 pointer per inch
-        self._path = self._c.beginPath()
-        # print(self._c.__dict__)
-        # print('EightCompetitorTree initialized with filename:' + self._c.__dict__['_filename'])
         self.initialize_text_coordinates()
-
-    def close(self):
-        """ generate the page"""
-        self._c.drawPath(self._path, stroke=1, fill=0)
-        self._c.showPage()
-
-    def truncate(self, number, decimal_places=0):
-        ''' utility funciton to truncate a number to a given number of decimal places'''
-        multiplier = 10 ** decimal_places
-        return int(number * multiplier) / multiplier
 
     def initialize_text_coordinates(self):
         '''initialize the text coordinates, two columns of x,y coordinate of where names gets drawn'''
@@ -64,17 +51,6 @@ class EightCompetitorTree():
             self._second_column_text_coordinates.append(
                 [initial_second_column_text_coords[0], self.truncate(initial_second_column_text_coords[1] - offset, 1)])
         i = 0
-
-    def get_canvas_coord_for_nth_competitor_in_column1(self, competitor_index):
-        '''returns the x,y coordinates on the canvas for the given competitor index
-        for example the 2nd compettitor in column 1 will be placed at x,y on the canvas '''
-        px, py = self._first_column_text_coordinates[competitor_index]
-        return self._first_column_text_coordinates[competitor_index]
-
-    def get_canvas_coord_for_nth_competitor_in_column2(self, competitor_index):
-        '''returns the x,y coordinates on the canvas for the given competitor index
-        for example the 2nd compettitor in column 2 will be placed at x,y on the canvas '''
-        return self._second_column_text_coordinates[competitor_index]
 
     def draw_box(self, left, top):
         ''' draw a single checkbox at the coordinates provided '''
@@ -134,21 +110,6 @@ class EightCompetitorTree():
         self._c.drawString(13 * cm, 24.25 * cm, "Ring#:")
         self._c.drawString(14.5 * cm, 24.25 * cm, str(ring))
 
-    def calculate_canvas_coordinates_from_competitor_index(self, competitor_count: int, competitor_index: int):
-        ''' calculates the canvas coordinates (physical x,s) for a competitor based on how many competitors there are
-         and what this competitor place in at list '''
-        # print(competitor_index)
-        column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
-        # print('backet coordinate: ', column, row)
-        if column == 1:
-            x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column1(row - 1)
-        else:
-            x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column2(row - 1)
-        x_coordinate = x_coordinate * cm
-        y_coordinate = y_coordinate * cm
-        # print('canvas coordinate: ', x_coordinate, y_coordinate)
-        return x_coordinate, y_coordinate
-
     def draw_competitors_on_tree(self, competitors: Competitors) -> object:
         ''' draw the competitors on the tree '''
         # print(competitors)
@@ -164,26 +125,7 @@ class EightCompetitorTree():
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
             i = i + 1
-            # tbd - put the assertion back and remove the condition after you have a 16 person tree running
-            # assert i < 8,  "Should be no more than 8 competitors on an 8 person tree"
-            if i > 7:
-                break
-
-    def add_page_with_competitors_on_tree(self, ring: int, event_time: str, event_title: str, ranks,
-                                          competitors: Competitors) -> object:
-        ''' adds a compleate page with a tree and the competitors '''
-        # lay down the template
-        self.draw_static_template()
-
-        # lay down the header info
-        self.draw_header_info_on_tree(ring, event_time, event_title, ranks)
-
-        # draw the competitors onto the tree
-        self.draw_competitors_on_tree(competitors)
-
-        # close the tree - causes the page to be written
-        self.close()
-
+            assert i < 9,  "Should be no more than 8 competitors on an 8 person tree"
 
 if __name__ == '__main__':
     ''' Very simple test try to create a tree and check that the file exists '''

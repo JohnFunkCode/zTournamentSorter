@@ -7,7 +7,7 @@ nosetests --with-coverage
 import unittest
 import os
 from reportlab.pdfgen import canvas
-from reporting.sparring_tree.sixteen_competitor_tree import SixteenCompetitorTree
+from reporting.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
 from reporting.sparring_tree.competitors import Competitors
 
 REMOVE_TEST_FILES = False
@@ -38,12 +38,16 @@ class TestSixteenCompetitorTree(unittest.TestCase):
     ''' class to test the SixteenCompettitorTree code'''
 
     def setUp(self):
-        ''' setup code for the tests'''
+        ''' create a directory for all the test reports'''
+        try:
+            os.mkdir("testoutput")
+        except:
+            print("exptedted error")
         return
 
     def test_creating_a_file(self):
         ''' simple test to make sure we can create a file with the template code in it'''
-        test_file_name = "16PersonTree_Create_File.pdf"
+        test_file_name = "testoutput//16PersonTree_Create_File.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -57,7 +61,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
 
     def test_creating_a_file_with_two_tree(self):
         ''' tests that we can create a PDF with multiple sparring trees in it'''
-        test_file_name = "16PersonTree_Two_Trees.pdf"
+        test_file_name = "testoutput//16PersonTree_Two_Trees.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas)
 
@@ -76,7 +80,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
 
     def test_initialize_text_coordinates(self):
         ''' test to make sure the text coordinates are initialized '''
-        test_file_name = "16PersonTree_Init_Text_Coords.pdf"
+        test_file_name = "testoutput//16PersonTree_Init_Text_Coords.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas)
         self.assertTrue(len(tree._first_column_text_coordinates) == 16)
@@ -118,81 +122,81 @@ class TestSixteenCompetitorTree(unittest.TestCase):
     def test_draw_16_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES
-        self.draw_n_names_on_tree(names, "16PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//16PeopleOn16PersonTree.pdf")
 
     def test_draw_15_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:15]
-        self.draw_n_names_on_tree(names, "15PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//15PeopleOn16PersonTree.pdf")
 
     def test_draw_14_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:14]
-        self.draw_n_names_on_tree(names, "14PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//14PeopleOn16PersonTree.pdf")
 
     def test_draw_13_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:13]
-        self.draw_n_names_on_tree(names, "13PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//13PeopleOn16PersonTree.pdf")
 
     def test_draw_12_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:12]
-        self.draw_n_names_on_tree(names, "12PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//12PeopleOn16PersonTree.pdf")
 
     def test_draw_11_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:11]
-        self.draw_n_names_on_tree(names, "11PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//11PeopleOn16PersonTree.pdf")
 
     def test_draw_10_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:10]
-        self.draw_n_names_on_tree(names, "10PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//10PeopleOn16PersonTree.pdf")
 
     def test_draw_9_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:9]
-        self.draw_n_names_on_tree(names, "9PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//9PeopleOn16PersonTree.pdf")
 
     def test_draw_8_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:8]
-        self.draw_n_names_on_tree(names, "8PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//8PeopleOn16PersonTree.pdf")
 
     def test_draw_7_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:7]
-        self.draw_n_names_on_tree(names, "7PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//7PeopleOn16PersonTree.pdf")
 
     def test_draw_6_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:6]
-        self.draw_n_names_on_tree(names, "6PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//6PeopleOn16PersonTree.pdf")
 
     def test_draw_5_names_on_tree(self):
         names = SIXTEEN_NAMES[0:5]
-        self.draw_n_names_on_tree(names, "5PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//5PeopleOn16PersonTree.pdf")
 
     def test_draw_4_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:4]
-        self.draw_n_names_on_tree(names, "4PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//4PeopleOn16PersonTree.pdf")
 
     def test_draw_3_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:3]
-        self.draw_n_names_on_tree(names, "3PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//3PeopleOn16PersonTree.pdf")
 
     def test_draw_2_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:2]
-        self.draw_n_names_on_tree(names, "2PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//2PeopleOn16PersonTree.pdf")
 
     def test_draw_1_names_on_tree(self):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
         names = SIXTEEN_NAMES[0:1]
-        self.draw_n_names_on_tree(names, "1PeopleOn16PersonTree.pdf")
+        self.draw_n_names_on_tree(names, "testoutput//1PeopleOn16PersonTree.pdf")
 
     def test_draw_competitors_on_tree(self):
         ''' tests that we each compettitor gets assigned physical coordinates '''
@@ -204,7 +208,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
                                       columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
         # setup a 16 person tree
-        test_file_name = "16PersonTree_from_competitors.pdf"
+        test_file_name = "testoutput//16PersonTree_from_competitors.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas)
         tree.draw_static_template()
@@ -231,7 +235,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
                                       columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
         # setup a 16 person tree
-        test_file_name = "16PersonTree_full_page.pdf"
+        test_file_name = "testoutput//16PersonTree_full_page.pdf"
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas)
 

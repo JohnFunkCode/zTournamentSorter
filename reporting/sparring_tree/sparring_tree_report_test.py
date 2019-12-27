@@ -5,6 +5,7 @@ nosetests --with-coverage
 '''''
 
 import unittest
+import pandas as pd
 
 from reporting.sparring_tree import competitors
 from reporting.sparring_tree.sparring_tree_report import SparringTreeReportPDF
@@ -22,6 +23,8 @@ TEST_DATA = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, 
              (4, 'Allen', 'Whitaker', 'Male', 'CO- Arvada', 10, 'Yellow', 4, 0, '4', 55, 151,
               '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
              (5, 'Bill', 'Kable', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 1, '4', 63, 161,
+              '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0),
+             (6, 'Maddi', 'Stele', 'Female', 'CO- Arvada', 10, 'Purple', 4, 1, '4', 63, 161,
               '2 Events - Forms & Sparring ($75)', 'Weapons ($35)', 0)]
 
 
@@ -33,10 +36,14 @@ class TestSparringTreeReport(unittest.TestCase):
 
     def test_write_event_to_sparring_report_using_pattern_1(self):
         ''' test that we can write a sparring report using pattern 1'''
-        the_competitors = competitors.Competitors(TEST_DATA,
-                                                  columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
+        df= pd.DataFrame(TEST_DATA, columns=TEST_DATA_COLUMNS)
+        the_competitors = competitors.Competitors(df)
+        # the_competitors = competitors.Competitors(TEST_DATA,
+        #                                           columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
+
         sparring_tree_report = SparringTreeReportPDF()
-        sparring_tree_report.write_event_to_sparring_report_using_pattern_1([1, 2, 3], "9:00am", "Kids Kata", the_competitors)
+
+        sparring_tree_report.write_event_to_sparring_report_using_pattern_1([1, 2, 3, 4, 5], "9:00am", "Kids Kata", the_competitors)
         sparring_tree_report.close()
 
 

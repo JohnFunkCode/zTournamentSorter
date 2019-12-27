@@ -31,7 +31,7 @@ def calculate_bracket_position_from_competitor_index(number_of_competitors: int,
     '''
     compettitors_in_column1 = BRAKET_POSITION_MAP[number_of_competitors][1]
     second_column_starting_index = BRAKET_POSITION_MAP[number_of_competitors][2]
-    print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
+    #print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
     if competitor_index < compettitors_in_column1:
         row = competitor_index + 1
         column = 1

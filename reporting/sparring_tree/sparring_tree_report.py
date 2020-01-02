@@ -8,19 +8,26 @@ from reportlab.pdfgen import canvas
 from reporting.sparring_tree.competitors import Competitors
 from reporting.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
 from reporting.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
+from reporting.sparring_tree.thirtytwo_competitor_sparring_tree import ThirtyTwoCompetitorTree
 from reporting.sparring_tree.base_sparring_tree import SparringTree
 
 SPARRING_TREE_REPORT_FILE_NAME = "SparringTreeReport.pdf"
 
 
-def create_sparring_tree(the_canvas: object, number_of_competitors: int)  -> SparringTree:
+def create_sparring_tree(the_canvas: object, number_of_competitors: int) -> SparringTree:
+    ''' Factory method to create a sparring tree of the appropriate size based on the number of competitors'''
     # assert number_of_competitors <=0, "Error Less than 1 competitor"
-    assert number_of_competitors <= 16, "Coding Error: More than 16 competitors provided"
+    assert number_of_competitors <= 32, "Coding Error: More than 16 competitors provided"
 
-    if number_of_competitors <= 8 :
-        return EightCompetitorTree( the_canvas)
+    the_tree = None
+
+    if number_of_competitors <= 8:
+        the_tree = EightCompetitorTree(the_canvas)
     elif number_of_competitors <= 16:
-        return SixteenCompetitorTree( the_canvas)
+        the_tree = SixteenCompetitorTree(the_canvas)
+    elif number_of_competitors <= 32:
+        the_tree = ThirtyTwoCompetitorTree(the_canvas)
+    return the_tree
 
 class SparringTreeReportPDF():
     ''' Class to Create a Sparring Tree Report for each sparring event in the tournament '''
@@ -49,7 +56,8 @@ class SparringTreeReportPDF():
          '''
         print(time.strftime("%X") + " Generating Sparring Trees PDF for " + event_time + " " + event_title)
 
-        assert len(rings) != 4, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+        assert len(
+            rings) != 4, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
 
         # white belts are the first division for this report
         division_competitors = event_competitors.query('Rank == "White"')
@@ -105,7 +113,8 @@ class SparringTreeReportPDF():
           Green, Green Stripe, Brown
           Black
         '''
-        assert len(rings) != 3, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+        assert len(
+            rings) != 3, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
 
         # White,  Yellow, Orange are the first division for this report
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow" | Rank == "Orange"')
@@ -156,7 +165,8 @@ class SparringTreeReportPDF():
           Blue, Blue Stripe
           Green, Green Stripe, Brown
         '''
-        assert len(rings) != 4, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+        assert len(
+            rings) != 4, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
 
         # White and Yellow are the first division for this report
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow"')
@@ -217,7 +227,8 @@ class SparringTreeReportPDF():
            Black
          '''
 
-        assert len(rings) != 6, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+        assert len(
+            rings) != 6, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
 
         # White and Yellow are the first division for this report
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow"')

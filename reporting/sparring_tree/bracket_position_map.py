@@ -22,7 +22,23 @@ BRAKET_POSITION_MAP = [[0, 0, None],  # placeholder to make array indexing work
                        [13, 10, 5],
                        [14, 12, 6],
                        [15, 14, 7],
-                       [16, 16, None]]
+                       [16, 16, None],
+                       [17, 2, 1],
+                       [18, 4, 2],
+                       [19, 6, 3],
+                       [20, 8, 4],
+                       [21, 10, 5],
+                       [22, 12, 6],
+                       [23, 14, 7],
+                       [24, 16, 8],
+                       [25, 18, 9],
+                       [26, 20, 10],
+                       [27, 22, 11],
+                       [28, 24, 12],
+                       [29, 26, 13],
+                       [30, 28, 14],
+                       [31, 30, 15],
+                       [32, 32, None]]
 
 
 def calculate_bracket_position_from_competitor_index(number_of_competitors: int, competitor_index: int) -> Tuple[int, int]:
@@ -31,7 +47,7 @@ def calculate_bracket_position_from_competitor_index(number_of_competitors: int,
     '''
     compettitors_in_column1 = BRAKET_POSITION_MAP[number_of_competitors][1]
     second_column_starting_index = BRAKET_POSITION_MAP[number_of_competitors][2]
-    #print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
+    # print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
     if competitor_index < compettitors_in_column1:
         row = competitor_index + 1
         column = 1
@@ -43,7 +59,7 @@ def calculate_bracket_position_from_competitor_index(number_of_competitors: int,
 
 
 if __name__ == '__main__':
-    people_in_ring = 5
-    for i in range(people_in_ring):
-        x, y = calculate_bracket_position_from_competitor_index(people_in_ring, i)
+    PEOPLE_IN_RING = 5
+    for i in range(PEOPLE_IN_RING):
+        x, y = calculate_bracket_position_from_competitor_index(PEOPLE_IN_RING, i)
         print(x, y)

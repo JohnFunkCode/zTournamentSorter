@@ -81,8 +81,11 @@ class SparringTree():
         # lay down the header info
         self.draw_header_info_on_tree(ring, event_time, event_title, ranks)
 
+        # arrange the competitors for sparring
+        ordered_competitors=competitors.arrange_competitors_for_sparring()
+
         # draw the competitors onto the tree
-        self.draw_competitors_on_tree(competitors)
+        self.draw_competitors_on_tree(ordered_competitors)
 
         # close the tree - causes the page to be written
         self.close()

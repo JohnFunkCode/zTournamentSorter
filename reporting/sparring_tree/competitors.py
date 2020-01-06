@@ -20,7 +20,7 @@ class Competitors(pd.DataFrame):
 
     def sort_by_body_mass_index_and_dojo(self):
         ''' sort the competitors by ascending BMI and Dojo'''
-        self.sort_values(by=['BMI', 'Dojo'], inplace=True)
+        self.sort_values(by=['BMI', 'Dojo'])
 
     def arrange_competitors_for_sparring(self):
         ''' arrange competitors by BMI and so ajacent competitors are from different dojos (if possible) '''
@@ -31,21 +31,21 @@ class Competitors(pd.DataFrame):
         comps.sort_by_body_mass_index_and_dojo()
 
         while comps.shape[0] > 1:
-            name1 = comps.iloc[0]['First Name']
+            name1 = comps.iloc[0]['First_Name']
             dojo1 = comps.iloc[0]['Dojo']
             name2 = ''
             # dojo2 = ''
             for i in range(1, len(comps)):
                 if comps.iloc[i].Dojo != dojo1:
                     # print(i,"Different Dojo")
-                    name2 = comps.iloc[i]['First Name']
+                    name2 = comps.iloc[i]['First_Name']
                     # dojo2 = comps.iloc[i]['Dojo']
                     break
                 # else:
                 # print(i,"Same Dojo")
 
             if name2 == '':
-                name2 = comps.iloc[1]['First Name']
+                name2 = comps.iloc[1]['First_Name']
                 # dojo2 = comps.iloc[1]['Dojo']
 
             # print(name1, dojo1, '|', name2, dojo2)
@@ -53,12 +53,12 @@ class Competitors(pd.DataFrame):
             result_list.append(comps.iloc[i])
 
             # remove the two names from the data frame
-            df1 = comps[comps['First Name'] != name1]
-            comps = df1[df1['First Name'] != name2]
+            df1 = comps[comps['First_Name'] != name1]
+            comps = df1[df1['First_Name'] != name2]
 
         # if there is an odd number process the last one now0
         if (comps.shape[0] % 2) != 0:
-            name1 = comps.iloc[0]['First Name']
+            name1 = comps.iloc[0]['First_Name']
             dojo1 = comps.iloc[0]['Dojo']
             # print(name1, dojo1)
             result_list.append(comps.iloc[0])

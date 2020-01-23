@@ -61,14 +61,14 @@ class SparringTree():
          and what this competitor place in at list '''
         # print(competitor_index)
         column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
-        # print('backet coordinate: ', column, row)
+        #print('backet coordinate: ', column, row)
         if column == 1:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column1(row - 1)
         else:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column2(row - 1)
         x_coordinate = x_coordinate * cm
         y_coordinate = y_coordinate * cm
-        # print('canvas coordinate: ', x_coordinate, y_coordinate)
+        #print('canvas coordinate, {}, {} '.format(x_coordinate, y_coordinate))
         return x_coordinate, y_coordinate
 
 

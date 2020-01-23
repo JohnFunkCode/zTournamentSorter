@@ -49,7 +49,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
 
     def draw_box(self, left, top):
         ''' draw a single checkbox at the coordinates provided '''
-        top = top + .8
+        top = top + .9
         self._path.moveTo(left * cm, top * cm)
         self._path.lineTo((left - .2) * cm, (top * cm))
         self._path.lineTo((left - .2) * cm, (top - .2) * cm)
@@ -147,6 +147,13 @@ class ThirtyTwoCompetitorTree(SparringTree):
             # print('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
+            self._c.setFont("Courier", 7)
+            dojo= competitor['Dojo']
+            if dojo.startswith('CO- '):
+                dojo=dojo[4:]
+            dojo_weight_height = "{} {}\' {}\" {} lbs".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'])
+            self._c.drawString(px + (0.0 * cm), py + (.35 * cm), dojo_weight_height)
+            self._c.setFont("Helvetica", 12)
             i = i + 1
             assert i < 33, "Should be no more than 16 competitors on an 16 person tree"
 

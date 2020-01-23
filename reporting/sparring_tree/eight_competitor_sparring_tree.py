@@ -54,6 +54,8 @@ class EightCompetitorTree(SparringTree):
 
     def draw_box(self, left, top):
         ''' draw a single checkbox at the coordinates provided '''
+        #top += 1.0
+        top += 1.2
         self._path.moveTo(left * cm, top * cm)
         self._path.lineTo((left - .3) * cm, (top * cm))
         self._path.lineTo((left - .3) * cm, (top - .3) * cm)
@@ -76,8 +78,8 @@ class EightCompetitorTree(SparringTree):
             self._path.lineTo(7.2 * cm, (5 + offset) * cm)
             self._path.lineTo(6 * cm, (6 + offset) * cm)
             self._path.lineTo(.8 * cm, (6 + offset) * cm)
-            self.draw_boxes(1.5, 5.3 + offset)  # 9/16 inches to the right and 2.125 inches up
-            self.draw_boxes(1.5, 7.5 + offset)  # 9/16 inches to the right and 4 inches up
+            self.draw_boxes(1.5, 3.8 + offset)  # 9/16 inches to the right and 2.125 inches up
+            self.draw_boxes(1.5, 6 + offset)  # 9/16 inches to the right and 4 inches up
 
         # Second bracket
         for i in range(2):
@@ -87,8 +89,8 @@ class EightCompetitorTree(SparringTree):
             self._path.lineTo(15.2 * cm, (7.5 + offset) * cm)
             self._path.lineTo(12.4 * cm, (9.8 + offset) * cm)
             self._path.lineTo(7.2 * cm, (9.8 + offset) * cm)
-            self.draw_boxes(7.5, 6.4 + offset)  # 9/16 inches to the right and 4 inches up
-            self.draw_boxes(7.5, 11.3 + offset)  # 9/16 inches to the right and 4 inches up
+            self.draw_boxes(7.9, 5 + offset)  # 9/16 inches to the right and 4 inches up
+            self.draw_boxes(7.9, 9.8 + offset)  # 9/16 inches to the right and 4 inches up
 
         # third bracket
         self._path.moveTo(15.2 * cm, 7.5 * cm)  # 2.9375 inch to the right, 6 inches up
@@ -96,8 +98,8 @@ class EightCompetitorTree(SparringTree):
         self._path.moveTo(15.2 * cm, 17.1 * cm)
         self._path.lineTo(20.4 * cm, 17.1 * cm)
 
-        self.draw_boxes(15.5, 9)  # 9/16 inches to the right and 4 inches up
-        self.draw_boxes(15.5, 18.7)  # 9/16 inches to the right and 4 inches up
+        self.draw_boxes(16.0, 7.5)  # 9/16 inches to the right and 4 inches up
+        self.draw_boxes(16.0, 17.1)  # 9/16 inches to the right and 4 inches up
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str):
         ''' draw the header text onto the tree '''
@@ -123,7 +125,22 @@ class EightCompetitorTree(SparringTree):
             name = competitor['First_Name'] + ' ' + competitor['Last_Name']
             # print('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
+            self._c.setFont("Helvetica", 12)
             self._c.drawString(px, py, name)
+
+            #self._c.saveState()
+            self._c.setFont("Courier", 7)
+            dojo= competitor['Dojo']
+            #self._c.drawString(px + (2.4 * cm), py + (.6 * cm), dojo)
+            #weight_height = "{}\' {}\" {} lbs".format(competitor['Feet'], competitor['Inches'], competitor['Weight'])
+            #from reportlab.pdfbase import pdfmetrics
+            #self._c.drawString(px + pdfmetrics.stringWidth(name,"Helvetica",12) + 5, py, weight_height)
+            if dojo.startswith('CO- '):
+                dojo=dojo[4:]
+            dojo_weight_height = "{} {}\' {}\" {} lbs".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'])
+            self._c.drawString(px + (0.0 * cm), py + (.4 * cm), dojo_weight_height)
+            self._c.setFont("Helvetica", 12)
+            #self._c.restoreState()
             i = i + 1
             assert i < 9,  "Should be no more than 8 competitors on an 8 person tree"
 

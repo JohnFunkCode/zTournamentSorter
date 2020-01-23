@@ -108,6 +108,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
         for i in range(competitor_count):
             # print('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
+            #print("{}, {}".format(px,py))
             test_canvas.drawString(px, py, names[i])
 
         # draw the tree just for the heck of it

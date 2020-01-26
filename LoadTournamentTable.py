@@ -2207,6 +2207,13 @@ del raw_df  # make sure we don't use the raw_df again
 # create test data
 clean_df.to_pickle("pickled_clean_dataframe.pkl")
 
+#make sure the sorted directory exists
+try:
+    os.mkdir("sorted")
+except:
+    print("expected error")
+
+
 ####################
 # Filtering        #
 ####################

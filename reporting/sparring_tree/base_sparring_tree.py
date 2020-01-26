@@ -22,12 +22,13 @@ class SparringTree():
     _first_column_text_coordinates = None
     _second_column_text_coordinates = None
 
-    def __init__(self, the_canvas):
+    def __init__(self, the_canvas, the_source_filename):
         """ sets up instance variables for this tree """
         self._c = the_canvas
         self._c.setPageSize(letter)  # defaults to 72 pointer per inch
         self._path = self._c.beginPath()
         self.initialize_text_coordinates()
+        self.source_filename = the_source_filename
 
     def close(self):
         """ generate the page"""

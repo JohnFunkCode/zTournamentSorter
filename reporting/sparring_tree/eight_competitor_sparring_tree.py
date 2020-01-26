@@ -1,5 +1,7 @@
 """ this module contains code to create an 8 person sparring tree"""
 
+import datetime
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import cm
 
@@ -21,12 +23,18 @@ class EightCompetitorTree(SparringTree):
 
     _first_column_text_coordinates = None
     _second_column_text_coordinates = None
+    _source_filename = "not initialized"
+    _creation_timestamp = "not initialized"
 
-    def __init__(self, the_canvas):
+    def __init__(self, the_canvas, the_source_filename):
         """ sets up instance variables for this tree """
-        SparringTree.__init__(self, the_canvas)
+        SparringTree.__init__(self, the_canvas, the_source_filename)
         self._c.setPageSize(letter)  # defaults to 72 pointer per inch
         self.initialize_text_coordinates()
+        self._source_filename = the_source_filename
+        now = datetime.datetime.now()
+        self._creation_timestamp = now.strftime("%Y-%m-%d %H:%M")
+
 
     def initialize_text_coordinates(self):
         '''initialize the text coordinates, two columns of x,y coordinate of where names gets drawn'''
@@ -111,6 +119,12 @@ class EightCompetitorTree(SparringTree):
         self._c.drawString(14.5 * cm, 25 * cm, ranks)
         self._c.drawString(13 * cm, 24.25 * cm, "Ring#:")
         self._c.drawString(14.5 * cm, 24.25 * cm, str(ring))
+
+        #write the footer as well
+        self._c.saveState()
+        self._c.setFont('Times-Roman', 9)
+        self._c.drawCentredString(10.795 * cm, .5 * cm, "Generated at: {} From File: {}".format(self._creation_timestamp,self._source_filename))
+        self._c.restoreState()
 
     def draw_competitors_on_tree(self, competitors: Competitors) -> object:
         ''' draw the competitors on the tree '''

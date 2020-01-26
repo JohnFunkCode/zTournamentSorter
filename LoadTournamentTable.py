@@ -2383,6 +2383,7 @@ kata_score_sheet_pdf.KataScoreSheetPDF.set_sourcefile(filename)
 ###############################################################################
 # Setup a few things for the Sparring Tree PDF report
 sparing_tree_pdf = reporting.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
+sparing_tree_pdf.set_source_file( filename )
 
 ### 9AM Events
 

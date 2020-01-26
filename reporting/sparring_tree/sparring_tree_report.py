@@ -14,7 +14,7 @@ from reporting.sparring_tree.base_sparring_tree import SparringTree
 SPARRING_TREE_REPORT_FILE_NAME = "SparringTreeReport.pdf"
 
 
-def create_sparring_tree(the_canvas: object, number_of_competitors: int) -> SparringTree:
+def create_sparring_tree(the_canvas: object, number_of_competitors: int, the_source_filename : str) -> SparringTree:
     ''' Factory method to create a sparring tree of the appropriate size based on the number of competitors'''
     # assert number_of_competitors <=0, "Error Less than 1 competitor"
     assert number_of_competitors <= 32, "Coding Error: More than 16 competitors provided"
@@ -22,11 +22,11 @@ def create_sparring_tree(the_canvas: object, number_of_competitors: int) -> Spar
     the_tree = None
 
     if number_of_competitors <= 8:
-        the_tree = EightCompetitorTree(the_canvas)
+        the_tree = EightCompetitorTree(the_canvas, the_source_filename)
     elif number_of_competitors <= 16:
-        the_tree = SixteenCompetitorTree(the_canvas)
+        the_tree = SixteenCompetitorTree(the_canvas, the_source_filename)
     elif number_of_competitors <= 32:
-        the_tree = ThirtyTwoCompetitorTree(the_canvas)
+        the_tree = ThirtyTwoCompetitorTree(the_canvas, the_source_filename)
     return the_tree
 
 class SparringTreeReportPDF():
@@ -35,6 +35,7 @@ class SparringTreeReportPDF():
     def __init__(self):
         ''' Create a Sparring Tree'''
         self._canvas = canvas.Canvas(SPARRING_TREE_REPORT_FILE_NAME)
+        self._source_filename = "not initialized"
 
     #  seems to cause problems for debugging
     #    def __del__(self):
@@ -43,6 +44,10 @@ class SparringTreeReportPDF():
     def close(self):
         ''' close things out by saving the canvas'''
         self._canvas.save()
+
+    def set_source_file(self, the_source_filename :str):
+        ''' setup the source filename so it's available to print in the footer of each tree'''
+        self._source_filename = the_source_filename
 
     def write_event_to_sparring_report_using_pattern_1(self, rings: list, event_time: str, event_title,
                                                        event_competitors: Competitors):
@@ -63,7 +68,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "White"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[0], event_time, event_title, "White",
                                                division_competitors)
@@ -72,7 +77,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Yellow"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[1], event_time, event_title, "Yellow",
                                                division_competitors)
@@ -81,7 +86,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Orange"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[2], event_time, event_title, "Orange",
                                                division_competitors)
@@ -90,7 +95,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Purple" | Rank == "Blue" | Rank == "Blue w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[3], event_time, event_title, "Purple, Blue, Blue Stripe",
                                                division_competitors)
@@ -99,7 +104,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Green" | Rank == "Green w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[4], event_time, event_title, "Green, Green Stripe",
                                                division_competitors)
@@ -120,7 +125,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow" | Rank == "Orange"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[0], event_time, event_title, "White, Yellow, Orange",
                                                division_competitors)
@@ -129,7 +134,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Purple" | Rank == "Blue" | Rank == "Blue w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[1], event_time, event_title, "Purple, Blue, Blue Stripe",
                                                division_competitors)
@@ -140,7 +145,7 @@ class SparringTreeReportPDF():
                                                        '| Rank == "Brown 3rd Degree"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[2], event_time, event_title, "Green, Green Stripe, Brown",
                                                division_competitors)
@@ -150,7 +155,7 @@ class SparringTreeReportPDF():
             'Rank == "Black 1st Degree" | Rank == "Black 2nd Degree" | Rank == "Black 3rd Degree" | Rank == "Black 4th Degree" | Rank == "Black 5th Degree" | Rank == "Black Junior"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[3], event_time, event_title, "Black",
                                                division_competitors)
@@ -172,7 +177,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[0], event_time, event_title, "White, Yellow",
                                                division_competitors)
@@ -180,7 +185,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Orange"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[1], event_time, event_title, "Orange",
                                                division_competitors)
@@ -189,7 +194,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Purple"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[2], event_time, event_title, "Purple",
                                                division_competitors)
@@ -198,7 +203,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Blue" | Rank == "Blue w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[3], event_time, event_title, "Blue, Blue Stripe",
                                                division_competitors)
@@ -209,7 +214,7 @@ class SparringTreeReportPDF():
                                                        '| Rank == "Brown 3rd Degree"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[4], event_time, event_title, "Green, Green Stripe, Brown",
                                                division_competitors)
@@ -234,7 +239,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "White" | Rank =="Yellow"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[0], event_time, event_title, "White, Yellow",
                                                division_competitors)
@@ -243,7 +248,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Orange"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[1], event_time, event_title, "Orange",
                                                division_competitors)
@@ -252,7 +257,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Purple"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[2], event_time, event_title, "Purple",
                                                division_competitors)
@@ -261,7 +266,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Blue" | Rank == "Blue w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[3], event_time, event_title, "Blue, Blue Stripe",
                                                division_competitors)
@@ -270,7 +275,7 @@ class SparringTreeReportPDF():
         division_competitors = event_competitors.query('Rank == "Green" | Rank == "Green w/Stripe"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[4], event_time, event_title, "Green, Green Stripe",
                                                division_competitors)
@@ -280,7 +285,7 @@ class SparringTreeReportPDF():
             'Rank == "Brown 1st Degree" | Rank == "Brown 2nd Degree" | Rank == "Brown 3rd Degree"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[5], event_time, event_title, "Brown",
                                                division_competitors)
@@ -290,7 +295,7 @@ class SparringTreeReportPDF():
             'Rank == "Black 1st Degree" | Rank == "Black 2nd Degree" | Rank == "Black 3rd Degree" | Rank == "Black 4th Degree" | Rank == "Black 5th Degree" | Rank == "Black Junior"')
 
         # Create a tree
-        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors())
+        tree = create_sparring_tree(self._canvas, division_competitors.get_number_of_competitors(),self._source_filename)
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(rings[6], event_time, event_title, "Black",
                                                division_competitors)

@@ -47,7 +47,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' simple test to make sure we can create a file with the template code in it'''
         test_file_name = "testoutput//8PersonTree_Create_File.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas,test_file_name)
         tree.draw_static_template()
         tree.close()
         test_canvas.save()
@@ -61,7 +61,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' tests that we can create a PDF with multiple sparring trees in it'''
         test_file_name = "testoutput//8PersonTree_Two_Trees.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
 
         # draw first tree
         tree.draw_static_template()
@@ -80,7 +80,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         ''' test to make sure the text coordinates are initialized '''
         test_file_name = "testoutput//8PersonTree_Init_Text_Coords.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         self.assertTrue(len(tree._first_column_text_coordinates) == 8)
         self.assertTrue(len(tree._second_column_text_coordinates) == 4)
 
@@ -99,7 +99,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup an 8 person tree
         test_file_name = "testoutput//8PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"]
@@ -126,7 +126,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup an 7 person tree
         test_file_name = "testoutput//7PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three", "Four", "Five", "Six", "Seven"]
@@ -152,7 +152,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 6 person tree
         test_file_name = "testoutput//6PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three", "Four", "Five", "Six"]
@@ -178,7 +178,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 5 person tree
         test_file_name = "testoutput//5PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three", "Four", "Five"]
@@ -204,7 +204,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 4 person tree
         test_file_name = "testoutput//4PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three", "Four"]
@@ -230,7 +230,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 3 person tree
         test_file_name = "testoutput//3PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two", "Three"]
@@ -256,7 +256,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 2 person tree
         test_file_name = "testoutput//2PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One", "Two"]
@@ -282,7 +282,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup 1 person tree
         test_file_name = "testoutput//1PersonTree.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         names = ["One"]
@@ -313,7 +313,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup an 8 person tree
         test_file_name = "testoutput//8PersonTree_from_competitors.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
 
@@ -340,7 +340,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         # setup an 8 person tree
         test_file_name = "testoutput//8PersonTree_full_page.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = EightCompetitorTree(test_canvas)
+        tree = EightCompetitorTree(test_canvas, test_file_name)
 
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(1, "2:00", "Sr. Mens Sparring", "Black", the_competitors)

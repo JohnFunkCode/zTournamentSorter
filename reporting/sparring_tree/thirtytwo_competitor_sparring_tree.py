@@ -2,10 +2,12 @@
 
 import datetime
 
+from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import legal
 from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
 
-from reportlab.pdfgen import canvas
+
 
 from reporting.sparring_tree.competitors import Competitors
 from reporting.sparring_tree.base_sparring_tree import SparringTree
@@ -128,6 +130,20 @@ class ThirtyTwoCompetitorTree(SparringTree):
         # winner line
         # self._path.moveTo(20.1 * cm, 9.4 * cm)  # 20.1 centimeters to the right, 9.4 centimeters up
         # self._path.lineTo(27 * cm, 9.4 * cm)
+
+        self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
+        self.draw_boxes(16.0, 17.1)
+
+        self._c.drawString(14.25 * cm, 2.6 * cm, "Third:")
+        self._path.moveTo( 15.3 * cm ,2.5 * cm)
+        self._path.lineTo( 21.4 * cm, 2.5 * cm)
+
+        self._c.drawString(14 * cm, 1.3 * cm, "Fourth:")
+        self._path.moveTo( 15.3 * cm ,1.2 * cm)
+        self._path.lineTo( 21.4 * cm, 1.2 * cm)
+
+        logo = ImageReader('Z_LOGO_OneInch.jpg')
+        self._c.drawImage(logo, 13 * cm, 31.7 * cm, mask='auto') # 10.16 is centered
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str):
         ''' draw the header text onto the tree '''

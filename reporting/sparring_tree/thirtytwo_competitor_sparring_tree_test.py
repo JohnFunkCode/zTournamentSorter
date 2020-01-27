@@ -51,7 +51,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         ''' simple test to make sure we can create a file with the template code in it'''
         test_file_name = "testoutput//32PersonTree_Create_File.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
         tree.close()
         test_canvas.save()
@@ -65,7 +65,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         ''' tests that we can create a PDF with multiple sparring trees in it'''
         test_file_name = "testoutput//32PersonTree_Two_Trees.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
 
         # draw first tree
         tree.draw_static_template()
@@ -84,7 +84,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         ''' test to make sure the text coordinates are initialized '''
         test_file_name = "testoutput//32PersonTree_Init_Text_Coords.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
         self.assertTrue(len(tree._first_column_text_coordinates) == 32)
         self.assertTrue(len(tree._second_column_text_coordinates) == 16)
 
@@ -102,7 +102,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         print("\nDrawing {} ".format(test_file_name))
         # setup a 16 person tree
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         competitor_count = len(names)
@@ -294,7 +294,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         # setup a 16 person tree
         test_file_name = "testoutput//32PersonTree_from_competitors.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
         tree.draw_static_template()
 
         # draw the competitors onto the tree
@@ -321,7 +321,7 @@ class TestThirtyTwoCompetitorTree(unittest.TestCase):
         # setup a 16 person tree
         test_file_name = "testoutput//32PersonTree_full_page.pdf"
         test_canvas = canvas.Canvas(test_file_name)
-        tree = ThirtyTwoCompetitorTree(test_canvas)
+        tree = ThirtyTwoCompetitorTree(test_canvas, test_file_name)
 
         # draw the competitors onto the tree
         tree.add_page_with_competitors_on_tree(1, "2:00", "Sr. Mens Sparring", "Black", the_competitors)

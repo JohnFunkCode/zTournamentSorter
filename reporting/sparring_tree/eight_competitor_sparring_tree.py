@@ -2,10 +2,11 @@
 
 import datetime
 
+from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
 
-from reportlab.pdfgen import canvas
 
 from reporting.sparring_tree import bracket_position_map as BPM
 from reporting.sparring_tree.competitors import Competitors
@@ -81,33 +82,45 @@ class EightCompetitorTree(SparringTree):
         # First bracket
         for i in range(4):
             offset = i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE
-            self._path.moveTo(.8 * cm, (3.8 + offset) * cm)  # 3/4 inch to the right, 1.5 inches up
+            self._path.moveTo(.8 * cm, (3.8 + offset) * cm)  # .8 cm to the right, 3.8 cm up
             self._path.lineTo(6 * cm, (3.8 + offset) * cm)
             self._path.lineTo(7.2 * cm, (5 + offset) * cm)
             self._path.lineTo(6 * cm, (6 + offset) * cm)
             self._path.lineTo(.8 * cm, (6 + offset) * cm)
-            self.draw_boxes(1.5, 3.8 + offset)  # 9/16 inches to the right and 2.125 inches up
-            self.draw_boxes(1.5, 6 + offset)  # 9/16 inches to the right and 4 inches up
+            self.draw_boxes(1.5, 3.8 + offset)
+            self.draw_boxes(1.5, 6 + offset)
 
         # Second bracket
         for i in range(2):
             offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 2)
-            self._path.moveTo(7.2 * cm, (5 + offset) * cm)  # 2.75 inch to the right, 2 inches up
+            self._path.moveTo(7.2 * cm, (5 + offset) * cm)  # 7.2 cm to the right, 5 cm up
             self._path.lineTo(12.4 * cm, (5 + offset) * cm)
             self._path.lineTo(15.2 * cm, (7.5 + offset) * cm)
             self._path.lineTo(12.4 * cm, (9.8 + offset) * cm)
             self._path.lineTo(7.2 * cm, (9.8 + offset) * cm)
-            self.draw_boxes(7.9, 5 + offset)  # 9/16 inches to the right and 4 inches up
-            self.draw_boxes(7.9, 9.8 + offset)  # 9/16 inches to the right and 4 inches up
+            self.draw_boxes(7.9, 5 + offset)
+            self.draw_boxes(7.9, 9.8 + offset)
 
         # third bracket
-        self._path.moveTo(15.2 * cm, 7.5 * cm)  # 2.9375 inch to the right, 6 inches up
+        self._path.moveTo(15.2 * cm, 7.5 * cm)  # 15.2 cm to the right, 7.5 cm up
         self._path.lineTo(20.4 * cm, 7.5 * cm)
         self._path.moveTo(15.2 * cm, 17.1 * cm)
         self._path.lineTo(20.4 * cm, 17.1 * cm)
 
-        self.draw_boxes(16.0, 7.5)  # 9/16 inches to the right and 4 inches up
-        self.draw_boxes(16.0, 17.1)  # 9/16 inches to the right and 4 inches up
+        self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
+        self.draw_boxes(16.0, 17.1)
+
+        self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
+        self._path.moveTo( 15.3 * cm ,4.5 * cm)
+        self._path.lineTo( 21.4 * cm, 4.5 * cm)
+
+        self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
+        self._path.moveTo( 15.3 * cm ,2.5 * cm)
+        self._path.lineTo( 21.4 * cm, 2.5 * cm)
+
+        logo = ImageReader('Z_LOGO_OneInch.jpg')
+        self._c.drawImage(logo, 10.16 * cm, 23.5 * cm, mask='auto')
+
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str):
         ''' draw the header text onto the tree '''
@@ -152,7 +165,7 @@ class EightCompetitorTree(SparringTree):
             if dojo.startswith('CO- '):
                 dojo=dojo[4:]
             dojo_weight_height = "{} {}\' {}\" {} lbs".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'])
-            self._c.drawString(px + (0.0 * cm), py + (.4 * cm), dojo_weight_height)
+            self._c.drawString(px + (0.0 * cm), py + (.45 * cm), dojo_weight_height)
             self._c.setFont("Helvetica", 12)
             #self._c.restoreState()
             i = i + 1

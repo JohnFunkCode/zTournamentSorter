@@ -15,8 +15,6 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
-from reportlab.rl_config import defaultPageSize
-
 
 class DivisionDetailReportPDF(object):
     def __init__(self):
@@ -28,8 +26,8 @@ class DivisionDetailReportPDF(object):
         DivisionDetailReportPDF.sourcefile = "not initialized"
         DivisionDetailReportPDF.pageinfo = "not initialized"
         DivisionDetailReportPDF.Title = "not initialized"
-        DivisionDetailReportPDF.PAGE_HEIGHT = defaultPageSize[1];
-        DivisionDetailReportPDF.PAGE_WIDTH = defaultPageSize[0]
+        DivisionDetailReportPDF.PAGE_HEIGHT =  11 * inch
+        DivisionDetailReportPDF.PAGE_WIDTH = 8.5 * inch
         DivisionDetailReportPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
 
     @staticmethod

@@ -17,8 +17,6 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
-from reportlab.rl_config import defaultPageSize
-
 
 class KataScoreSheetPDF(object):
     def __init__(self):
@@ -30,8 +28,8 @@ class KataScoreSheetPDF(object):
         KataScoreSheetPDF.sourcefile = "not initialized"
         KataScoreSheetPDF.pageinfo = "not initialized"
         KataScoreSheetPDF.Title = "not initialized"
-        KataScoreSheetPDF.PAGE_HEIGHT = defaultPageSize[1];
-        KataScoreSheetPDF.PAGE_WIDTH = defaultPageSize[0]
+        KataScoreSheetPDF.PAGE_HEIGHT = 11 * inch
+        KataScoreSheetPDF.PAGE_WIDTH = 8.5 * inch
         KataScoreSheetPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
         KataScoreSheetPDF.ring_number= "not initialized"
         KataScoreSheetPDF.event_time= "not initialized"

@@ -119,19 +119,21 @@ class EightCompetitorTree(SparringTree):
         self._path.lineTo( 21.4 * cm, 2.5 * cm)
 
         logo = ImageReader('Z_LOGO_OneInch.jpg')
-        self._c.drawImage(logo, 10.16 * cm, 23.5 * cm, mask='auto')
+        self._c.drawImage(logo, 10.16 * cm, 23.4 * cm, mask='auto')
 
 
-    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str):
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
         self._c.drawString(13 * cm, 26.5 * cm, "Time:")
-        self._c.drawString(14.5 * cm, 26.5 * cm, event_time)
+        self._c.drawString(14.3 * cm, 26.5 * cm, event_time)
         self._c.drawString(13 * cm, 25.75 * cm, "Event:")
-        self._c.drawString(14.5 * cm, 25.75 * cm, event_title)
+        self._c.drawString(14.3 * cm, 25.75 * cm, event_title)
         self._c.drawString(13 * cm, 25 * cm, "Rank:")
-        self._c.drawString(14.5 * cm, 25 * cm, ranks)
+        self._c.drawString(14.3 * cm, 25 * cm, ranks)
         self._c.drawString(13 * cm, 24.25 * cm, "Ring#:")
-        self._c.drawString(14.5 * cm, 24.25 * cm, str(ring))
+        self._c.drawString(14.3 * cm, 24.25 * cm, str(ring))
+        self._c.drawString(13 * cm, 23.5 *cm, "Competitors:")
+        self._c.drawString(15.5 *cm, 23.5 *cm, "{}".format(number_of_competitors))
 
         #write the footer as well
         self._c.saveState()

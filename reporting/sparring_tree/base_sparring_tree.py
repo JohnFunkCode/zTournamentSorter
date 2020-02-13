@@ -80,7 +80,7 @@ class SparringTree():
         self.draw_static_template()
 
         # lay down the header info
-        self.draw_header_info_on_tree(ring, event_time, event_title, ranks)
+        self.draw_header_info_on_tree(ring, event_time, event_title, ranks, competitors.get_number_of_competitors())
 
         # arrange the competitors for sparring
         ordered_competitors=competitors.arrange_competitors_for_sparring()

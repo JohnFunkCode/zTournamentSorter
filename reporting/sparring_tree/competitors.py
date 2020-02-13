@@ -14,7 +14,7 @@ class Competitors(pd.DataFrame):
     #     '''setup instance variables'''
     #     super().__init__(data, index, columns, dtype, copy)
 
-    def get_number_of_competitors(self):
+    def get_number_of_competitors(self) -> int:
         '''convenience  method to get the number of competitors'''
         return self.shape[0]
 

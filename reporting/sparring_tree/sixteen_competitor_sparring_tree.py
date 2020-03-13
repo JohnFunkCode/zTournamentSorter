@@ -130,11 +130,11 @@ class SixteenCompetitorTree(SparringTree):
         #logo = ImageReader('../..//Z_LOGO_OneInch.jpg')
         #self._c.drawImage(logo, 17 * cm, 18 * cm, mask='auto') # 10.16 is centered
 
-        self._c.drawString(20.25 * cm, 3.6 * cm, "Third:")
+        #self._c.drawString(20.25 * cm, 3.6 * cm, "Third:")
         self._path.moveTo( 21.3 * cm ,3.5 * cm)
         self._path.lineTo( 26.8 * cm, 3.5 * cm)
 
-        self._c.drawString(20 * cm, 2.1 * cm, "Fourth:")
+        #self._c.drawString(20 * cm, 2.1 * cm, "Fourth:")
         self._path.moveTo( 21.3 * cm ,2 * cm)
         self._path.lineTo( 26.8 * cm, 2 * cm)
 

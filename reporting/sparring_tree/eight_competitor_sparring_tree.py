@@ -110,11 +110,11 @@ class EightCompetitorTree(SparringTree):
         self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
         self.draw_boxes(16.0, 17.1)
 
-        self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
+        #self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
         self._path.moveTo( 15.3 * cm ,4.5 * cm)
         self._path.lineTo( 21.4 * cm, 4.5 * cm)
 
-        self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
+        #self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
         self._path.moveTo( 15.3 * cm ,2.5 * cm)
         self._path.lineTo( 21.4 * cm, 2.5 * cm)
 

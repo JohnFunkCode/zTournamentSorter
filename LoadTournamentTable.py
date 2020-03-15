@@ -67,10 +67,10 @@ import pandas as pd
 from cleaninput import cleaninput
 from cleaninput import rename_colums as RN
 
-from reporting import DivisionDetailReportPDF
-from reporting import KataScoreSheetPDF as kata_score_sheet_pdf
-import reporting.sparring_tree.sparring_tree_report
-import reporting.sparring_tree.competitors
+from reports import DivisionDetailReportPDF
+from reports import KataScoreSheetPDF as kata_score_sheet_pdf
+import reports.sparring_tree.sparring_tree_report
+import domain_model.competitors
 
 
 
@@ -2382,7 +2382,7 @@ kata_score_sheet_pdf.KataScoreSheetPDF.set_sourcefile(filename)
 
 ###############################################################################
 # Setup a few things for the Sparring Tree PDF report
-sparing_tree_pdf = reporting.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
+sparing_tree_pdf = reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
 sparing_tree_pdf.set_source_file( filename )
 
 ### 9AM Events
@@ -2411,7 +2411,7 @@ writePattern6ToExcel("BoysSparring.xlsx", compositMask)
 writePattern6ToDetailReport(16, "9:00am", "Boy's Sparring", "9-11", compositMask)
 
 boys_sparring_data_frame = newDataFrameFromMask(compositMask)
-boys_sparring_competitors = reporting.sparring_tree.competitors.Competitors(boys_sparring_data_frame)
+boys_sparring_competitors = domain_model.competitors.Competitors(boys_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_6([16, 17, 18, 19, 20, 21, 22], "9:00am",
                                                                 "Boys Sparring 9-11", boys_sparring_competitors)
 del boys_sparring_data_frame
@@ -2427,7 +2427,7 @@ writePattern2ToExcel("KidsSparring.xlsx", compositMask)
 writePattern2ToDetailReport(1, "9:45am", "Kids Sparring", "4-6", compositMask)
 
 kids_sparring_data_frame = newDataFrameFromMask(compositMask)
-kids_sparring_competitors = reporting.sparring_tree.competitors.Competitors(kids_sparring_data_frame)
+kids_sparring_competitors = domain_model.competitors.Competitors(kids_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_1([1, 2, 3, 4, 5], "9:45am", "Kids Sparring 4-6",
                                                                 kids_sparring_competitors)
 del kids_sparring_data_frame
@@ -2452,7 +2452,7 @@ writePattern5ToExcel("YouthGirlSparring.xlsx", compositMask)
 writePattern5ToDetailReport(1, "10:30am", "Youth Girls Sparring", "7-8", compositMask)
 
 youth_girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-youth_girl_sparring_competitors = reporting.sparring_tree.competitors.Competitors(youth_girl_sparring_data_frame)
+youth_girl_sparring_competitors = domain_model.competitors.Competitors(youth_girl_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([1, 2, 3, 4, 5], "10:30am", "Youh Girls Sparring 7-8",
                                                                 youth_girl_sparring_competitors)
 del youth_girl_sparring_data_frame
@@ -2466,7 +2466,7 @@ writePattern5ToExcel("YouthBoysSparring.xlsx", compositMask)
 writePattern5ToDetailReport(6, "10:30am", "Youth Boys Sparring", "7-8", compositMask)
 
 youth_boy_sparring_data_frame = newDataFrameFromMask(compositMask)
-youth_boy_sparring_competitors = reporting.sparring_tree.competitors.Competitors(youth_boy_sparring_data_frame)
+youth_boy_sparring_competitors = domain_model.competitors.Competitors(youth_boy_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([6, 7, 8, 9, 10], "10:30am", "Youh Boys Sparring 7-8",
                                                                 youth_boy_sparring_competitors)
 del youth_boy_sparring_data_frame
@@ -2480,7 +2480,7 @@ writePattern4ToExcel("GirlsSparring.xlsx", compositMask)
 writePattern4ToDetailReport(11, "10:30am", "Girls Sparring", "9-11", compositMask)
 
 girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-girl_sparring_competitors = reporting.sparring_tree.competitors.Competitors(girl_sparring_data_frame)
+girl_sparring_competitors = domain_model.competitors.Competitors(girl_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([11, 12, 13, 14], "10:30am", "Girls Sparring 7-8",
                                                                 girl_sparring_competitors)
 del girl_sparring_data_frame
@@ -2496,7 +2496,7 @@ writePattern4ToExcel("TeenGirlSparring.xlsx", compositMask)
 writePattern4ToDetailReport(1, "11:15am", "Teen Girls Sparring", "12-14", compositMask)
 
 teen_girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-teen_girl_sparring_competitors = reporting.sparring_tree.competitors.Competitors(teen_girl_sparring_data_frame)
+teen_girl_sparring_competitors = domain_model.competitors.Competitors(teen_girl_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "11:15am", "Teen Girls Sparring 12-14",
                                                                 teen_girl_sparring_competitors)
 del teen_girl_sparring_data_frame
@@ -2510,7 +2510,7 @@ writePattern4ToExcel("WomensSparring.xlsx", compositMask)
 writePattern4ToDetailReport(5, "11:15am", "Women's Sparring", "18-39", compositMask)
 
 woman_sparring_data_frame = newDataFrameFromMask(compositMask)
-woman_sparring_competitors = reporting.sparring_tree.competitors.Competitors(woman_sparring_data_frame)
+woman_sparring_competitors = domain_model.competitors.Competitors(woman_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([5, 6, 7, 8], "11:15am", "Woman's Sparring 18-39",
                                                                 woman_sparring_competitors)
 del woman_sparring_data_frame
@@ -2568,7 +2568,7 @@ writePattern4ToExcel("SeniorMensSparring.xlsx", compositMask)
 writePattern4ToDetailReport(1, "2:15pm", "Senior Men's Sparring", "40 +", compositMask)
 
 senior_men_sparring_data_frame = newDataFrameFromMask(compositMask)
-senior_men_sparring_competitors = reporting.sparring_tree.competitors.Competitors(senior_men_sparring_data_frame)
+senior_men_sparring_competitors = domain_model.competitors.Competitors(senior_men_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "2:15pm", "Senior Men's Sparring 40+",
                                                                 senior_men_sparring_competitors)
 del senior_men_sparring_data_frame
@@ -2582,7 +2582,7 @@ writePattern4ToExcel("SeniorWomensSparring.xlsx", compositMask)
 writePattern4ToDetailReport(5, "2:15pm", "Senior Women's Sparring", "40 +", compositMask)
 
 senior_woman_sparring_data_frame = newDataFrameFromMask(compositMask)
-senior_woman_sparring_competitors = reporting.sparring_tree.competitors.Competitors(senior_woman_sparring_data_frame)
+senior_woman_sparring_competitors = domain_model.competitors.Competitors(senior_woman_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([5, 6, 7, 8], "2:15pm", "Senior Woman's Sparring 40+",
                                                                 senior_woman_sparring_competitors)
 del senior_woman_sparring_data_frame
@@ -2606,7 +2606,7 @@ writePattern4ToExcel("MensSparring.xlsx", compositMask)
 writePattern4ToDetailReport(1, "3:00pm", "Mens Sparring", "18-39", compositMask)
 
 men_sparring_data_frame = newDataFrameFromMask(compositMask)
-men_sparring_competitors = reporting.sparring_tree.competitors.Competitors(men_sparring_data_frame)
+men_sparring_competitors = domain_model.competitors.Competitors(men_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm", "Men's Sparring 18-39",
                                                                 men_sparring_competitors)
 del men_sparring_data_frame
@@ -2620,7 +2620,7 @@ writePattern4ToExcel("TeenBoysSparring.xlsx", compositMask)
 writePattern4ToDetailReport(5, "3:00pm", "Teen Boys Sparring", "12-14", compositMask)
 
 teen_boys_sparring_data_frame = newDataFrameFromMask(compositMask)
-teen_boys_sparring_competitors = reporting.sparring_tree.competitors.Competitors(teen_boys_sparring_data_frame)
+teen_boys_sparring_competitors = domain_model.competitors.Competitors(teen_boys_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm", "Teen Boy's Sparring 12-14",
                                                                 teen_boys_sparring_competitors)
 del teen_boys_sparring_data_frame
@@ -2634,7 +2634,7 @@ writePattern4ToExcel("YoungAdultMensSparring.xlsx", compositMask)
 writePattern4ToDetailReport(9, "3:00pm", "Young Adult Mens Sparring", "15-17", compositMask)
 
 young_adult_men_sparring_data_frame = newDataFrameFromMask(compositMask)
-young_adult_men_sparring_competitors = reporting.sparring_tree.competitors.Competitors(
+young_adult_men_sparring_competitors = domain_model.competitors.Competitors(
     young_adult_men_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm",
                                                                 "Young Adult Men's Sparring 15-17",
@@ -2660,7 +2660,7 @@ writePattern7ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
 writePattern7ToDetailReport(8, "3:45pm", "Young Adult Womens Sparring", "15-17", compositMask)
 
 young_adult_women_sparring_data_frame = newDataFrameFromMask(compositMask)
-young_adult_women_sparring_competitors = reporting.sparring_tree.competitors.Competitors(
+young_adult_women_sparring_competitors = domain_model.competitors.Competitors(
     young_adult_women_sparring_data_frame)
 sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([8, 9, 10, 11], "3:45pm",
                                                                 "Young Adult Women's Sparring 15-17",

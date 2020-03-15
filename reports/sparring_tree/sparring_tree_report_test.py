@@ -7,8 +7,8 @@ nosetests --with-coverage
 import unittest
 import pandas as pd
 
-from reporting.sparring_tree import competitors
-from reporting.sparring_tree.sparring_tree_report import SparringTreeReportPDF
+from domain_model import competitors
+from reports.sparring_tree.sparring_tree_report import SparringTreeReportPDF
 
 REMOVE_TEST_FILES = False
 

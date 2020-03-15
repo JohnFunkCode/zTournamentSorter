@@ -5,11 +5,11 @@ Contains code to create a report containing all the sparring trees for a tournam
 import time
 from reportlab.pdfgen import canvas
 
-from reporting.sparring_tree.competitors import Competitors
-from reporting.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
-from reporting.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
-from reporting.sparring_tree.thirtytwo_competitor_sparring_tree import ThirtyTwoCompetitorTree
-from reporting.sparring_tree.base_sparring_tree import SparringTree
+from domain_model.competitors import Competitors
+from reports.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
+from reports.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
+from reports.sparring_tree.thirtytwo_competitor_sparring_tree import ThirtyTwoCompetitorTree
+from reports.sparring_tree.base_sparring_tree import SparringTree
 
 SPARRING_TREE_REPORT_LETTER_FILE_NAME = "SparringTreeReport-Letter.pdf"
 SPARRING_TREE_REPORT_LEGAL_FILE_NAME = "SparringTreeReport-Legal.pdf"

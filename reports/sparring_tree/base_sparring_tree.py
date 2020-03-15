@@ -5,8 +5,8 @@ from reportlab.lib.units import cm
 
 from reportlab.pdfgen import canvas
 
-from reporting.sparring_tree import bracket_position_map as BPM
-from reporting.sparring_tree.competitors import Competitors
+from reports.sparring_tree import bracket_position_map as BPM
+from domain_model.competitors import Competitors
 
 
 class SparringTree():

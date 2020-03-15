@@ -7,8 +7,8 @@ nosetests --with-coverage
 import unittest
 import os
 from reportlab.pdfgen import canvas
-from reporting.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
-from reporting.sparring_tree.competitors import Competitors
+from reports.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
+from domain_model.competitors import Competitors
 
 REMOVE_TEST_FILES = False
 

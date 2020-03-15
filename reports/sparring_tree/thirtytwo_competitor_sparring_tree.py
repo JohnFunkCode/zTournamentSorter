@@ -9,8 +9,8 @@ from reportlab.lib.utils import ImageReader
 
 
 
-from reporting.sparring_tree.competitors import Competitors
-from reporting.sparring_tree.base_sparring_tree import SparringTree
+from domain_model.competitors import Competitors
+from reports.sparring_tree.base_sparring_tree import SparringTree
 
 
 class ThirtyTwoCompetitorTree(SparringTree):
@@ -182,7 +182,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
             dojo= competitor['Dojo']
             if dojo.startswith('CO- '):
                 dojo=dojo[4:]
-            dojo_weight_height = "{} {}\' {}\" {} lbs".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'])
+            dojo_weight_height = "{} {}\' {}\" {}lbs BMI={}".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'], competitor['BMI'])
             self._c.drawString(px + (0.0 * cm), py + (.35 * cm), dojo_weight_height)
             self._c.setFont("Helvetica", 12)
             i = i + 1

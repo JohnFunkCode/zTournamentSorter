@@ -20,15 +20,15 @@ class Competitors(pd.DataFrame):
 
     def sort_by_body_mass_index_and_dojo(self):
         ''' sort the competitors by ascending BMI and Dojo'''
-        self.sort_values(by=['BMI', 'Dojo'])
+        return_df=self.sort_values(by=['BMI', 'Dojo'])
+        return return_df
 
     def arrange_competitors_for_sparring(self):
         ''' arrange competitors by BMI and so ajacent competitors are from different dojos (if possible) '''
         result_list = []
 
         comps = self
-
-        comps.sort_by_body_mass_index_and_dojo()
+        comps = comps.sort_by_body_mass_index_and_dojo()
 
         while comps.shape[0] > 1:
             name1 = comps.iloc[0]['First_Name']

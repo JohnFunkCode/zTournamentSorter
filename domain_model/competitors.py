@@ -32,33 +32,41 @@ class Competitors(pd.DataFrame):
 
         while comps.shape[0] > 1:
             name1 = comps.iloc[0]['First_Name']
+            reg_id_1 = comps.iloc[0]['Registrant_ID']
             dojo1 = comps.iloc[0]['Dojo']
             name2 = ''
+            reg_id_2 = ''
+
             # dojo2 = ''
             for i in range(1, len(comps)):
                 if comps.iloc[i].Dojo != dojo1:
                     # print(i,"Different Dojo")
                     name2 = comps.iloc[i]['First_Name']
-                    # dojo2 = comps.iloc[i]['Dojo']
+                    reg_id_2 = comps.iloc[i]['Registrant_ID']
+                    dojo2 = comps.iloc[i]['Dojo']
                     break
                 # else:
                 # print(i,"Same Dojo")
 
-            if name2 == '':
+            if reg_id_2 == '':
                 name2 = comps.iloc[1]['First_Name']
-                # dojo2 = comps.iloc[1]['Dojo']
+                reg_id_2 = comps.iloc[1]['Registrant_ID']
+                dojo2 = comps.iloc[1]['Dojo']
 
-            # print(name1, dojo1, '|', name2, dojo2)
+            #print(name1, dojo1, '|', name2, dojo2)
             result_list.append(comps.iloc[0])
             result_list.append(comps.iloc[i])
 
             # remove the two names from the data frame
-            df1 = comps[comps['First_Name'] != name1]
-            comps = df1[df1['First_Name'] != name2]
+#            df1 = comps[comps['First_Name'] != name1]    #*** TBD Bug Do not rely on first name alone, that can be a duplicate.  Better to match on first_name, last name, and BMI - comps.query("First_Name!=@name2 or Last_Name != 'Chatterley'")
+#            comps = df1[df1['First_Name'] != name2]
+            df1 = comps[comps['Registrant_ID'] != reg_id_1]
+            comps = df1[df1['Registrant_ID'] != reg_id_2]
 
         # if there is an odd number process the last one now0
         if (comps.shape[0] % 2) != 0:
-            name1 = comps.iloc[0]['First_Name']
+#            name1 = comps.iloc[0]['First_Name']
+            reg_id_1 = comps.iloc[0]['Registrant_ID']
             dojo1 = comps.iloc[0]['Dojo']
             # print(name1, dojo1)
             result_list.append(comps.iloc[0])
@@ -73,7 +81,7 @@ class Competitors(pd.DataFrame):
 
 if __name__ == '__main__':
     '''test getting the number of compettitors '''
-    cols = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
+    cols = ['Registrant_ID', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
             'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
     data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
              '2 Events - Forms & Sparring ($75)', 'None', 0),

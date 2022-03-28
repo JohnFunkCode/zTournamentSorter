@@ -95,7 +95,7 @@ def pathDelimiter():
 #
 def newDataFrameFromMask(mask):
     newdf = clean_df[
-        ["First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+        ["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
          "Events", "Weapons"]][mask].sort_values("Age")
     newdf.sort_values('BMI', inplace=True)
 
@@ -2187,7 +2187,13 @@ else:
 # filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
 # filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
 
-print(time.strftime("%X") + " Reading the data....")
+print(time.strftime("%X") + " Reading the data from:" + filename + "....")
+
+#### SET Encoding to UTF-8 added 3/27/2022
+if os.name == "nt":
+    import _locale
+    _locale._gdl_bak = _locale._getdefaultlocale
+    _locale._getdefaultlocale = (lambda *args: (_locale._gdl_bak()[0], 'utf8'))
 
 errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
 errorLogFile = open(errorLogFileName, "w")
@@ -2211,7 +2217,8 @@ clean_df.to_pickle("pickled_clean_dataframe.pkl")
 try:
     os.mkdir("sorted")
 except:
-    print("expected error")
+    assert(1==1)
+    #print("expected error")
 
 
 ####################
@@ -2453,7 +2460,7 @@ writePattern5ToDetailReport(1, "10:30am", "Youth Girls Sparring", "7-8", composi
 
 youth_girl_sparring_data_frame = newDataFrameFromMask(compositMask)
 youth_girl_sparring_competitors = domain_model.competitors.Competitors(youth_girl_sparring_data_frame)
-sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([1, 2, 3, 4, 5], "10:30am", "Youh Girls Sparring 7-8",
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([1, 2, 3, 4, 5], "10:30am", "Youth Girls Sparring 7-8",
                                                                 youth_girl_sparring_competitors)
 del youth_girl_sparring_data_frame
 del youth_girl_sparring_competitors
@@ -2467,7 +2474,7 @@ writePattern5ToDetailReport(6, "10:30am", "Youth Boys Sparring", "7-8", composit
 
 youth_boy_sparring_data_frame = newDataFrameFromMask(compositMask)
 youth_boy_sparring_competitors = domain_model.competitors.Competitors(youth_boy_sparring_data_frame)
-sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([6, 7, 8, 9, 10], "10:30am", "Youh Boys Sparring 7-8",
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([6, 7, 8, 9, 10], "10:30am", "Youth Boys Sparring 7-8",
                                                                 youth_boy_sparring_competitors)
 del youth_boy_sparring_data_frame
 del youth_boy_sparring_competitors
@@ -2481,7 +2488,7 @@ writePattern4ToDetailReport(11, "10:30am", "Girls Sparring", "9-11", compositMas
 
 girl_sparring_data_frame = newDataFrameFromMask(compositMask)
 girl_sparring_competitors = domain_model.competitors.Competitors(girl_sparring_data_frame)
-sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([11, 12, 13, 14], "10:30am", "Girls Sparring 7-8",
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([11, 12, 13, 14], "10:30am", "Girls Sparring 9-11",
                                                                 girl_sparring_competitors)
 del girl_sparring_data_frame
 del girl_sparring_competitors
@@ -2537,8 +2544,8 @@ writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Bl
 #
 compositMask = mask_Weapons & mask_Age9to11
 writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
-writeWeaponsDivision3ToDetailReport("4:15pm", "Weapons Division 2 Green - Jr. Black", "9-11", compositMask)
-writeWeaponsDivision3ToKataScoreSheet("4:15pm", "Weapons Division 2 Green - Jr. Black", "9-11", compositMask)
+writeWeaponsDivision3ToDetailReport("4:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+writeWeaponsDivision3ToKataScoreSheet("4:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
 
 ### 1:30 Events
 
@@ -2621,7 +2628,7 @@ writePattern4ToDetailReport(5, "3:00pm", "Teen Boys Sparring", "12-14", composit
 
 teen_boys_sparring_data_frame = newDataFrameFromMask(compositMask)
 teen_boys_sparring_competitors = domain_model.competitors.Competitors(teen_boys_sparring_data_frame)
-sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm", "Teen Boy's Sparring 12-14",
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([5, 6, 7, 8], "3:00pm", "Teen Boy's Sparring 12-14",
                                                                 teen_boys_sparring_competitors)
 del teen_boys_sparring_data_frame
 del teen_boys_sparring_competitors
@@ -2636,7 +2643,7 @@ writePattern4ToDetailReport(9, "3:00pm", "Young Adult Mens Sparring", "15-17", c
 young_adult_men_sparring_data_frame = newDataFrameFromMask(compositMask)
 young_adult_men_sparring_competitors = domain_model.competitors.Competitors(
     young_adult_men_sparring_data_frame)
-sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm",
+sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([9, 10, 11, 12], "3:00pm",
                                                                 "Young Adult Men's Sparring 15-17",
                                                                 young_adult_men_sparring_competitors)
 del young_adult_men_sparring_data_frame

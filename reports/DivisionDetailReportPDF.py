@@ -136,7 +136,13 @@ class DivisionDetailReportPDF(object):
 
         # Data Frame
         #  Convert data fram to a list format
-        data_list = [df.columns[:, ].values.astype(str).tolist()] + df.values.tolist()
+
+        #remove the Registrant_ID Column if it exists
+        column_list = df.columns.values.tolist()
+        if ('Registrant_ID' in column_list):
+            df_for_printing=df.drop(columns="Registrant_ID")
+
+        data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),

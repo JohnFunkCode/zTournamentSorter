@@ -52,7 +52,7 @@ class RenameColumns:
 
         headers = list(self.raw_df.columns)
         newlist = list(filter(compiled_regx.match,headers))
-        if(len(newlist)==1):
+        if(len(newlist)>0):   #Note if multiple column names match the regex, only the first is selected.   Be careful this could cause a problem.
             return newlist[0]
         else:
             return None
@@ -69,19 +69,30 @@ class RenameColumns:
     def rename_all_columns(self):
         self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
         self.replace_column_name_containing(".*Registrant.*", "Registrant_ID")
-        self.replace_column_name_containing(".*First.*Name.*", "First_Name")
-        self.replace_column_name_containing(".*Last.*Name.*", "Last_Name")
-        self.replace_column_name_containing(".*Competitor.*Age.*", "Age")
+#        self.replace_column_name_containing(".*First.*Name.*", "First_Name")
+        self.replace_column_name_containing(".*First.*", "First_Name")
+#        self.replace_column_name_containing(".*Last.*Name.*", "Last_Name")
+        self.replace_column_name_containing(".*Last.*", "Last_Name")
+#        self.replace_column_name_containing(".*Competitor.*Age.*", "Age")
+        self.replace_column_name_containing(".*Age.*", "Age")
         self.replace_column_name_containing('.*Select.*Your.*Studio.*', 'Dojo')
         self.replace_column_name_containing('.*Out.*State.*Studio.*', 'Out_of_State_Dojo')
-        self.replace_column_name_containing(".*Competitor.*Weight.*", "Weight")
-        self.replace_column_name_containing(".*Competitor.*Height.*", "Height")
+#        self.replace_column_name_containing(".*Competitor.*Weight.*", "Weight")
+        self.replace_column_name_containing(".*Weight.*", "Weight")
+#        self.replace_column_name_containing(".*Competitor.*Height.*", "Height")
+        self.replace_column_name_containing(".*Height.*", "Height")
         self.replace_column_name_containing(".*Rank.*", "Rank")
-        self.replace_column_name_containing(".*Division.*Based.*Age.*", "Division")
+#        self.replace_column_name_containing(".*Division.*Based.*Age.*", "Division")
+        self.replace_column_name_containing(".*Division.*", "Division")
         self.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
         self.replace_column_name_containing(".*Weapons.*", "Weapons")
-        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
+#        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
+        self.replace_column_name_containing(".*Tickets.*", "Spectator_Tickets")
+
         return
+
+#good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
+
 
 if __name__ == '__main__':
     #get the filename from the environment var named  tourname_filename
@@ -102,8 +113,8 @@ if __name__ == '__main__':
     r.print_column_names()
     print("-----")
     #r.is_YourSudio_a_column_name()
-    print("r.get_column_name_containing('.*Competitor.*Age.*')")
-    print(r.get_column_name_containing(".*Competitor.*Age.*"))
+    print("r.get_column_name_containing('.*Age.*')")
+    print(r.get_column_name_containing(".*Age.*"))
     print("-----")
 
     r.rename_all_columns()

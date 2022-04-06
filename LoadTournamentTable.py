@@ -1158,6 +1158,7 @@ def writePattern5ToExcel(filename, compositMask):
 #  This method provides a re-usable method to write output to PDF
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe, Brown
@@ -1243,6 +1244,7 @@ def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe
@@ -1351,6 +1353,7 @@ def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, c
 #  This method provides a re-usable method to write output to PDF
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe
@@ -1467,6 +1470,7 @@ def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_nam
 #  This method provides a re-usable method to write output to PDF
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe
@@ -1491,6 +1495,83 @@ def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, div
     mask = mask_PurpleBelt & compositMask
     wmk = newDataFrameFromMask(mask)
     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+
+    mask = mask_AllBlueBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    # filter to only keep the ones that start with a-l A-L
+    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
+    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+
+    # filter to only keep the ones that start with m-z M-Z
+    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
+    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+
+    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
+                                              "Blue, Blue Stripe (A-L)",
+                                              "*** PLEASE NOTE - These are contestants A - L")
+    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
+                                              "Blue, Blue Stripe (M-Z)",
+                                              "*** PLEASE NOTE - These are contestants M - Z")
+
+    mask = mask_AllGreenBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+                                              "Green, Green Stripe")
+
+    mask = mask_AllBrownBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
+
+    mask = mask_AllBlackBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
+
+
+###############################################################################
+# writePattern6WithSplitToKataScoreSheetlReport
+#  This method provides a re-usable method to write output to PDF
+#  The Pattern it writes is:
+#    White, Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe
+#    Brown
+#    Black
+#
+def writePattern6WithPurpleAndBlueSpitToKataScoreSheetlReport(starting_ring, event_time, division_name, age, compositMask):
+    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
+
+    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+
+    mask1 = mask_WhiteBelt & compositMask
+    mask2 = mask_YellowBelt & compositMask
+    mask = mask1 | mask2
+    wmk = newDataFrameFromMask(mask)
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+
+    mask = mask_OrangeBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
+
+    mask = mask_PurpleBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+  #  kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+
+    # filter to only keep the ones that start with a-l A-L
+    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
+    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+
+    # filter to only keep the ones that start with m-z M-Z
+    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
+    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+
+    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
+                                              "Purple (A-L)",
+                                              "*** PLEASE NOTE - These are contestants A - L")
+    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
+                                              "Purple (M-Z)",
+                                              "*** PLEASE NOTE - These are contestants M - Z")
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -2276,7 +2357,7 @@ mask_Forms = mask_SparringAndForms | mask_FormsOnly
 
 # Atomic mask for age groups found in the tournament guide
 # 4-6 used for kids kata, kids sparring,
-maskLowAge = clean_df["Age"] >= 4
+maskLowAge = clean_df["Age"] >= 3
 maskHighAge = clean_df["Age"] <= 6
 mask_Age4to6 = maskLowAge & maskHighAge
 # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to6]
@@ -2415,7 +2496,8 @@ writePattern3WithSplitToKataScoreSheet(8, "9:00am", "Youth Kata", "7-8", composi
 #
 compositMask = mask_Sparring & mask_Age9to11 & mask_Male
 writePattern6ToExcel("BoysSparring.xlsx", compositMask)
-writePattern6ToDetailReport(16, "9:00am", "Boy's Sparring", "9-11", compositMask)
+writePattern6WithSplitToDetailReport(16, "9:00am", "Boy's Sparring", "9-11", compositMask)
+
 
 boys_sparring_data_frame = newDataFrameFromMask(compositMask)
 boys_sparring_competitors = domain_model.competitors.Competitors(boys_sparring_data_frame)
@@ -2448,6 +2530,7 @@ writePattern6ToExcel("BoysGirlsKata.xlsx", compositMask)
 # writePattern6ToPDF(6,"9:45am","Boy's & Girls Kata","9-11",compositMask)
 writePattern6WithSplitToDetailReport(6, "9:45am", "Boys & Girls Kata", "9-11", compositMask)
 writePattern6WithSplitToKataScoreSheetlReport(6, "9:45am", "Boys & Girls Kata", "9-11", compositMask)
+writePattern6WithPurpleAndBlueSpitToKataScoreSheetlReport(6, "9:45am", "Boys & Girls Kata", "9-11", compositMask)
 
 ### 10:30 Events
 
@@ -2524,7 +2607,7 @@ del woman_sparring_data_frame
 del woman_sparring_competitors
 
 ###############################################################################
-# Weapons Division 1 - 4-9 year olds one sheet per rank
+# Weapons Division 1 - 4-8 year olds one sheet per rank
 #
 compositMask = mask_Weapons & mask_Age4to8
 writeWeaponsDivision1ToExcel("WeaponsDivision1.xlsx", compositMask)
@@ -2562,8 +2645,8 @@ writePattern6ToKataScoreSheet(1, "1:30pm", "Men & Womens Kata", "18-39", composi
 #
 compositMask = mask_Forms & mask_Age12to14
 writePattern6ToExcel("TeenKata.xlsx", compositMask)
-writePattern6ToDetailReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
-writePattern6ToKataScoreSheet(8, "1:30pm", "Teen Kata", "12-14", compositMask)
+writePattern6WithSplitToDetailReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
+writePattern6WithSplitToKataScoreSheetlReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
 
 ### 2:15 Events
 

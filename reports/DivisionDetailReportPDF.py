@@ -142,6 +142,21 @@ class DivisionDetailReportPDF(object):
         if ('Registrant_ID' in column_list):
             df_for_printing=df.drop(columns="Registrant_ID")
 
+        #remove the Events Column if it exists
+        column_list = df_for_printing.columns.values.tolist()
+        if ('Events' in column_list):
+            df_for_printing=df_for_printing.drop(columns="Events")
+
+        # remove the Weapons Column if it exists
+        column_list = df_for_printing.columns.values.tolist()
+        if ('Weapons' in column_list):
+            df_for_printing = df_for_printing.drop(columns="Weapons")
+
+        # remove the Height Column if it exists
+        column_list = df_for_printing.columns.values.tolist()
+        if ('Height' in column_list):
+            df_for_printing = df_for_printing.drop(columns="Height")
+
         data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)

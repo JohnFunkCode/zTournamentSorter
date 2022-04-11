@@ -60,7 +60,7 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
     for index, row in cleanDataFrame.iterrows():
         try:
             age=int(row['Age'])
-            if (age < 4):
+            if (age < 3):
                 errorCount += 1
                 errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
                     row["Last_Name"]) + " has an age field of "+str(age)+" which is less than the age in our youngest division"

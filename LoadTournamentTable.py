@@ -2147,7 +2147,7 @@ def writeWeaponsDivision7ToFile(filename, compositMask):
 
     mask = mask_AllBrownBelt & compositMask
     wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 6b')
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
 
     writer.save()
     time.sleep(1)
@@ -2196,7 +2196,7 @@ def writeWeaponsDivision8ToFile(filename, compositMask):
     mask1 = mask_AllBlackBelt & compositMask
     mask = mask1
     wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
 
     writer.save()
     time.sleep(1)
@@ -2627,8 +2627,8 @@ writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Bl
 #
 compositMask = mask_Weapons & mask_Age9to11
 writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
-writeWeaponsDivision3ToDetailReport("4:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
-writeWeaponsDivision3ToKataScoreSheet("4:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+writeWeaponsDivision3ToDetailReport("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+writeWeaponsDivision3ToKataScoreSheet("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
 
 ### 1:30 Events
 

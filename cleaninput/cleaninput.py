@@ -4,6 +4,8 @@ import math
 
 import numpy as np
 import pandas as pd
+import domain_model.constants as constants
+
 
 #from LoadTournamentTable import df
 
@@ -209,16 +211,26 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
 
     # Rank - this is the field that has caused us the most problem in the 2017 tournaments
     print("  " + time.strftime("%X") + " Looking for invalid Ranks")
-    valid_ranks=['Black 1st Degree','Black 2nd Degree','Black 3rd Degree',
-                 'Black 4th Degree','Black 5th Degree',
-                 'Black Junior',
-                 'Brown 3rd Degree','Brown 2nd Degree','Brown 1st Degree',
-                 'Green','Green w/Stripe',
-                 'Blue', 'Blue w/Stripe',
-                 'Purple',
-                 'Orange',
-                 'Yellow',
-                 'White']
+    # valid_ranks=['Black 1st Degree','Black 2nd Degree','Black 3rd Degree',
+    #              'Black 4th Degree','Black 5th Degree',
+    #              'Black Junior',
+    #              'Brown 3rd Degree','Brown 2nd Degree','Brown 1st Degree',
+    #              'Green','Green w/Stripe',
+    #              'Blue', 'Blue w/Stripe',
+    #              'Purple',
+    #              'Orange',
+    #              'Yellow',
+    #              'White']
+    valid_ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,
+                 constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,
+                 constants.JUNIOR_BLACK_BELT,
+                 constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,
+                 constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,
+                 constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,
+                 constants.PURPLE_BELT,
+                 constants.ORANGE_BELT,
+                 constants.YELLOW_BELT,
+                 constants.WHITE_BELT]
     print("Valid Ranks at this time are:")
     for index in valid_ranks[:]:
         print(" " + index)

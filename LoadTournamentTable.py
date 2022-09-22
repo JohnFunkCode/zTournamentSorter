@@ -71,6 +71,7 @@ from reports import DivisionDetailReportPDF
 from reports import KataScoreSheetPDF as kata_score_sheet_pdf
 import reports.sparring_tree.sparring_tree_report
 import domain_model.competitors
+import domain_model.constants as constants
 
 
 
@@ -333,39 +334,37 @@ def writePattern1WithSplitToDivisionDetailReport(starting_ring, event_time, divi
     wmk = newDataFrameFromMask(mask)
     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Yellow (A-L)",
-                                                       "*** PLEASE NOTE - These are contestants A - L")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Yellow (M-Z)",
-                                                       "*** PLEASE NOTE - These are contestants M - Z")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                                       "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                                       "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                                       "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                                       "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_OrangeBelt & compositMask
     wmk = newDataFrameFromMask(mask)
     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Orange (A-L)",
-                                                       "*** PLEASE NOTE - These are contestants A - L")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Orange (M-Z)",
-                                                       "*** PLEASE NOTE - These are contestants M - Z")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 3), event_time, division_name, age,
+                                                       "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                                       "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 4), event_time, division_name, age,
+                                                       "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                                       "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask1 = mask_PurpleBelt & compositMask
     mask2 = mask_AllBlueBelt & compositMask
@@ -459,39 +458,35 @@ def writePattern1WithSplitToKataScoreSheet(starting_ring, event_time, division_n
     wmk = newDataFrameFromMask(mask)
     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 1), event_time, division_name, age,
-                                              "Yellow (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 2), event_time, division_name, age,
-                                              "Yellow (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_OrangeBelt & compositMask
     wmk = newDataFrameFromMask(mask)
     #   kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                              "Orange (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                              "Orange (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask1 = mask_PurpleBelt & compositMask
     mask2 = mask_AllBlueBelt & compositMask
@@ -788,39 +783,41 @@ def writePattern3WithSplitToDetailReport(starting_ring, event_time, division_nam
     wmk = newDataFrameFromMask(mask)
     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Orange")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Orange (A-L)",
-                                                       "*** PLEASE NOTE - These are contestants A - L")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Orange (M-Z)",
-                                                       "*** PLEASE NOTE - These are contestants M - Z")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
+                                                       division_name, age,
+                                                       "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+                                                       division_name, age,
+                                                       "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_PurpleBelt & compositMask
     wmk = newDataFrameFromMask(mask)
     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age, "Purple")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Purple (A-L)",
-                                                       "*** PLEASE NOTE - These are contestants A - L")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 5), event_time, division_name, age,
-                                                       "Purple (M-Z)",
-                                                       "*** PLEASE NOTE - These are contestants M - Z")
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
+                                                       division_name, age,
+                                                       "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+                                                       division_name, age,
+                                                       "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -908,39 +905,35 @@ def writePattern3WithSplitToKataScoreSheet(starting_ring, event_time, division_n
     wmk = newDataFrameFromMask(mask)
     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 2), event_time, division_name, age,
-                                              "Orange (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 3), event_time, division_name, age,
-                                              "Orange (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_PurpleBelt & compositMask
     wmk = newDataFrameFromMask(mask)
     #   kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age, "Purple")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 4), event_time, division_name, age,
-                                              "Purple (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 5), event_time, division_name, age,
-                                              "Purple (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Purple ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Purple ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -1434,20 +1427,22 @@ def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_nam
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Blue, Blue Stripe (A-L)",
-                                                       "*** PLEASE NOTE - These are contestants A - L")
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Blue, Blue Stripe (M-Z)",
-                                                       "*** PLEASE NOTE - These are contestants M - Z")
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
+                                                       division_name, age,
+                                                       "Blue, Blue Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+                                                       division_name, age,
+                                                       "Blue, Blue Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllGreenBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -1498,20 +1493,19 @@ def writePattern6WithSplitToKataScoreSheetlReport(starting_ring, event_time, div
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                              "Blue, Blue Stripe (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                              "Blue, Blue Stripe (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllGreenBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -1558,37 +1552,36 @@ def writePattern6WithPurpleAndBlueSpitToKataScoreSheetlReport(starting_ring, eve
     wmk = newDataFrameFromMask(mask)
   #  kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
 
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                              "Purple (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                              "Purple (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name,
+                                              age,
+                                              "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                              "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+                                              division_name, age,
+                                              "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                              "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllBlueBelt & compositMask
     wmk = newDataFrameFromMask(mask)
-    # filter to only keep the ones that start with a-l A-L
-    pattern = r'^[a-lA-L]'  # ^ means starts wtih [a-l][A-L] means letters in the set a-l
-    AtoL = wmk[wmk['Last_Name'].str.contains(pattern)]
 
-    # filter to only keep the ones that start with m-z M-Z
-    pattern = r'^[m-zM-Z]'  # ^ means starts wtih [m-z][M-Z] means letters in the set m-z
-    MtoZ = wmk[wmk['Last_Name'].str.contains(pattern)]
+    # filter to only keep contestants who's last name fall into the first alphabetic split
+    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    kata_score_sheet.put_dataframe_on_pdfpage(AtoL, str(starting_ring + 3), event_time, division_name, age,
-                                              "Blue, Blue Stripe (A-L)",
-                                              "*** PLEASE NOTE - These are contestants A - L")
-    kata_score_sheet.put_dataframe_on_pdfpage(MtoZ, str(starting_ring + 4), event_time, division_name, age,
-                                              "Blue, Blue Stripe (M-Z)",
-                                              "*** PLEASE NOTE - These are contestants M - Z")
+    # filter to only keep contestants who's last name fall into the second alphabetic split
+    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+
+    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+                                              "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+                                              "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
 
     mask = mask_AllGreenBelt & compositMask
     wmk = newDataFrameFromMask(mask)

@@ -140,7 +140,7 @@ class SixteenCompetitorTree(SparringTree):
         logo = ImageReader('Z_LOGO_HalfInch.jpg')
         self._c.drawImage(logo, 13.3 * cm, 19.5 * cm, mask='auto')
 
-    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, number_of_competitors: int):
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, split_label: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
         self._c.drawString(20 * cm, 20.5 * cm, "Time:")
         self._c.drawString(21.5 * cm, 20.5 * cm, event_time)
@@ -150,6 +150,10 @@ class SixteenCompetitorTree(SparringTree):
         self._c.drawString(21.5 * cm, 19 * cm, ranks)
         self._c.drawString(20 * cm, 18.25 * cm, "Ring#:")
         self._c.drawString(21.5 * cm, 18.25 * cm, str(ring))
+        if split_label != '':
+            self._c.setFillColorRGB(255,0,0)
+            self._c.drawString(22 * cm, 18.25 * cm, 'Contestants '+ split_label)
+            self._c.setFillColorRGB(0, 0, 0)
         self._c.drawString(20 * cm, 17.5 *cm, "Competitors:")
         self._c.drawString(22.5 *cm, 17.5 *cm, "{}".format(number_of_competitors))
 

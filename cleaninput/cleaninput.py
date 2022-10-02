@@ -34,6 +34,23 @@ def clean_unicode_from_file(inputFileName, errorLogFile):
 #  This function scans indiviual rows looking for input errors
 def clean_all_input_errors(inputDataFrame, errorLogFile):
     errorCount = 0
+
+    print("The Column Headers must contain the follow at this time:")
+    print("  Event Date")
+    print("  Registrant ID")
+    print("  First Name")
+    print("  Last Name")
+    print("  Select Your Studio")
+    print("  Out of State Studio Name")
+    print("  Age")
+    print("  Weight")
+    print("  Height")
+    print("  Division")
+    print("  Rank")
+    print("  Forms or Sparring")
+    print("  Weapons")
+    print("  Tickets")
+
     print(time.strftime("%X") + " Checking for errors in the data....")
 
     # First let's establish a Registrant_ID column in the input dataframe

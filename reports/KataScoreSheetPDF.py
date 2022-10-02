@@ -6,7 +6,9 @@ Created on Wed April 5 2017
 @author: john funk
 """
 
+import pandas
 import datetime
+import time
 
 #
 import pandas as pd
@@ -17,6 +19,8 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
+import domain_model.constants as constants
+
 
 class KataScoreSheetPDF(object):
     def __init__(self):
@@ -91,11 +95,15 @@ class KataScoreSheetPDF(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
+        if inputdf.shape[0] > 20:
+            print("*** Warning: {} {} Ring:{} has too many competitors".format(event_time,division_name,ring_number))
+
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
                            ['DIVISION', division_name],
                            ['AGE', age],
-                           ['RANKS', belts]]
+                           ['RANKS', belts],
+                           ['COMPETITORS',inputdf.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -110,7 +118,8 @@ class KataScoreSheetPDF(object):
             headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
                            ['DIVISION', division_name, '' ],
                            ['AGE', age,''],
-                           ['RANKS', belts,split_warning_text]]
+                           ['RANKS', belts,split_warning_text],
+                           ['COMPETITORS',inputdf.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -141,14 +150,25 @@ class KataScoreSheetPDF(object):
         data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
-                               ('FONTSIZE', (0, 0), (-1, -1), 8),
-                               ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                               ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
-                               ('ALIGN',(0,0),(-1,0),'CENTER'),
-                               ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                               ('SPAN',(2,0),(3,0)),
-                               ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        if len(data_list) <= 20:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
+                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('SPAN',(2,0),(3,0)),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        else:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
+                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
+                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('SPAN',(2,0),(3,0)),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
         t._argW[0] = 3 *inch
         t._argW[1] = 1.75 * inch
         t._argW[2] = 0.625 * inch
@@ -172,6 +192,68 @@ class KataScoreSheetPDF(object):
 
     def write_pdfpage(self):
         self.doc.build(self.docElements, onFirstPage=first_page_layout, onLaterPages=first_page_layout)
+
+    ###############################################################################
+    # writeSingleKataScoreSheet
+    #  Fall 2020
+    #  This method writes a single kata score sheet based on parameters provided
+    #
+    def writeSingleKataScoreSheet(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,
+                                  maximum_age: int, rings: list, ranks: list,clean_df: pandas.DataFrame):
+        if (maximum_age == 100):
+            age_label = '{0}+'.format(minimum_age)
+        else:
+            age_label = '{0}-{1}'.format(minimum_age, maximum_age)
+
+        # Hack for 3 year olds
+        if minimum_age == 4:
+            minimum_age = 2
+
+        print(time.strftime(
+            "%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
+        self.set_title("Forms")
+
+        age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+        rank_query = ''
+        for r in range(0, len(ranks)):
+            rank_query = rank_query + 'Rank =="' + ranks[r] + '"'
+            if r < len(ranks) - 1:  # Add ' and ' to everything but the last one
+                rank_query = rank_query + ' or '
+
+        if gender != '*':
+            gender_query = 'Gender == "' + gender + '"'
+            combined_query = '(Events.str.contains("Forms")) and ({0}) and ({1}) and ({2})'.format(age_query,
+                                                                                                   rank_query,
+                                                                                                   gender_query)
+        else:
+            combined_query = '(Events.str.contains("Forms")) and ({0}) and ({1})'.format(age_query, rank_query)
+
+        # wmk=newDataFrameFromQuery(combined_query)
+        wmk = clean_df[
+            ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
+             "Weight", "BMI",
+             "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+
+        if len(rings) > 1:  # more than 1 ring means we split
+            # filter to only keep contestants who's last name fall into the first alphabetic split
+            first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+
+            # filter to only keep contestants who's last name fall into the second alphabetic split
+            second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+
+            self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time, division_name,
+                                                      age_label,
+                                                      rank_label + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                                      "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+            self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
+                                                      division_name, age_label,
+                                                      rank_label + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                                      "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+        else:
+            self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label,
+                                                      rank_label)
 
 
 # define layout for first page

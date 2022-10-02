@@ -29,7 +29,12 @@ FIFTH_DEGREE_BLACK_BELT='Black 5th Degree'
 JUNIOR_BLACK_BELT='Black Junior'
 
 #Alphabetic Splits
-FIRST_ALPHABETIC_SPLIT_REGEX=r'^[a-kA-K]'  # ^ means starts wtih [a-k][A-K] means letters in the set a-k
-FIRST_ALPHABETIC_SPLIT_LABEL='A - K'
-SECOND_ALPHABETIC_SPLIT_REGEX=r'^[l-zL-Z]'  # ^ means starts wtih [l-z][L-Z] means letters in the set l-z
-SECOND_ALPHABETIC_SPLIT_LABEL='L - Z'
+FIRST_ALPHABETIC_SPLIT_REGEX=r'^[a-lA-L]'  # means letters in the set a-l
+FIRST_ALPHABETIC_SPLIT_LABEL='A - L'
+SECOND_ALPHABETIC_SPLIT_REGEX=r'^[m-zM-Z]'  # means letters in the set m-z
+SECOND_ALPHABETIC_SPLIT_LABEL='M - Z'
+
+#Sleep time after writing a file
+SLEEP_TIME=.0001
+
+

@@ -120,7 +120,7 @@ class EightCompetitorTree(SparringTree):
         self._c.drawImage(logo, 10.16 * cm, 23.4 * cm, mask='auto')
 
 
-    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, number_of_competitors: int):
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, split_label: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
         self._c.drawString(13 * cm, 26.5 * cm, "Time:")
         self._c.drawString(14.3 * cm, 26.5 * cm, event_time)
@@ -130,6 +130,10 @@ class EightCompetitorTree(SparringTree):
         self._c.drawString(14.3 * cm, 25 * cm, ranks)
         self._c.drawString(13 * cm, 24.25 * cm, "Ring#:")
         self._c.drawString(14.3 * cm, 24.25 * cm, str(ring))
+        if split_label != '':
+            self._c.setFillColorRGB(255,0,0)
+            self._c.drawString(15 * cm, 24.25 * cm, 'Contestants '+ split_label)
+            self._c.setFillColorRGB(0, 0, 0)
         self._c.drawString(13 * cm, 23.5 *cm, "Competitors:")
         self._c.drawString(15.5 *cm, 23.5 *cm, "{}".format(number_of_competitors))
 

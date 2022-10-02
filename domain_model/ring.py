@@ -5,8 +5,8 @@ from domain_model import competitors
 
 class Ring():
     ''' class to represent a ring'''
-    event=None
-    ring_number = None
+    ring_number = None  # example 1
+    rank_lable = None  # example "White", "White, Yellow"
     last_name_filter = None
     rank_filter = None
     competitors = None

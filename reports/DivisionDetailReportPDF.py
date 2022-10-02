@@ -5,8 +5,9 @@ Created on Sat Nov  5 20:36:56 2016
 
 @author: john funk
 """
-
+import pandas
 import datetime
+import time
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
@@ -15,6 +16,8 @@ from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
+import domain_model.constants as constants
+
 
 class DivisionDetailReportPDF(object):
     def __init__(self):
@@ -73,11 +76,15 @@ class DivisionDetailReportPDF(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
+        if df.shape[0] > 20:
+            print("*** Warning: {} {} Ring {} has too many competitors".format(event_time,division_name,ring_number))
+
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
                            ['DIVISION', division_name],
                            ['AGE', age],
-                           ['RANKS', belts]]
+                           ['RANKS', belts],
+                           ['COMPETITORS',df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -92,7 +99,8 @@ class DivisionDetailReportPDF(object):
             headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
                            ['DIVISION', division_name, ''],
                            ['AGE', age, ''],
-                           ['RANKS', belts, split_warning_text]]
+                           ['RANKS', belts, split_warning_text],
+                           ['COMPETITORS',df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -137,6 +145,10 @@ class DivisionDetailReportPDF(object):
         # Data Frame
         #  Convert data fram to a list format
 
+        #insert number into the dataframe
+        number_list=[*range(1,df.shape[0]+1)]
+        df.insert(1,'#',number_list)
+
         #remove the Registrant_ID Column if it exists
         column_list = df.columns.values.tolist()
         if ('Registrant_ID' in column_list):
@@ -160,11 +172,19 @@ class DivisionDetailReportPDF(object):
         data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
-                               ('FONTSIZE', (0, 0), (-1, -1), 8),
-                               ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                               ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                               ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        if len(data_list) <= 20 :
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        else:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
         elements.append(t)
         elements.append(Spacer(1, 0.2 * inch))
         elements.append(PageBreak())
@@ -180,6 +200,70 @@ class DivisionDetailReportPDF(object):
 
     def write_pdfpage(self):
         self.doc.build(self.docElements, onFirstPage=page_layout, onLaterPages=page_layout)
+
+
+    ###############################################################################
+    # writeSingleDivisionDetailReport
+    #  This method provides a re-usable method to write output to the Divsion Detail Report PDF
+
+    def writeSingleDivisionDetailReport(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, clean_df: pandas.DataFrame):
+        if(maximum_age==100):
+            age_label= '{0}+'.format(minimum_age)
+        else:
+            age_label= '{0}-{1}'.format(minimum_age,maximum_age)
+
+        # Hack for 3 year olds
+        if minimum_age==4:
+            minimum_age=2
+
+        print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label)
+
+        self.set_title(division_name)
+
+        age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
+
+        rank_query=''
+        for r in range(0, len(ranks)):
+            rank_query=rank_query + 'Rank =="' + ranks[r] + '"'
+            if r<len(ranks)-1:  #Add ' and ' to everything but the last one
+                rank_query=rank_query + ' or '
+
+        assert division_type == 'Weapons' or division_type=='Sparring' or division_type=='Forms', "Error: Invalid division_type"
+        if division_type == 'Weapons':
+            division_type_query='Weapons.str.contains("Weapons")'
+        else:
+            division_type_query='Events.str.contains("'+division_type+'")'
+
+        if gender != '*':
+            gender_query= 'Gender == "'+ gender +'"'
+            combined_query='({0}) and ({1}) and ({2}) and ({3})'.format(division_type_query,age_query,rank_query,gender_query)
+        else:
+            combined_query='({0}) and ({1}) and ({2})'.format(division_type_query, age_query,rank_query)
+
+        #wmk = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
+        wmk=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
+             "Weight", "BMI",
+             "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+
+        if len(rings)>1:
+
+            # filter to only keep contestants who's last name fall into the first alphabetic split
+            first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+
+            # filter to only keep contestants who's last name fall into the second alphabetic split
+            second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+
+            self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time,
+                                                               division_name, age_label,
+                                                               rank_label +"(" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+                                                               "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+
+            self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
+                                                               division_name, age_label,
+                                                               rank_label +"(" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+                                                               "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+        else:
+            self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label, rank_label)
 
 
 # define layout for first page

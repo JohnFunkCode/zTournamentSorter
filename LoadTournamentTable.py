@@ -212,7 +212,8 @@ def writeEventToFile(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Black')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -261,7 +262,8 @@ def writePattern1ToExcel(filename, compositMask):
     #    mask= mask_AllBlackBelt & compositMask
     #    wmk=newDataFrameFromMask( mask )
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -566,7 +568,8 @@ def writePattern2ToExcel(filename, compositMask):
     #    wmk=newDataFrameFromMask( mask )
     #    wmk.to_excel(writer,'Black')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -715,7 +718,8 @@ def writePattern3ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -1012,7 +1016,8 @@ def writePattern4ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Black')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -1156,7 +1161,8 @@ def writePattern5ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -1297,7 +1303,8 @@ def writePattern6ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Black')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2113,6 +2120,24 @@ def writePattern6WithMultipleSplitToKataScoreSheetReportBrief(rings: list, split
             ring_index+=1
 
 
+
+###############################################################################
+# writeSingleKataScoreSheetShim
+#  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
+#  This prevents a lot of duplication
+def writeSingleKataScoreSheetShim(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
+    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
+    kata_score_sheet.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+
+###############################################################################
+# write_single_sparring_treeShim
+#  Provides a convenience wrapper that writes to both the division detail report and the sparring tree in one line
+#  This prevents a lot of duplication
+def write_single_sparring_treeShim(event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, rings: list, ranks: list, clean_df : pd.DataFrame ):
+    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
+    sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+
+
 ###############################################################################
 # writePattern7ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -2154,7 +2179,8 @@ def writePattern7ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Black')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2266,7 +2292,8 @@ def writeWeaponsDivision1ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 1')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2343,7 +2370,8 @@ def writeWeaponsDivision2ToExcel(filename, compositMask):
     #    wmk.to_excel(writer,'Weapons Division 2')
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 2')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2414,7 +2442,8 @@ def writeWeaponsDivision3ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 3')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2476,7 +2505,8 @@ def writeWeaponsDivision4ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 4')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2543,7 +2573,8 @@ def writeWeaponsDivision5ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 5')
 
-    writer.save()
+    #writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2607,7 +2638,8 @@ def writeWeaponsDivision6ToFile(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 6')
 
-    writer.save()
+    ##writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2658,7 +2690,8 @@ def writeWeaponsDivision7ToFile(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
 
-    writer.save()
+    #writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2707,7 +2740,8 @@ def writeWeaponsDivision8ToFile(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -2781,7 +2815,8 @@ def writeSparingTreeToExcel(filename, compositMask):
 
     print(byDojo.size())
 
-    writer.save()
+    # writer.save()
+    writer.close()
     time.sleep(constants.SLEEP_TIME)
 
 
@@ -3025,6 +3060,7 @@ divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",di
 divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
 #writePattern1WithSplitToKataScoreSheet([1,2,3,4,5,6,7], "9:00am", "Kids Kata", "4-6", compositMask)
+#writeSingleKataScoreSheetShim(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
 kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
 kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
 kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],ranks=[constants.ORANGE_BELT], clean_df=clean_df)

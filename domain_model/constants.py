@@ -35,7 +35,7 @@ SECOND_ALPHABETIC_SPLIT_REGEX=r'^[m-zM-Z]'  # means letters in the set m-z
 SECOND_ALPHABETIC_SPLIT_LABEL='M - Z'
 
 #Sleep time after writing a file
-SLEEP_TIME=.0001
+SLEEP_TIME=1
 
 #Number of competitors in a division to raise an alert
 TOO_MANY_COMPETITORS = 20

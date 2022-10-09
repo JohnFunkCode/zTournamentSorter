@@ -3,7 +3,11 @@
 # There are 6 patterns in the Denver Tournament Guide
 #
 # Pattern1
-#
+#    White
+#    Yellow
+#    Orange
+#    Purple, Blue, Blue Stripe
+#    Green, Green Stripe
 #
 # Pattern2
 #  White
@@ -43,10 +47,11 @@
 #  Black
 #
 # Pattern7
-#  White, Yellow & Orange
-#  Purple, Blue & Blue Stripe
-#  Green, Green Stripe, Brown
-#  Black
+#    White, Yellow & Orange
+#    Purple, Blue & Blue Stripe
+#    Green, Green Stripe,
+#    Brown
+#    Black
 #
 #   Feautres to add:
 # Summary Stats - how many people of each belt, how many sparring, how may forms, how many weaponds
@@ -218,7 +223,55 @@ def writeEventToFile(filename, compositMask):
 
 
 ###############################################################################
-# writePattern1ToExcel
+# writePattern1# Pattern1
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe
+# #
+# # Pattern2
+# #  White
+# #  Yellow
+# #  Orange
+# #  Purple, Blue, Blue Stripe
+# #  Green, Green Stripe, Brown
+# #
+# # Pattern3
+# #  White
+# #  Yellow
+# #  Orange
+# #  Purple
+# #  Blue, Blue Stripe
+# #  Green, Green Stripe, Brown
+# #
+# # Pattern4
+# #  White, Yellow, Orange
+# #  Purple, Blue, Blue Stripe
+# #  Green, Green Stripe, Brown
+# #  Black
+# #
+# # Pattern5
+# #  White, Yellow
+# #  Orange
+# #  Purple
+# #  Blue, Blue Stripe
+# #  Green, Green Stripe, Brown
+# #
+# # Pattern6
+# #  White, Yellow
+# #  Orange
+# #  Purple
+# #  Blue, Blue Stripe
+# #  Green, Green Stripe
+# #  Brown
+# #  Black
+# #
+# # Pattern7
+# #  White, Yellow & Orange
+# #  Purple, Blue & Blue Stripe
+# #  Green, Green Stripe, Brown
+# #  Black
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White
@@ -397,128 +450,128 @@ def writePattern1WithSplitToDivisionDetailReport(rings:list, event_time, divisio
 
 
 
-###############################################################################
-# writePattern1ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+# ###############################################################################
+# # writePattern1ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                              "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
-
-
-###############################################################################
-# writePattern1WithSplitToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern1WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-    assert len(rings) == 7, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                               "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
+#     #    mask= mask_AllBlackBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
 
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[1]), event_time, division_name, age,
-                                              "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[2]), event_time, division_name, age,
-                                              "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #   kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[3]), event_time, division_name, age,
-                                              "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[4]), event_time, division_name, age,
-                                              "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[5]), event_time, division_name, age,
-                                              "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
+# ###############################################################################
+# # writePattern1WithSplitToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# def writePattern1WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
+#     assert len(rings) == 7, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+#
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[1]), event_time, division_name, age,
+#                                               "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[2]), event_time, division_name, age,
+#                                               "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     #   kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[3]), event_time, division_name, age,
+#                                               "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[4]), event_time, division_name, age,
+#                                               "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[5]), event_time, division_name, age,
+#                                               "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
+#     #    mask= mask_AllBlackBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
 
 
 ###############################################################################
@@ -573,104 +626,104 @@ def writePattern2ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern2ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+# ###############################################################################
+# # writePattern2ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe
+# #
+# #  arguments:
+# def writePattern2ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-#  arguments:
-def writePattern2ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-#    mask= mask_AllBlackBelt & compositMask
-#    wmk=newDataFrameFromMask( mask )
-#    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
-
-
-###############################################################################
-# writePattern2ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
 #
-#  arguments:
-def writePattern2ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                              "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
-
-
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Yellow")
 #
-#    mask= mask_AllBlackBelt & compositMask
-#    wmk=newDataFrameFromMask( mask )
-#    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Orange")
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
+#
+#
+# #
+# #    mask= mask_AllBlackBelt & compositMask
+# #    wmk=newDataFrameFromMask( mask )
+# #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
+
+
+# ###############################################################################
+# # writePattern2ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe
+# #
+# #  arguments:
+# def writePattern2ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                               "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
+#
+#
+# #
+# #    mask= mask_AllBlackBelt & compositMask
+# #    wmk=newDataFrameFromMask( mask )
+# #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
 
 
 ###############################################################################
@@ -723,247 +776,247 @@ def writePattern3ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern3ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+# ###############################################################################
+# # writePattern3ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePattern3ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writePattern3ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-
-###############################################################################
-# writePattern3WithSplitToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-def writePattern3WithSplitToDetailReport(rings, event_time, division_name, age, compositMask):
-    assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age,
-                                                       "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Orange")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time,
-                                                       division_name, age,
-                                                       "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time,
-                                                       division_name, age,
-                                                       "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age, "Purple")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time,
-                                                       division_name, age,
-                                                       "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time,
-                                                       division_name, age,
-                                                       "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-                                                       "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-
-###############################################################################
-# writePattern3ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
 #
-def writePatternSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                              "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
-
-
-###############################################################################
-# writePattern3WithSplitToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Yellow")
 #
-def writePattern3WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-    assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                                        "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
 
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
+# ###############################################################################
+# # writePattern3WithSplitToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePattern3WithSplitToDetailReport(rings, event_time, division_name, age, compositMask):
+#     assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
+#
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age,
+#                                                        "Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Orange")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time,
+#                                                        division_name, age,
+#                                                        "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time,
+#                                                        division_name, age,
+#                                                        "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age, "Purple")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time,
+#                                                        division_name, age,
+#                                                        "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time,
+#                                                        division_name, age,
+#                                                        "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
+#                                                        "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
 
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age, "Yellow")
 
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+# ###############################################################################
+# # writePattern3ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePatternSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                               "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
 
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
 
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time, division_name, age,
-                                              "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time, division_name, age,
-                                              "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time, division_name, age,
-                                              "Purple ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time, division_name, age,
-                                              "Purple ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-                                              "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
+# ###############################################################################
+# # writePattern3WithSplitToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePattern3WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
+#     assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age, "Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time, division_name, age,
+#                                               "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time, division_name, age,
+#                                               "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time, division_name, age,
+#                                               "Purple ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time, division_name, age,
+#                                               "Purple ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
+#                                               "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
 
 
 ###############################################################################
@@ -1021,103 +1074,103 @@ def writePattern4ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern4ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow, Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
-#    Black
+# ###############################################################################
+# # writePattern4ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow, Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #    Black
+# #
+# def writePattern4ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writePattern4ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                       "White, Yellow, Orange")
-
-    #    mask= mask_OrangeBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    wmk.to_excel(writer,'Orange')
-
-    #    mask= mask_PurpleBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    wmk.to_excel(writer,'Purple')
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllBrownBelt & compositMask
-    mask2 = mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Black")
-
-
-###############################################################################
-# writePattern4ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow, Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
-#    Black
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                        "White, Yellow, Orange")
+#
+#     #    mask= mask_OrangeBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    wmk.to_excel(writer,'Orange')
+#
+#     #    mask= mask_PurpleBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    wmk.to_excel(writer,'Purple')
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllBrownBelt & compositMask
+#     mask2 = mask_AllGreenBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Black")
 
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                              "White, Yellow, Orange")
-
-    #    mask= mask_OrangeBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    wmk.to_excel(writer,'Orange')
-
-    #    mask= mask_PurpleBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    wmk.to_excel(writer,'Purple')
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                              "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllBrownBelt & compositMask
-    mask2 = mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
+# ###############################################################################
+# # writePattern4ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow, Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #    Black
+# #
+# def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                               "White, Yellow, Orange")
+#
+#     #    mask= mask_OrangeBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    wmk.to_excel(writer,'Orange')
+#
+#     #    mask= mask_PurpleBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#     #    wmk.to_excel(writer,'Purple')
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                               "Purple, Blue, Blue Stripe")
+#
+#     mask1 = mask_AllBrownBelt & compositMask
+#     mask2 = mask_AllGreenBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
 
 
 ###############################################################################
@@ -1125,6 +1178,7 @@ def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age,
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White, Yellow
+#    Orange
 #    Purple
 #    Blue, Blue Stripe
 #    Green, Green Stripe, Brown
@@ -1166,90 +1220,90 @@ def writePattern5ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern5ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+# ###############################################################################
+# # writePattern5ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePattern5ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writePattern5ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                       "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-
-###############################################################################
-# writePattern5ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                        "White, Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
 
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                              "Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                              "Green, Green Stripe, Brown")
+# ###############################################################################
+# # writePattern5ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                               "Blue, Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                               "Green, Green Stripe, Brown")
 
 
 ###############################################################################
@@ -1308,816 +1362,816 @@ def writePattern6ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern6ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+# ###############################################################################
+# # writePattern6ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                       "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Blue, Blue Stripe")
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Green, Green Stripe")
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                                       "Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
-                                                       "Black")
-
-
-###############################################################################
-# writePattern6ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-def writePattern6ToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-    ring_index = 0
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
-    ring_index+=1
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Orange")
-    ring_index+=1
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Purple")
-    ring_index+=1
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
-                                              "Blue, Blue Stripe")
-    ring_index+=1
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
-                                              "Green, Green Stripe")
-    ring_index+=1
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Brown")
-    ring_index+=1
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Black")
-    ring_index+=1
-
-
-###############################################################################
-# writePattern6WithSplitToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                        "White, Yellow")
 #
-def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                       "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
-                                                       division_name, age,
-                                                       "Blue, Blue Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
-                                                       division_name, age,
-                                                       "Blue, Blue Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                                       "Green, Green Stripe")
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
-                                                       "Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age,
-                                                       "Black")
-
-
-###############################################################################
-# writePattern6WithSplitToKataScoreSheetReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Orange")
 #
-def writePattern6WithSplitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
-                                              "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
-                                              "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                              "Green, Green Stripe")
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
-
-
-###############################################################################
-# writePattern6WithSplitToKataScoreSheetReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Purple")
 #
-def writePattern6WithPurpleAndBlueSpitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-  #  kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name,
-                                              age,
-                                              "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                              "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
-                                              division_name, age,
-                                              "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                              "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
-                                              "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-    kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
-                                              "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                              "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-                                              "Green, Green Stripe")
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
-
-
-###############################################################################
-# writePattern6WithMultipleSplitToKataScoreSheetReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Blue, Blue Stripe")
 #
-def writePattern6WithMultipleSplitToKataScoreSheetReport(rings: list, splitlist: list, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-    ring_index = 0
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    if 1 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age,
-                                                  "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
-        ring_index+=1
-
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 2 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age,
-                                                  "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Orange")
-        ring_index+=1
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 3 in splitlist:
-
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age,
-                                                  "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
-        ring_index+=1
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 4 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-                                                  "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                                  "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-                                                  "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                                  "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
-        ring_index+=1
-
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 5 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-                                                  "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Green, Green Stripe")
-        ring_index+=1
-
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 6 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-                                                  "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Brown")
-        ring_index+=1
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    if 7 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-                                                  "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age,
-                                                  "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Black")
-        ring_index+=1
-
-###############################################################################
-# writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
+#                                                        "Green, Green Stripe")
 #
-def writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery(rings: list, splitlist: list, event_time, division_name, minimum_age, maximum_age, rank_queries: list):
-    age_label= '{0}-{1}'.format(minimum_age,maximum_age)
-    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    ring_index = 0
-    rank_index = 0
-
-    age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 1 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age_label,
-                                                  "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "White, Yellow")
-        ring_index+=1
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 2 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age_label,
-                                                  "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Orange")
-        ring_index+=1
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 3 in splitlist:
-
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                  division_name, age_label,
-                                                  "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
-        ring_index+=1
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 4 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-                                                  "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                                  "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-                                                  "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                                  "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
-        ring_index+=1
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 5 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-                                                  "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Green, Green Stripe")
-        ring_index+=1
-
-
-    #assert(False)
-    #assert(True)
-    ###  Figure out how to wild card Brown belt division the format looks something like
-    ###  'Rank.str.contains("Brown")'
-
-    rank_query=''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 6 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-                                                  "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Brown")
-        ring_index+=1
-
-
-    #assert(False)
-    #assert(True)
-    ###  Figure out how to wild card black belt division the format looks something like
-    ###  'Rank.str.contains("Black")'
-
-    rank_query = ''
-    for r in range(0, len(rank_queries[rank_index])):
-        rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-        if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-            rank_query=rank_query + ' or '
-
-    combined_query='({0}) and ({1})'.format(age_query,rank_query)
-    rank_index +=1
-    wmk=newDataFrameFromQuery(combined_query)
-    if 7 in splitlist:
-        # filter to only keep contestants who's last name fall into the first alphabetic split
-        first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-        # filter to only keep contestants who's last name fall into the second alphabetic split
-        second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-        kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-                                                  "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-        ring_index+=1
-
-        kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                  age_label,
-                                                  "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                  "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        ring_index += 1
-    else:
-        kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Black")
-        ring_index+=1
-
-
-###############################################################################
-# writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                                        "Brown")
 #
-def writePattern6WithMultipleSplitToKataScoreSheetReportBrief(rings: list, splitlist: list, event_time: str, division_name: str, minimum_age: int, maximum_age: int, rank_queries: list):
-    age_label= '{0}-{1}'.format(minimum_age,maximum_age)
-    print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-
-    ring_index = 0
-    rank_index = 0
-
-    age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
-
-    for drive_index in range(1,len(rank_queries)+1):
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
+#                                                        "Black")
 
 
-        rank_query=''
-        for r in range(0, len(rank_queries[rank_index])):
-            rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-            if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-                rank_query=rank_query + ' or '
+# ###############################################################################
+# # writePattern6ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6ToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#     ring_index = 0
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
+#     ring_index+=1
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Orange")
+#     ring_index+=1
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Purple")
+#     ring_index+=1
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
+#                                               "Blue, Blue Stripe")
+#     ring_index+=1
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
+#                                               "Green, Green Stripe")
+#     ring_index+=1
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Brown")
+#     ring_index+=1
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Black")
+#     ring_index+=1
 
 
-        combined_query='({0}) and ({1})'.format(age_query,rank_query)
-        rank_index +=1
-        wmk=newDataFrameFromQuery(combined_query)
-        if drive_index in splitlist:
-            # filter to only keep contestants who's last name fall into the first alphabetic split
-            first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+# ###############################################################################
+# # writePattern6WithSplitToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
+#
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                        "White, Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
+#                                                        division_name, age,
+#                                                        "Blue, Blue Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+#                                                        division_name, age,
+#                                                        "Blue, Blue Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                                        "Green, Green Stripe")
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
+#                                                        "Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age,
+#                                                        "Black")
 
-            # filter to only keep contestants who's last name fall into the second alphabetic split
-            second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
 
-            kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-                                                      age_label,
-                                                      rank_query + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                      "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-            ring_index+=1
+# ###############################################################################
+# # writePattern6WithSplitToKataScoreSheetReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithSplitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+#                                               "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+#                                               "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                               "Green, Green Stripe")
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
 
-            kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-                                                      division_name, age_label,
-                                                      rank_query + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                      "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-            ring_index += 1
-        else:
-            kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, rank_query)
-            ring_index+=1
+
+# ###############################################################################
+# # writePattern6WithSplitToKataScoreSheetReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithPurpleAndBlueSpitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#   #  kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name,
+#                                               age,
+#                                               "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                               "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
+#                                               division_name, age,
+#                                               "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                               "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#
+#     # filter to only keep contestants who's last name fall into the first alphabetic split
+#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#     # filter to only keep contestants who's last name fall into the second alphabetic split
+#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
+#                                               "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
+#                                               "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
+#                                               "Green, Green Stripe")
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
+
+
+# ###############################################################################
+# # writePattern6WithMultipleSplitToKataScoreSheetReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithMultipleSplitToKataScoreSheetReport(rings: list, splitlist: list, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#     ring_index = 0
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     if 1 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age,
+#                                                   "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
+#         ring_index+=1
+#
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 2 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age,
+#                                                   "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Orange")
+#         ring_index+=1
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 3 in splitlist:
+#
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age,
+#                                                   "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
+#         ring_index+=1
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 4 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
+#                                                   "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                                   "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
+#                                                   "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                                   "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
+#         ring_index+=1
+#
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 5 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
+#                                                   "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Green, Green Stripe")
+#         ring_index+=1
+#
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 6 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
+#                                                   "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Brown")
+#         ring_index+=1
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     if 7 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
+#                                                   "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age,
+#                                                   "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Black")
+#         ring_index+=1
+
+# ###############################################################################
+# # writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery(rings: list, splitlist: list, event_time, division_name, minimum_age, maximum_age, rank_queries: list):
+#     age_label= '{0}-{1}'.format(minimum_age,maximum_age)
+#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     ring_index = 0
+#     rank_index = 0
+#
+#     age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 1 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age_label,
+#                                                   "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "White, Yellow")
+#         ring_index+=1
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 2 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age_label,
+#                                                   "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Orange")
+#         ring_index+=1
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 3 in splitlist:
+#
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                   division_name, age_label,
+#                                                   "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
+#         ring_index+=1
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 4 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
+#                                                   "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
+#                                                   "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
+#                                                   "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
+#                                                   "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
+#         ring_index+=1
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 5 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
+#                                                   "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Green, Green Stripe")
+#         ring_index+=1
+#
+#
+#     #assert(False)
+#     #assert(True)
+#     ###  Figure out how to wild card Brown belt division the format looks something like
+#     ###  'Rank.str.contains("Brown")'
+#
+#     rank_query=''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 6 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
+#                                                   "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Brown")
+#         ring_index+=1
+#
+#
+#     #assert(False)
+#     #assert(True)
+#     ###  Figure out how to wild card black belt division the format looks something like
+#     ###  'Rank.str.contains("Black")'
+#
+#     rank_query = ''
+#     for r in range(0, len(rank_queries[rank_index])):
+#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#             rank_query=rank_query + ' or '
+#
+#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#     rank_index +=1
+#     wmk=newDataFrameFromQuery(combined_query)
+#     if 7 in splitlist:
+#         # filter to only keep contestants who's last name fall into the first alphabetic split
+#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#         # filter to only keep contestants who's last name fall into the second alphabetic split
+#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
+#                                                   "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#         ring_index+=1
+#
+#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                   age_label,
+#                                                   "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#         ring_index += 1
+#     else:
+#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Black")
+#         ring_index+=1
+
+
+# ###############################################################################
+# # writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# def writePattern6WithMultipleSplitToKataScoreSheetReportBrief(rings: list, splitlist: list, event_time: str, division_name: str, minimum_age: int, maximum_age: int, rank_queries: list):
+#     age_label= '{0}-{1}'.format(minimum_age,maximum_age)
+#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     ring_index = 0
+#     rank_index = 0
+#
+#     age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
+#
+#     for drive_index in range(1,len(rank_queries)+1):
+#
+#
+#         rank_query=''
+#         for r in range(0, len(rank_queries[rank_index])):
+#             rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
+#             if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
+#                 rank_query=rank_query + ' or '
+#
+#
+#         combined_query='({0}) and ({1})'.format(age_query,rank_query)
+#         rank_index +=1
+#         wmk=newDataFrameFromQuery(combined_query)
+#         if drive_index in splitlist:
+#             # filter to only keep contestants who's last name fall into the first alphabetic split
+#             first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+#
+#             # filter to only keep contestants who's last name fall into the second alphabetic split
+#             second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+#
+#             kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
+#                                                       age_label,
+#                                                       rank_query + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+#             ring_index+=1
+#
+#             kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
+#                                                       division_name, age_label,
+#                                                       rank_query + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+#                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+#             ring_index += 1
+#         else:
+#             kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, rank_query)
+#             ring_index+=1
 
 
 
@@ -2144,7 +2198,8 @@ def write_single_sparring_treeShim(event_time: str, division_name, gender: str, 
 #  The Pattern it writes is:
 #    White, Yellow & Orange
 #    Purple, Blue & Blue Stripe
-#    Green, Green Stripe, Brown
+#    Green, Green Stripe,
+#    Brown
 #    Black
 #
 #  arguments:
@@ -2169,11 +2224,14 @@ def writePattern7ToExcel(filename, compositMask):
     wmk = newDataFrameFromMask(mask)
     writeFormattedExcelSheet(wmk, writer, 'Purple, Blue & Blue Stripe')
 
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
+    mask = mask_AllGreenBelt & compositMask
     wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
+
+    mask = mask_AllBrownBelt & compositMask
+    wmk = newDataFrameFromMask(mask)
+    writeFormattedExcelSheet(wmk, writer, 'Brown')
+
 
     mask = mask_AllBlackBelt & compositMask
     wmk = newDataFrameFromMask(mask)
@@ -2184,87 +2242,87 @@ def writePattern7ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern7ToDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow & Orange
-#    Purple, Blue & Blue Stripe
-#    Green, Green Stripe, Brown
-#    Black
+# ###############################################################################
+# # writePattern7ToDetailReport
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow & Orange
+# #    Purple, Blue & Blue Stripe
+# #    Green, Green Stripe, Brown
+# #    Black
+# #
+# def writePattern7ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writePattern7ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                       "White, Yellow & Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Purple, Blue & Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Black")
-
-
-###############################################################################
-# writePattern7ToKataScoreSheet
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White, Yellow & Orange
-#    Purple, Blue & Blue Stripe
-#    Green, Green Stripe, Brown
-#    Black
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
 #
-def writePattern7ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                        "White, Yellow & Orange")
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                        "Purple, Blue & Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                        "Green, Green Stripe, Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
+#                                                        "Black")
 
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-                                                  "White, Yellow & Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                  "Purple, Blue & Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                  "Green, Green Stripe, Brown")
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
+# ###############################################################################
+# # writePattern7ToKataScoreSheet
+# #  This method provides a re-usable method to write output to PDF
+# #  The Pattern it writes is:
+# #    White, Yellow & Orange
+# #    Purple, Blue & Blue Stripe
+# #    Green, Green Stripe, Brown
+# #    Black
+# #
+# def writePattern7ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
+#                                                   "White, Yellow & Orange")
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
+#                                                   "Purple, Blue & Blue Stripe")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
+#                                                   "Green, Green Stripe, Brown")
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
 
 
 ###############################################################################
@@ -3454,7 +3512,7 @@ else:
     #  Teen Boy's Sparring - 12-14 year olds
     #
     compositMask = mask_Sparring & mask_Male & mask_Age12to14
-    writePattern4ToExcel("TeenBoysSparring.xlsx", compositMask)
+    writePattern7ToExcel("TeenBoysSparring.xlsx", compositMask)
     # writePattern4ToDetailReport(5, "3:00pm", "Teen Boy's Sparring", "12-14", compositMask)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -3478,7 +3536,7 @@ else:
     #  Young Adult Men's Sparring - 15-17 year olds
     #
     compositMask = mask_Sparring & mask_Male & mask_Age15to17
-    writePattern4ToExcel("YoungAdultMensSparring.xlsx", compositMask)
+    writePattern7ToExcel("YoungAdultMensSparring.xlsx", compositMask)
     # writePattern4ToDetailReport(9, "3:00pm", "Young Adult Men's Sparring", "15-17", compositMask)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -3505,7 +3563,7 @@ else:
     #  Women's Sparring - 18-39 year olds
     #
     compositMask = mask_Sparring & mask_Female & mask_Age18to39
-    writePattern7ToExcel("WomensSparring.xlsx", compositMask)
+    writePattern4ToExcel("WomensSparring.xlsx", compositMask)
     # writePattern7ToDetailReport(8, "3:00pm", "Women's Sparring", "18-39", compositMask)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[15], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[16], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -3558,7 +3616,7 @@ else:
     #  Young Adult Women's Sparring - 15-17 year olds
     #
     compositMask = mask_Sparring & mask_Female & mask_Age15to17
-    writePattern7ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
+    writePattern4ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
     # writePattern7ToDetailReport(8, "3:45pm", "Young Adult Women's Sparring", "15-17", compositMask)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[8], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -3635,11 +3693,15 @@ divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 sparing_tree_pdf.close()
 
-print("Here is how many times we touched each person:")
+print("\u001b[31mWarning: Investigate these entries in the spreadsheet!  They didn't get put into any events:")
 for index, row in clean_df.iterrows():
     name = row['First_Name'] + " " + row['Last_Name']
+    events = row['Events']
     hc = row['hitcount']
-    print("  " + name + ": " + str(hc))
+    if hc < 1 :
+        # print("  " + name + ": " + str(hc))
+        print(f'   Name:{name} Events:{events} <---was put in {hc} events')
+print('\u001b[0m')
 
 localtime = time.asctime(time.localtime(time.time()))
 print(time.strftime("%X") + " Done!")

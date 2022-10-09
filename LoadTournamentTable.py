@@ -3320,7 +3320,7 @@ divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",di
 divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, rings=[15],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, rings=[16],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-writePattern6WithSplitToKataScoreSheetReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
+#writePattern6WithSplitToKataScoreSheetReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
 #writePattern6WithMultipleSplitToKataScoreSheetReport([8,9,10,11,12,13,14,15,16,17],[4,5], "1:30pm", "Teen Kata", "12-14", compositMask)
 kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
 kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)

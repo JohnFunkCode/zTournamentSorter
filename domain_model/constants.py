@@ -37,4 +37,5 @@ SECOND_ALPHABETIC_SPLIT_LABEL='M - Z'
 #Sleep time after writing a file
 SLEEP_TIME=.0001
 
-
+#Number of competitors in a division to raise an alert
+TOO_MANY_COMPETITORS = 20

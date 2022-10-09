@@ -95,8 +95,8 @@ class KataScoreSheetPDF(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
-        if inputdf.shape[0] > 20:
-            print("*** Warning: {} {} Ring:{} has too many competitors".format(event_time,division_name,ring_number))
+        if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
+            print("\u001b[31m*** Warning: {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
 
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
@@ -150,7 +150,16 @@ class KataScoreSheetPDF(object):
         data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)
-        if len(data_list) <= 20:
+        if len(data_list) > constants.TOO_MANY_COMPETITORS +1:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
+                                   ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                                   ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('SPAN', (2, 0), (3, 0)),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        else:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
@@ -159,15 +168,7 @@ class KataScoreSheetPDF(object):
                                    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                                    ('SPAN',(2,0),(3,0)),
                                    ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
-        else:
-            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
-                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
-                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
-                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
-                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
-                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('SPAN',(2,0),(3,0)),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
 
         t._argW[0] = 3 *inch
         t._argW[1] = 1.75 * inch

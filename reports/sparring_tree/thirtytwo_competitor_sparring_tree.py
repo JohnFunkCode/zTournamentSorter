@@ -7,10 +7,9 @@ from reportlab.lib.pagesizes import legal
 from reportlab.lib.units import cm
 from reportlab.lib.utils import ImageReader
 
-
-
 from domain_model.competitors import Competitors
 from reports.sparring_tree.base_sparring_tree import SparringTree
+import domain_model.constants as constants
 
 
 class ThirtyTwoCompetitorTree(SparringTree):
@@ -160,7 +159,14 @@ class ThirtyTwoCompetitorTree(SparringTree):
             self._c.drawString(17 * cm, 32.75 * cm, 'Contestants '+ split_label)
             self._c.setFillColorRGB(0, 0, 0)
         self._c.drawString(14.7 * cm, 32 *cm, "Competitors:")
-        self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+
+        if number_of_competitors > constants.TOO_MANY_COMPETITORS:
+            self._c.setFillColorRGB(255, 0, 0)
+            self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+            self._c.setFillColorRGB(0, 0, 0)
+        else:
+            self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+
 
         #write the footer as well
         self._c.saveState()
@@ -181,7 +187,13 @@ class ThirtyTwoCompetitorTree(SparringTree):
             name = competitor['First_Name'] + ' ' + competitor['Last_Name']
             # print('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
-            self._c.drawString(px, py, name)
+            if competitor_count > constants.TOO_MANY_COMPETITORS :
+                self._c.setFillColorRGB(255, 0, 0)
+                self._c.drawString(px, py, name)
+                self._c.setFillColorRGB(0, 0, 0)
+            else:
+                self._c.drawString(px, py, name)
+
             self._c.setFont("Courier", 7)
             dojo= competitor['Dojo']
             if dojo.startswith('CO- '):

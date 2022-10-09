@@ -77,7 +77,7 @@ class SparringTree():
         ''' adds a compleate page with a tree and the competitors '''
 
         if competitors.get_number_of_competitors() > 20:
-            print("*** Warning: {} {} Ring:{} has too many competitors".format(event_time,event_title,ring))
+            print("\u001b[31m*** Warning: {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,event_title,ring,competitors.get_number_of_competitors()))
 
         # lay down the template
         self.draw_static_template()

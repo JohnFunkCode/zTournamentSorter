@@ -2,21 +2,21 @@
 
 # There are 6 patterns in the Denver Tournament Guide
 #
-# Pattern1
+# Pattern1 - ranking based on size of the division it would be use for: 5
 #    White
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
 #    Green, Green Stripe
 #
-# Pattern2
+# Pattern2 - ranking based on size of the division it would be use for: 3
 #  White
 #  Yellow
 #  Orange
 #  Purple, Blue, Blue Stripe
 #  Green, Green Stripe, Brown
 #
-# Pattern3
+# Pattern3 - ranking based on size of the division it would be use for: 6
 #  White
 #  Yellow
 #  Orange
@@ -24,20 +24,20 @@
 #  Blue, Blue Stripe
 #  Green, Green Stripe, Brown
 #
-# Pattern4
+# Pattern4 - ranking based on size of the division it would be use for: 1
 #  White, Yellow, Orange
 #  Purple, Blue, Blue Stripe
 #  Green, Green Stripe, Brown
 #  Black
 #
-# Pattern5
+# Pattern5 - ranking based on size of the division it would be use for: 4
 #  White, Yellow
 #  Orange
 #  Purple
 #  Blue, Blue Stripe
 #  Green, Green Stripe, Brown
 #
-# Pattern6
+# Pattern6 - ranking based on size of the division it would be use for: 7
 #  White, Yellow
 #  Orange
 #  Purple
@@ -46,17 +46,12 @@
 #  Brown
 #  Black
 #
-# Pattern7
+# Pattern7 - ranking based on size of the division it would be use for: 2
 #    White, Yellow & Orange
 #    Purple, Blue & Blue Stripe
 #    Green, Green Stripe,
 #    Brown
 #    Black
-#
-#   Feautres to add:
-# Summary Stats - how many people of each belt, how many sparring, how may forms, how many weaponds
-# Event Stats - how many people in each event as per the event guide
-#
 
 import os
 import time
@@ -272,6 +267,7 @@ def writeEventToFile(filename, compositMask):
 # #  Purple, Blue & Blue Stripe
 # #  Green, Green Stripe, Brown
 # #  Black
+
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White
@@ -318,261 +314,6 @@ def writePattern1ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
-
-
-###############################################################################
-# writePattern1ToDvisionDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
-#
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern1ToDivisionDetailReport(starting_ring, event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-                                                       "Yellow")
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-                                                       "Orange")
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-                                                       "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
-
-###############################################################################
-# writePattern1ToDvisionDetailReport
-#  This method provides a re-usable method to write output to PDF
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
-#
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern1WithSplitToDivisionDetailReport(rings:list, event_time, division_name, age, compositMask):
-    assert len(rings) == 7, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[1]), event_time, division_name, age,
-                                                       "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                                       "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[2]), event_time, division_name, age,
-                                                       "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                                       "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-
-    # filter to only keep contestants who's last name fall into the first alphabetic split
-    first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-    # filter to only keep contestants who's last name fall into the second alphabetic split
-    second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[3]), event_time, division_name, age,
-                                                       "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-                                                       "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[4]), event_time, division_name, age,
-                                                       "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-                                                       "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[5]), event_time, division_name, age,
-                                                       "Purple, Blue, Blue Stripe")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-                                                       "Green, Green Stripe, Brown")
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    pdf_report.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
-
-
-
-
-
-# ###############################################################################
-# # writePattern1ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# #  arguments:
-# #  filename - the filename without path to write
-# #  compsitMask - a mask made up of everything but the belts that you want
-# def writePattern1ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                               "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-#     #    mask= mask_AllBlackBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
-
-
-# ###############################################################################
-# # writePattern1WithSplitToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# #  arguments:
-# #  filename - the filename without path to write
-# #  compsitMask - a mask made up of everything but the belts that you want
-# def writePattern1WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-#     assert len(rings) == 7, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-#
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[1]), event_time, division_name, age,
-#                                               "Yellow ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[2]), event_time, division_name, age,
-#                                               "Yellow ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     #   kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[3]), event_time, division_name, age,
-#                                               "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[4]), event_time, division_name, age,
-#                                               "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[5]), event_time, division_name, age,
-#                                               "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-#     #    mask= mask_AllBlackBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring+5), time, division_name, age, "Black")
-
 
 ###############################################################################
 # writePattern2ToExcel
@@ -626,106 +367,6 @@ def writePattern2ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-# ###############################################################################
-# # writePattern2ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe
-# #
-# #  arguments:
-# def writePattern2ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Orange")
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-#
-#
-# #
-# #    mask= mask_AllBlackBelt & compositMask
-# #    wmk=newDataFrameFromMask( mask )
-# #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
-
-
-# ###############################################################################
-# # writePattern2ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe
-# #
-# #  arguments:
-# def writePattern2ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                               "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-#
-#
-# #
-# #    mask= mask_AllBlackBelt & compositMask
-# #    wmk=newDataFrameFromMask( mask )
-# #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), time, division_name, age, "Black")
-
-
 ###############################################################################
 # writePattern3ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -774,250 +415,6 @@ def writePattern3ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
-
-
-# ###############################################################################
-# # writePattern3ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePattern3ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                                        "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-
-
-# ###############################################################################
-# # writePattern3WithSplitToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePattern3WithSplitToDetailReport(rings, event_time, division_name, age, compositMask):
-#     assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age,
-#                                                        "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Orange")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time,
-#                                                        division_name, age,
-#                                                        "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time,
-#                                                        division_name, age,
-#                                                        "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     #    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age, "Purple")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time,
-#                                                        division_name, age,
-#                                                        "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time,
-#                                                        division_name, age,
-#                                                        "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-#                                                        "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-
-
-# ###############################################################################
-# # writePattern3ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePatternSplitToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                               "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-
-
-# ###############################################################################
-# # writePattern3WithSplitToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePattern3WithSplitToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-#     assert len(rings) == 8, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask = mask_WhiteBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age, "White")
-#
-#     mask = mask_YellowBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[1]), event_time, division_name, age, "Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     #    kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Orange")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[2]), event_time, division_name, age,
-#                                               "Orange ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[3]), event_time, division_name, age,
-#                                               "Orange ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[4]), event_time, division_name, age,
-#                                               "Purple ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[5]), event_time, division_name, age,
-#                                               "Purple ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[6]), event_time, division_name, age,
-#                                               "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[7]), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-
 
 ###############################################################################
 # writePattern4ToExcel
@@ -1074,105 +471,6 @@ def writePattern4ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-# ###############################################################################
-# # writePattern4ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow, Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #    Black
-# #
-# def writePattern4ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask3 = mask_OrangeBelt & compositMask
-#     mask = mask1 | mask2 | mask3
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                        "White, Yellow, Orange")
-#
-#     #    mask= mask_OrangeBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    wmk.to_excel(writer,'Orange')
-#
-#     #    mask= mask_PurpleBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    wmk.to_excel(writer,'Purple')
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllBrownBelt & compositMask
-#     mask2 = mask_AllGreenBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Black")
-
-
-# ###############################################################################
-# # writePattern4ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow, Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #    Black
-# #
-# def writePattern4ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask3 = mask_OrangeBelt & compositMask
-#     mask = mask1 | mask2 | mask3
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                               "White, Yellow, Orange")
-#
-#     #    mask= mask_OrangeBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    wmk.to_excel(writer,'Orange')
-#
-#     #    mask= mask_PurpleBelt & compositMask
-#     #    wmk=newDataFrameFromMask( mask )
-#     #    wmk.to_excel(writer,'Purple')
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                               "Purple, Blue, Blue Stripe")
-#
-#     mask1 = mask_AllBrownBelt & compositMask
-#     mask2 = mask_AllGreenBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
-
-
 ###############################################################################
 # writePattern5ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -1218,92 +516,6 @@ def writePattern5ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
-
-
-# ###############################################################################
-# # writePattern5ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePattern5ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                        "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-
-
-# ###############################################################################
-# # writePattern5ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe, Brown
-# #
-# def writePattern5ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                               "Blue, Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                               "Green, Green Stripe, Brown")
 
 
 ###############################################################################
@@ -1362,824 +574,11 @@ def writePattern6ToExcel(filename, compositMask):
     time.sleep(constants.SLEEP_TIME)
 
 
-# ###############################################################################
-# # writePattern6ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                        "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Blue, Blue Stripe")
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 4), event_time, division_name, age,
-#                                                        "Green, Green Stripe")
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                                        "Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
-#                                                        "Black")
-
-
-# ###############################################################################
-# # writePattern6ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6ToKataScoreSheet(rings: list, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#     ring_index = 0
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
-#     ring_index+=1
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Orange")
-#     ring_index+=1
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Purple")
-#     ring_index+=1
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
-#                                               "Blue, Blue Stripe")
-#     ring_index+=1
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age,
-#                                               "Green, Green Stripe")
-#     ring_index+=1
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Brown")
-#     ring_index+=1
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(ring_index), event_time, division_name, age, "Black")
-#     ring_index+=1
-
-
-# ###############################################################################
-# # writePattern6WithSplitToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithSplitToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                        "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time,
-#                                                        division_name, age,
-#                                                        "Blue, Blue Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
-#                                                        division_name, age,
-#                                                        "Blue, Blue Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                                        "Green, Green Stripe")
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age,
-#                                                        "Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age,
-#                                                        "Black")
-
-
-# ###############################################################################
-# # writePattern6WithSplitToKataScoreSheetReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithSplitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
-#                                               "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
-#                                               "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                               "Green, Green Stripe")
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
-
-
-# ###############################################################################
-# # writePattern6WithSplitToKataScoreSheetReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithPurpleAndBlueSpitToKataScoreSheetReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age, "White, Yellow")
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age, "Orange")
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#   #  kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age, "Purple")
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name,
-#                                               age,
-#                                               "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                               "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time,
-#                                               division_name, age,
-#                                               "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                               "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#
-#     # filter to only keep contestants who's last name fall into the first alphabetic split
-#     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#     # filter to only keep contestants who's last name fall into the second alphabetic split
-#     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#     kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(starting_ring + 1), event_time, division_name, age,
-#                                               "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#     kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(starting_ring + 2), event_time, division_name, age,
-#                                               "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                               "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 5), event_time, division_name, age,
-#                                               "Green, Green Stripe")
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 6), event_time, division_name, age, "Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(starting_ring + 7), event_time, division_name, age, "Black")
-
-
-# ###############################################################################
-# # writePattern6WithMultipleSplitToKataScoreSheetReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithMultipleSplitToKataScoreSheetReport(rings: list, splitlist: list, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#     ring_index = 0
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     if 1 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age,
-#                                                   "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "White, Yellow")
-#         ring_index+=1
-#
-#
-#     mask = mask_OrangeBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 2 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age,
-#                                                   "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Orange")
-#         ring_index+=1
-#
-#     mask = mask_PurpleBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 3 in splitlist:
-#
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age,
-#                                                   "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
-#         ring_index+=1
-#
-#     mask = mask_AllBlueBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 4 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-#                                                   "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                                   "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-#                                                   "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                                   "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age, "Purple")
-#         ring_index+=1
-#
-#
-#     mask = mask_AllGreenBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 5 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-#                                                   "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Green, Green Stripe")
-#         ring_index+=1
-#
-#
-#     mask = mask_AllBrownBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 6 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-#                                                   "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Brown")
-#         ring_index+=1
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     if 7 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age,
-#                                                   "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age,
-#                                                   "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age, "Black")
-#         ring_index+=1
-
-# ###############################################################################
-# # writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery(rings: list, splitlist: list, event_time, division_name, minimum_age, maximum_age, rank_queries: list):
-#     age_label= '{0}-{1}'.format(minimum_age,maximum_age)
-#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     ring_index = 0
-#     rank_index = 0
-#
-#     age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 1 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "White, Yellow (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age_label,
-#                                                   "White, Yellow (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "White, Yellow")
-#         ring_index+=1
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 2 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "Orange (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age_label,
-#                                                   "Orange (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Orange")
-#         ring_index+=1
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 3 in splitlist:
-#
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "Purple (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                   division_name, age_label,
-#                                                   "Purple (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
-#         ring_index+=1
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 4 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-#                                                   "Blue, Blue Stripe ("+constants.FIRST_ALPHABETIC_SPLIT_LABEL+")",
-#                                                   "*** PLEASE NOTE - These are contestants "+constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-#                                                   "Blue, Blue Stripe ("+constants.SECOND_ALPHABETIC_SPLIT_LABEL+")",
-#                                                   "*** PLEASE NOTE - These are contestants "+constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index] ), event_time, division_name, age_label, "Purple")
-#         ring_index+=1
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 5 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-#                                                   "Green, Green Stripe (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "Green, Green Stripe (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Green, Green Stripe")
-#         ring_index+=1
-#
-#
-#     #assert(False)
-#     #assert(True)
-#     ###  Figure out how to wild card Brown belt division the format looks something like
-#     ###  'Rank.str.contains("Brown")'
-#
-#     rank_query=''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 6 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-#                                                   "Brown (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "Brown (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Brown")
-#         ring_index+=1
-#
-#
-#     #assert(False)
-#     #assert(True)
-#     ###  Figure out how to wild card black belt division the format looks something like
-#     ###  'Rank.str.contains("Black")'
-#
-#     rank_query = ''
-#     for r in range(0, len(rank_queries[rank_index])):
-#         rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#         if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#             rank_query=rank_query + ' or '
-#
-#     combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#     rank_index +=1
-#     wmk=newDataFrameFromQuery(combined_query)
-#     if 7 in splitlist:
-#         # filter to only keep contestants who's last name fall into the first alphabetic split
-#         first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#         # filter to only keep contestants who's last name fall into the second alphabetic split
-#         second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name, age_label,
-#                                                   "Black (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#         ring_index+=1
-#
-#         kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                   age_label,
-#                                                   "Black (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                   "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#         ring_index += 1
-#     else:
-#         kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, "Black")
-#         ring_index+=1
-
-
-# ###############################################################################
-# # writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow
-# #    Orange
-# #    Purple
-# #    Blue, Blue Stripe
-# #    Green, Green Stripe
-# #    Brown
-# #    Black
-# #
-# def writePattern6WithMultipleSplitToKataScoreSheetReportBrief(rings: list, splitlist: list, event_time: str, division_name: str, minimum_age: int, maximum_age: int, rank_queries: list):
-#     age_label= '{0}-{1}'.format(minimum_age,maximum_age)
-#     print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     ring_index = 0
-#     rank_index = 0
-#
-#     age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
-#
-#     for drive_index in range(1,len(rank_queries)+1):
-#
-#
-#         rank_query=''
-#         for r in range(0, len(rank_queries[rank_index])):
-#             rank_query=rank_query + 'Rank =="' + rank_queries[rank_index][r] + '"'
-#             if r<len(rank_queries[rank_index])-1:  #Add ' and ' to everything but the last one
-#                 rank_query=rank_query + ' or '
-#
-#
-#         combined_query='({0}) and ({1})'.format(age_query,rank_query)
-#         rank_index +=1
-#         wmk=newDataFrameFromQuery(combined_query)
-#         if drive_index in splitlist:
-#             # filter to only keep contestants who's last name fall into the first alphabetic split
-#             first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-#
-#             # filter to only keep contestants who's last name fall into the second alphabetic split
-#             second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-#
-#             kata_score_sheet.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[ring_index]), event_time, division_name,
-#                                                       age_label,
-#                                                       rank_query + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                       "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-#             ring_index+=1
-#
-#             kata_score_sheet.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[ring_index]), event_time,
-#                                                       division_name, age_label,
-#                                                       rank_query + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-#                                                       "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-#             ring_index += 1
-#         else:
-#             kata_score_sheet.put_dataframe_on_pdfpage(wmk, str(rings[ring_index]), event_time, division_name, age_label, rank_query)
-#             ring_index+=1
-
-
-
 ###############################################################################
-# writeSingleKataScoreSheetShim
+# writeSingleKataScoreSheetandDivisionReport
 #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
 #  This prevents a lot of duplication
-def writeSingleKataScoreSheetShim(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
+def writeSingleKataScoreSheetandDivisionReport(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
     kata_score_sheet.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
 
@@ -2187,7 +586,7 @@ def writeSingleKataScoreSheetShim(event_time: str, division_name: str, gender: s
 # write_single_sparring_treeShim
 #  Provides a convenience wrapper that writes to both the division detail report and the sparring tree in one line
 #  This prevents a lot of duplication
-def write_single_sparring_treeShim(event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, rings: list, ranks: list, clean_df : pd.DataFrame ):
+def writeSingleSparringTreeandDivisionReport(event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, rings: list, ranks: list, clean_df : pd.DataFrame ):
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
     sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
 
@@ -2240,89 +639,6 @@ def writePattern7ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
-
-
-# ###############################################################################
-# # writePattern7ToDetailReport
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow & Orange
-# #    Purple, Blue & Blue Stripe
-# #    Green, Green Stripe, Brown
-# #    Black
-# #
-# def writePattern7ToDetailReport(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-#
-#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title(division_name)
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask3 = mask_OrangeBelt & compositMask
-#     mask = mask1 | mask2 | mask3
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                        "White, Yellow & Orange")
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                        "Purple, Blue & Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                        "Green, Green Stripe, Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age,
-#                                                        "Black")
-
-
-# ###############################################################################
-# # writePattern7ToKataScoreSheet
-# #  This method provides a re-usable method to write output to PDF
-# #  The Pattern it writes is:
-# #    White, Yellow & Orange
-# #    Purple, Blue & Blue Stripe
-# #    Green, Green Stripe, Brown
-# #    Black
-# #
-# def writePattern7ToKataScoreSheet(starting_ring, event_time, division_name, age, compositMask):
-#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-#
-#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Forms")
-#
-#     mask1 = mask_WhiteBelt & compositMask
-#     mask2 = mask_YellowBelt & compositMask
-#     mask3 = mask_OrangeBelt & compositMask
-#     mask = mask1 | mask2 | mask3
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring), event_time, division_name, age,
-#                                                   "White, Yellow & Orange")
-#
-#     mask1 = mask_PurpleBelt & compositMask
-#     mask2 = mask_AllBlueBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 1), event_time, division_name, age,
-#                                                   "Purple, Blue & Blue Stripe")
-#
-#     mask1 = mask_AllGreenBelt & compositMask
-#     mask2 = mask_AllBrownBelt & compositMask
-#     mask = mask1 | mask2
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 2), event_time, division_name, age,
-#                                                   "Green, Green Stripe, Brown")
-#
-#     mask = mask_AllBlackBelt & compositMask
-#     wmk = newDataFrameFromMask(mask)
-#     kata_score_sheet_pdf.put_dataframe_on_pdfpage(wmk, str(starting_ring + 3), event_time, division_name, age, "Black")
 
 
 ###############################################################################
@@ -3106,9 +1422,9 @@ sparing_tree_pdf.set_source_file( filename )
 ### Special Handling for files with less than 30 competitors- Added for Fall 2022 Tournament
 if clean_df.shape[0] < 30:
     print("\u001b[31m*** Warning: Special Handling!  Printing Just One Kata Sheet and One Sparring Tree with the small data file provided!\u001b[0m")
-    # divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(               event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(              event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    #divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(               event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(              event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 else:
 
 
@@ -3119,20 +1435,12 @@ else:
     #
     compositMask = mask_Forms & mask_Age4to6
     writePattern1ToExcel("KidsKata.xlsx", compositMask)
-    # writePattern1WithSplitToDivisionDetailReport([1,2,3,4,5,6,7], "9:00am", "Kids Kata", "4-6", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Kids Kata",division_type="Forms",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
-    #writePattern1WithSplitToKataScoreSheet([1,2,3,4,5,6,7], "9:00am", "Kids Kata", "4-6", compositMask)
-    #writeSingleKataScoreSheetShim(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
 
     ###############################################################################
@@ -3140,22 +1448,28 @@ else:
     #
     compositMask = mask_Forms & mask_Age7to8
     writePattern3ToExcel("YouthKata.xlsx", compositMask)
-    # writePattern3WithSplitToDetailReport([8,9,10,11,12,13,14,15], "9:00am", "Youth Kata", "7-8", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="White",                     minimum_age=7, maximum_age=8, rings=[8],    ranks=[constants.WHITE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="Yellow",                    minimum_age=7, maximum_age=8, rings=[9],    ranks=[constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[10,11],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[12,13],ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[14,15],ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:00am",division_name="Youth Kata",division_type="Forms",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[16],   ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="White",                     minimum_age=7, maximum_age=8, rings=[8],    ranks=[constants.WHITE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Yellow",                    minimum_age=7, maximum_age=8, rings=[9],    ranks=[constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[10,11],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[12,13],ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[14],ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[15],   ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
-    #writePattern3WithSplitToKataScoreSheet([8,9,10,11,12,13,14,15], "9:00am", "Youth Kata", "7-8", compositMask)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="White",                     minimum_age=7, maximum_age=8, rings=[8],    ranks=[constants.WHITE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Yellow",                    minimum_age=7, maximum_age=8, rings=[9],    ranks=[constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[10,11],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[12,13],ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[14,15],ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[16],   ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    ###############################################################################
+    # Boy's Sparring - 9-11 year olds
+    #
+    compositMask = mask_Sparring & mask_Age9to11 & mask_Male
+    writePattern6ToExcel("BoysSparring.xlsx", compositMask)
+
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=9, maximum_age=11, rings=[16], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=9, maximum_age=11, rings=[17], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=9, maximum_age=11, rings=[18], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, rings=[19,20], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=9, maximum_age=11, rings=[21], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Brown",                     minimum_age=9, maximum_age=11, rings=[22], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Boy's Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[23], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
 
     ### 9:45 Events
 
@@ -3164,26 +1478,12 @@ else:
     #
     compositMask = mask_Sparring & mask_Age4to6
     writePattern2ToExcel("KidsSparring.xlsx", compositMask)
-    # writePattern2ToDetailReport(1, "9:45am", "Kids Sparring", "4-6", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Kids Sparring",division_type="Sparring",gender="*", rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],     ranks=[constants.WHITE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Kids Sparring",division_type="Sparring",gender="*", rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],  ranks=[constants.YELLOW_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Kids Sparring",division_type="Sparring",gender="*", rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],  ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Kids Sparring",division_type="Sparring",gender="*", rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Kids Sparring",division_type="Sparring",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
-
-    # kids_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # kids_sparring_competitors = domain_model.competitors.Competitors(kids_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_1([1, 2, 3, 4, 5], "9:45am", "Kids Sparring 4-6",
-    #                                                                 kids_sparring_competitors)
-    # del kids_sparring_data_frame
-    # del kids_sparring_competitors
-
-    sparing_tree_pdf.write_single_sparring_tree(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],     ranks=[constants.WHITE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],  ranks=[constants.YELLOW_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4,5],  ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4, maximum_age=6, rings=[7],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],     ranks=[constants.WHITE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],  ranks=[constants.YELLOW_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                    minimum_age=4, maximum_age=6, rings=[4],  ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, rings=[5],  ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4, maximum_age=6, rings=[6],  ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
 
     ###############################################################################
@@ -3191,34 +1491,14 @@ else:
     #
     compositMask = mask_Forms & mask_Age9to11
     writePattern6ToExcel("BoysGirlsKata.xlsx", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="White, Yellow",         minimum_age=9, maximum_age=11, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Orange",                minimum_age=9, maximum_age=11, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Purple",                minimum_age=9, maximum_age=11, rings=[10,11], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=9, maximum_age=11, rings=[12,13], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Green, Green w/Stripe", minimum_age=9, maximum_age=11, rings=[15],    ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Brown",                 minimum_age=9, maximum_age=11, rings=[16],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="9:45am",division_name="Boy's & Girl's Kata",division_type="Forms",gender="*", rank_label="Jr. Black",             minimum_age=9, maximum_age=11, rings=[17],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-
-
-    # writePattern6ToPDF(6,"9:45am","Boy's & Girls Kata","9-11",compositMask)
-    #writePattern6WithSplitToDetailReport(6, "9:45am", "Boy's & Girl's Kata", "9-11", compositMask)
-    #writePattern6WithSplitToKataScoreSheetReport(6, "9:45am", "Boy's & Girl's Kata", "9-11", compositMask)
-    #writePattern6WithPurpleAndBlueSpitToKataScoreSheetReport(8, "9:45am", "Boy's & Girl's Kata", "9-11", compositMask)
-    #writePattern6WithMultipleSplitToKataScoreSheetReport([8,9,10,11,12,13,14,15,16],[3,4], "9:45am", "Boy's & Girl's Kata", "9-11", compositMask)
-    #writePattern6WithMultipleSplitToKataScoreSheetReportViaQuery([8,9,10,11,12,13,14,15,16],[3,4], "9:45am", "Boy's & Girl's Kata", 9,11,
-    #                                                             ['Rank == "White" or Rank == "Yellow"','Rank == "Orange"','Rank == "Purple"','Rank == "Blue" or Rank == "Blue w/Stripe"','Rank == "Green" or Rank == "Green w/Stripe"','Rank == "Brown"','Rank.str.contains("Black")'])
-    #writePattern6WithMultipleSplitToKataScoreSheetReportBrief([8,9,10,11,12,13,14,15,16],[3,4], "9:45am", "Boy's & Girl's Kata", 9,11,
-    #                                                             [["White","Yellow"],["Orange"],["Purple"],["Blue","Blue w/Stripe"],["Green","Green w/Stripe"],["Brown 3rd Degree","Brown 2nd Degree","Brown 1st Degree"],["Black 1st Degree","Black 2nd Degree","Black 3rd Degree","Black 4th Degree","Black 5th Degree","Black Junior"]])
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="White, Yellow",         minimum_age=9, maximum_age=11, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Orange",                minimum_age=9, maximum_age=11, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Purple",                minimum_age=9, maximum_age=11, rings=[10,11], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=9, maximum_age=11, rings=[12,13], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=9, maximum_age=11, rings=[15],    ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Brown",                 minimum_age=9, maximum_age=11, rings=[16],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Jr. Black",             minimum_age=9, maximum_age=11, rings=[17],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
-
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="White, Yellow",         minimum_age=9, maximum_age=11, rings=[7],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Orange",                minimum_age=9, maximum_age=11, rings=[8],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Purple",                minimum_age=9, maximum_age=11, rings=[9,10], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=9, maximum_age=11, rings=[11,12], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=9, maximum_age=11, rings=[13],    ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Brown",                 minimum_age=9, maximum_age=11, rings=[14],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Jr. Black",             minimum_age=9, maximum_age=11, rings=[15],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
     ### 10:30 Events
 
@@ -3227,99 +1507,37 @@ else:
     #
     compositMask = mask_Sparring & mask_Female & mask_Age7to8
     writePattern5ToExcel("YouthGirlSparring.xlsx", compositMask)
-    # writePattern5ToDetailReport(1, "10:30am", "Youth Girl's Sparring", "7-8", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Girl's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
-    # youth_girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # youth_girl_sparring_competitors = domain_model.competitors.Competitors(youth_girl_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([1, 2, 3, 4, 5], "10:30am", "Youth Girl's Sparring 7-8",
-    #                                                                 youth_girl_sparring_competitors)
-    # del youth_girl_sparring_data_frame
-    # del youth_girl_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Youth Boy's Sparring - 7-8 year olds
     #
     compositMask = mask_Sparring & mask_Male & mask_Age7to8
     writePattern5ToExcel("YouthBoysSparring.xlsx", compositMask)
-    # writePattern5ToDetailReport(6, "10:30am", "Youth Boy's Sparring", "7-8", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Boy's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[6], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[7], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[8], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[9], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Youth Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
-    # youth_boy_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # youth_boy_sparring_competitors = domain_model.competitors.Competitors(youth_boy_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_5([6, 7, 8, 9, 10], "10:30am", "Youth Boy's Sparring 7-8",
-    #                                                                 youth_boy_sparring_competitors)
-    # del youth_boy_sparring_data_frame
-    # del youth_boy_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[6], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[7], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[8], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[9], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[6], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[7], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=7, maximum_age=8, rings=[8], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, rings=[9], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Girl's Sparring - 9-11 year olds
     #
     compositMask = mask_Sparring & mask_Age9to11 & mask_Female
     writePattern4ToExcel("GirlsSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(11, "10:30am", "Girl's Sparring", "9-11", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Girl's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, rings=[11], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=9, maximum_age=11, rings=[12], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=9, maximum_age=11, rings=[13], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="10:30am",division_name="Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # girl_sparring_competitors = domain_model.competitors.Competitors(girl_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([11, 12, 13, 14], "10:30am", "Girl's Sparring 9-11",
-    #                                                                 girl_sparring_competitors)
-    # del girl_sparring_data_frame
-    # del girl_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, rings=[11], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=9, maximum_age=11, rings=[12], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=9, maximum_age=11, rings=[13], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, rings=[11], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=9, maximum_age=11, rings=[12], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=9, maximum_age=11, rings=[13], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ### 11:15 Events
-    ###############################################################################
-    # Boy's Sparring - 9-11 year olds
-    #
-    compositMask = mask_Sparring & mask_Age9to11 & mask_Male
-    writePattern6ToExcel("BoysSparring.xlsx", compositMask)
-    # writePattern6WithSplitToDetailReport(16, "11:15am", "Boy's Sparring", "9-11", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=9, maximum_age=11, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Orange",                    minimum_age=9, maximum_age=11, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Purple",                    minimum_age=9, maximum_age=11, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, rings=[4,5], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=9, maximum_age=11, rings=[6], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Brown",                     minimum_age=9, maximum_age=11, rings=[7], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="11:15am",division_name="Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
-    # boys_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # boys_sparring_competitors = domain_model.competitors.Competitors(boys_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_6([16, 17, 18, 19, 20, 21, 22], "9:00am",
-    #                                                                 "Boy's Sparring 9-11", boys_sparring_competitors)
-    # del boys_sparring_data_frame
-    # del boys_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=9, maximum_age=11, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=9, maximum_age=11, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=9, maximum_age=11, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, rings=[4,5], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=9, maximum_age=11, rings=[6], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Brown",                     minimum_age=9, maximum_age=11, rings=[7], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Weapons Division 1 - 4-8 year olds
@@ -3346,6 +1564,29 @@ else:
     writeWeaponsDivision3ToKataScoreSheet("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
 
 
+    ###############################################################################
+    # Teen Girl's Sparring - 12-14 year olds
+    #
+    compositMask = mask_Sparring & mask_Female & mask_Age12to14
+    writePattern4ToExcel("TeenGirlSparring.xlsx", compositMask)
+
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Teen Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Teen Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
+    ###############################################################################
+    #  Women's Sparring - 18-39 year olds
+    #
+    compositMask = mask_Sparring & mask_Female & mask_Age18to39
+    writePattern4ToExcel("WomensSparring.xlsx", compositMask)
+
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
+
     ### 1:30 Events
 
     ###############################################################################
@@ -3353,24 +1594,14 @@ else:
     #
     compositMask = mask_Forms & mask_Age18to39
     writePattern6ToExcel("MenAndWomensKata.xlsx", compositMask)
-    # writePattern6ToDetailReport(1, "1:30pm", "Men's & Women's Kata", "18-39", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="White, Yellow",         minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Orange",                minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Purple",                minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Green, Green w/Stripe", minimum_age=18, maximum_age=39, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Brown",                 minimum_age=18, maximum_age=39, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Men's & Women's Kata",division_type="Forms",gender="*", rank_label="Black",                 minimum_age=18, maximum_age=39, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-    #writePattern6ToKataScoreSheet([1,2,3,4,5,6,7], "1:30pm", "Men & Women's Kata", "18-39", compositMask)
-    #writePattern6WithMultipleSplitToKataScoreSheetReport([1,2,3,4,5,6,7],[], "1:30pm", "Men & Women's Kata", "18-39", compositMask)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="White, Yellow",         minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Orange",                minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Purple",                minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=18, maximum_age=39, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Brown",                 minimum_age=18, maximum_age=39, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Black",                 minimum_age=18, maximum_age=39, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="White, Yellow",         minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Orange",                minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Purple",                minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=18, maximum_age=39, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Brown",                 minimum_age=18, maximum_age=39, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Black",                 minimum_age=18, maximum_age=39, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
     ###############################################################################
@@ -3378,24 +1609,14 @@ else:
     #
     compositMask = mask_Forms & mask_Age12to14
     writePattern6ToExcel("TeenKata.xlsx", compositMask)
-    # writePattern6WithSplitToDetailReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Purple",                minimum_age=12, maximum_age=14, rings=[10],    ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=12, maximum_age=14, rings=[11,12], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Green, Green w/Stripe", minimum_age=12, maximum_age=14, rings=[13,14], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, rings=[15],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="1:30pm",division_name="Teen Kata",division_type="Forms",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, rings=[16],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-    #writePattern6WithSplitToKataScoreSheetReport(8, "1:30pm", "Teen Kata", "12-14", compositMask)
-    #writePattern6WithMultipleSplitToKataScoreSheetReport([8,9,10,11,12,13,14,15,16,17],[4,5], "1:30pm", "Teen Kata", "12-14", compositMask)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Purple",                minimum_age=12, maximum_age=14, rings=[10],    ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=12, maximum_age=14, rings=[11,12], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=12, maximum_age=14, rings=[13,14], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, rings=[15],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, rings=[16],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Purple",                minimum_age=12, maximum_age=14, rings=[10],    ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=12, maximum_age=14, rings=[11,12], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=12, maximum_age=14, rings=[13], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, rings=[14],    ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, rings=[15],    ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
     ### 2:15 Events
 
@@ -3404,85 +1625,34 @@ else:
     #
     compositMask = mask_Sparring & mask_Male & mask_Age40Plus
     writePattern4ToExcel("SeniorMensSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(1, "2:15pm", "Senior Men's Sparring", "40 +", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Men's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Men's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Men's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Men's Sparring",division_type="Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-
-    # senior_men_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # senior_men_sparring_competitors = domain_model.competitors.Competitors(senior_men_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "2:15pm", "Senior Men's Sparring 40+",
-    #                                                                 senior_men_sparring_competitors)
-    # del senior_men_sparring_data_frame
-    # del senior_men_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Senior Women's Sparring - 40+ year olds
     #
     compositMask = mask_Sparring & mask_Female & mask_Age40Plus
     writePattern4ToExcel("SeniorWomensSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(5, "2:15pm", "Senior Women's Sparring", "40 +", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Women's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Women's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Women's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Sr. Women's Sparring",division_type="Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # senior_woman_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # senior_woman_sparring_competitors = domain_model.competitors.Competitors(senior_woman_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([5, 6, 7, 8], "2:15pm", "Senior Woman's Sparring 40+",
-    #                                                                 senior_woman_sparring_competitors)
-    # del senior_woman_sparring_data_frame
-    # del senior_woman_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Young Adult Kata - 15-17 year olds
     #
     compositMask = mask_Forms & mask_Age15to17
     writePattern4ToExcel("YoungAdultKata.xlsx", compositMask)
-    # writePattern4ToDetailReport(9, "2:15pm", "Young Adult Kata", "15-17", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Young Adult Kata",division_type="Forms",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, rings=[9],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Young Adult Kata",division_type="Forms",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Young Adult Kata",division_type="Forms",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Young Adult Kata",division_type="Forms",gender="*", rank_label="Jr. Black & Black",        minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-    #writePattern4ToKataScoreSheet(9, "2:15pm", "Young Adult Kata", "15-17", compositMask)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, rings=[9],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, rings=[9],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-
-    ###############################################################################
-    # Teen Girl's Sparring - 12-14 year olds
-    #
-    compositMask = mask_Sparring & mask_Female & mask_Age12to14
-    writePattern4ToExcel("TeenGirlSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(1, "11:15am", "Teen Girl's Sparring", "12-14", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Teen Girl's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[13], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Teen Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[14], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Teen Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, rings=[15], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="2:15pm",division_name="Teen Girl's Sparring",division_type="Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, rings=[16], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
-    # teen_girl_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # teen_girl_sparring_competitors = domain_model.competitors.Competitors(teen_girl_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "11:15am", "Teen Girl's Sparring 12-14",
-    #                                                                 teen_girl_sparring_competitors)
-    # del teen_girl_sparring_data_frame
-    # del teen_girl_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[13], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[14], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, rings=[15], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, rings=[16], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ### 3:00 Events
 
@@ -3491,98 +1661,33 @@ else:
     #
     compositMask = mask_Sparring & mask_Male & mask_Age18to39
     writePattern4ToExcel("MensSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(1, "3:00pm", "Men's Sparring", "18-39", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Men's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Men's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Men's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Men's Sparring",division_type="Sparring",gender="Male", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # men_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # men_sparring_competitors = domain_model.competitors.Competitors(men_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([1, 2, 3, 4], "3:00pm", "Men's Sparring 18-39",
-    #                                                                 men_sparring_competitors)
-    # del men_sparring_data_frame
-    # del men_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     #  Teen Boy's Sparring - 12-14 year olds
     #
     compositMask = mask_Sparring & mask_Male & mask_Age12to14
     writePattern7ToExcel("TeenBoysSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(5, "3:00pm", "Teen Boy's Sparring", "12-14", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=12, maximum_age=14, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Brown",                     minimum_age=12, maximum_age=14, rings=[8], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Teen Boy's Sparring",division_type="Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, rings=[9], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # teen_boys_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # teen_boys_sparring_competitors = domain_model.competitors.Competitors(teen_boys_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([5, 6, 7, 8], "3:00pm", "Teen Boy's Sparring 12-14",
-    #                                                                 teen_boys_sparring_competitors)
-    # del teen_boys_sparring_data_frame
-    # del teen_boys_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=12, maximum_age=14, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Brown",                     minimum_age=12, maximum_age=14, rings=[8], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, rings=[9], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="White, Yellow, Orange",      minimum_age=12, maximum_age=14, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=12, maximum_age=14, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown", minimum_age=12, maximum_age=14, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Jr. Black",                  minimum_age=12, maximum_age=14, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     #  Young Adult Men's Sparring - 15-17 year olds
     #
     compositMask = mask_Sparring & mask_Male & mask_Age15to17
     writePattern7ToExcel("YoungAdultMensSparring.xlsx", compositMask)
-    # writePattern4ToDetailReport(9, "3:00pm", "Young Adult Men's Sparring", "15-17", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="Brown",                     minimum_age=15, maximum_age=17, rings=[13], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",division_type="Sparring",gender="Male", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # young_adult_men_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # young_adult_men_sparring_competitors = domain_model.competitors.Competitors(
-    #     young_adult_men_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([9, 10, 11, 12], "3:00pm",
-    #                                                                 "Young Adult Men's Sparring 15-17",
-    #                                                                 young_adult_men_sparring_competitors)
-    # del young_adult_men_sparring_data_frame
-    # del young_adult_men_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Brown",                     minimum_age=15, maximum_age=17, rings=[13], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
-
-    ###############################################################################
-    #  Women's Sparring - 18-39 year olds
-    #
-    compositMask = mask_Sparring & mask_Female & mask_Age18to39
-    writePattern4ToExcel("WomensSparring.xlsx", compositMask)
-    # writePattern7ToDetailReport(8, "3:00pm", "Women's Sparring", "18-39", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[15], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[16], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[17], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:00pm",division_name="Women's Sparring",division_type="Sparring",gender="Female", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[18], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
-    # young_adult_women_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # young_adult_women_sparring_competitors = domain_model.competitors.Competitors(
-    #     young_adult_women_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([8, 9, 10, 11], "3:45pm",
-    #                                                                 "Young Adult Women's Sparring 15-17",
-    #                                                                 young_adult_women_sparring_competitors)
-    # del young_adult_women_sparring_data_frame
-    # del young_adult_women_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[15], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[16], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, rings=[17], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=18, maximum_age=39, rings=[18], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[12], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ### 3:45 Events
 
@@ -3591,24 +1696,14 @@ else:
     #
     compositMask = mask_Forms & mask_Age40Plus
     writePattern6ToExcel("SeniorKata.xlsx", compositMask)
-    # writePattern6ToDetailReport(1, "3:45pm", "Senior Kata", "40+", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Senior Kata",division_type="Forms",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
-    #writePattern6ToKataScoreSheet([1,2,3,4,5,6,7], "3:45pm", "Senior Kata", "40+", compositMask)
-    #writePattern6WithMultipleSplitToKataScoreSheetReport([1,2,3,4,5,6,7],[], "3:45pm", "Senior Kata", "40+", compositMask)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
 
@@ -3617,24 +1712,11 @@ else:
     #
     compositMask = mask_Sparring & mask_Female & mask_Age15to17
     writePattern4ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
-    # writePattern7ToDetailReport(8, "3:45pm", "Young Adult Women's Sparring", "15-17", compositMask)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[8], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",division_type="Sparring",gender="Female", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-    # young_adult_women_sparring_data_frame = newDataFrameFromMask(compositMask)
-    # young_adult_women_sparring_competitors = domain_model.competitors.Competitors(
-    #     young_adult_women_sparring_data_frame)
-    # sparing_tree_pdf.write_event_to_sparring_report_using_pattern_4([8, 9, 10, 11], "3:45pm",
-    #                                                                 "Young Adult Women's Sparring 15-17",
-    #                                                                 young_adult_women_sparring_competitors)
-    # del young_adult_women_sparring_data_frame
-    # del young_adult_women_sparring_competitors
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[8], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    sparing_tree_pdf.write_single_sparring_tree(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[8], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
 
     ### 4:15 Events

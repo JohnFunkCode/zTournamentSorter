@@ -35,30 +35,14 @@ def clean_unicode_from_file(inputFileName, errorLogFile):
 def clean_all_input_errors(inputDataFrame, errorLogFile):
     errorCount = 0
 
-    print("The Column Headers must contain the follow at this time:")
-    print("  Event Date")
-    print("  Registrant ID")
-    print("  First Name")
-    print("  Last Name")
-    print("  Select Your Studio")
-    print("  Out of State Studio Name")
-    print("  Age")
-    print("  Weight")
-    print("  Height")
-    print("  Division")
-    print("  Rank")
-    print("  Forms or Sparring")
-    print("  Weapons")
-    print("  Tickets")
-
     print(time.strftime("%X") + " Checking for errors in the data....")
 
     # First let's establish a Registrant_ID column in the input dataframe
     number_of_rows = inputDataFrame.shape[0]
     column_list = inputDataFrame.columns.values.tolist()
     if ('Registrant_ID' not in column_list):
-        errorString = "Warning: Registrant_ID column doesn't exist, creating an empty one"
-        print(errorString)
+        # errorString = "Warning: Registrant_ID column doesn't exist, creating an empty one"
+        # print(errorString)
         errorLogFile.write(errorString + "\r\f")
     else:
         inputDataFrame.drop(columns="Registrant_ID",inplace=True)

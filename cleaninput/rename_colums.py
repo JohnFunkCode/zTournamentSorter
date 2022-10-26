@@ -67,6 +67,22 @@ class RenameColumns:
             print("Column not found: {}".format(reg_ex_seach_string))
 
     def rename_all_columns(self):
+        print("The Column Headers must contain the follow:")
+        print("  Event Date")
+        print("  Registrant ID")
+        print("  First Name")
+        print("  Last Name")
+        print("  Select Your Studio")
+        print("  Out of State Studio")
+        print("  Age")
+        print("  Weight")
+        print("  Height")
+        print("  Division")
+        print("  Rank")
+        print("  Forms or Sparring")
+        print("  Weapons")
+        print("  Tickets")
+
         self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
         self.replace_column_name_containing(".*Registrant.*", "Registrant_ID")
 #        self.replace_column_name_containing(".*First.*Name.*", "First_Name")

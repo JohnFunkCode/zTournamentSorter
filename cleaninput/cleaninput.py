@@ -41,8 +41,8 @@ def clean_all_input_errors(inputDataFrame, errorLogFile):
     number_of_rows = inputDataFrame.shape[0]
     column_list = inputDataFrame.columns.values.tolist()
     if ('Registrant_ID' not in column_list):
-        # errorString = "Warning: Registrant_ID column doesn't exist, creating an empty one"
-        # print(errorString)
+        errorString = "Warning: Registrant_ID column doesn't exist, creating an empty one"
+        print(errorString)
         errorLogFile.write(errorString + "\r\f")
     else:
         inputDataFrame.drop(columns="Registrant_ID",inplace=True)

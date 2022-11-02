@@ -109,11 +109,8 @@ def newDataFrameFromMask(mask):
 #Experimental
 def newDataFrameFromQuery(query_string: str):
     #query_string='Rank == "White" and Rank == "Yellow" and Age >= 4 and Age =< 6'
-    try:
-        newdf = clean_df[["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
-         "Events", "Weapons"]].query(query_string).sort_values("Age").sort_values("BMI")
-    except Exception as e:
-        print("Oops!", e.__class__, "occurred.")
+    newdf = clean_df[["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+    "Events", "Weapons"]].query(query_string).sort_values("Age").sort_values("BMI")
 
     return newdf
 
@@ -1779,15 +1776,17 @@ divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 sparing_tree_pdf.close()
 
-print("\u001b[31mWarning: Investigate these entries in the spreadsheet!  They didn't get put into any events:")
-for index, row in clean_df.iterrows():
-    name = row['First_Name'] + " " + row['Last_Name']
-    events = row['Events']
-    hc = row['hitcount']
-    if hc < 1 :
-        # print("  " + name + ": " + str(hc))
-        print(f'   Name:{name} Events:{events} <---was put in {hc} events')
-print('\u001b[0m')
+#print hitcount warnings
+if clean_df.shape[0] > 30:
+    print("\u001b[31mWarning: Investigate these entries in the spreadsheet!  They didn't get put into any events:")
+    for index, row in clean_df.iterrows():
+        name = row['First_Name'] + " " + row['Last_Name']
+        events = row['Events']
+        hc = row['hitcount']
+        if hc < 1 :
+            # print("  " + name + ": " + str(hc))
+            print(f'   Name:{name} Events:{events} <---was put in {hc} events')
+    print('\u001b[0m')
 
 localtime = time.asctime(time.localtime(time.time()))
 print(time.strftime("%X") + " Done!")

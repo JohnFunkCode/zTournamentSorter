@@ -9,13 +9,6 @@
 #    Purple, Blue, Blue Stripe
 #    Green, Green Stripe
 #
-# Pattern2 - ranking based on size of the division it would be use for: 3
-#  White
-#  Yellow
-#  Orange
-#  Purple, Blue, Blue Stripe
-#  Green, Green Stripe, Brown
-#
 # Pattern3 - ranking based on size of the division it would be use for: 6
 #  White
 #  Yellow
@@ -213,58 +206,6 @@ def writeEventToFile(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
-
-###############################################################################
-# writePattern1# Pattern1
-# #    White
-# #    Yellow
-# #    Orange
-# #    Purple, Blue, Blue Stripe
-# #    Green, Green Stripe
-# #
-# # Pattern2
-# #  White
-# #  Yellow
-# #  Orange
-# #  Purple, Blue, Blue Stripe
-# #  Green, Green Stripe, Brown
-# #
-# # Pattern3
-# #  White
-# #  Yellow
-# #  Orange
-# #  Purple
-# #  Blue, Blue Stripe
-# #  Green, Green Stripe, Brown
-# #
-# # Pattern4
-# #  White, Yellow, Orange
-# #  Purple, Blue, Blue Stripe
-# #  Green, Green Stripe, Brown
-# #  Black
-# #
-# # Pattern5
-# #  White, Yellow
-# #  Orange
-# #  Purple
-# #  Blue, Blue Stripe
-# #  Green, Green Stripe, Brown
-# #
-# # Pattern6
-# #  White, Yellow
-# #  Orange
-# #  Purple
-# #  Blue, Blue Stripe
-# #  Green, Green Stripe
-# #  Brown
-# #  Black
-# #
-# # Pattern7
-# #  White, Yellow & Orange
-# #  Purple, Blue & Blue Stripe
-# #  Green, Green Stripe, Brown
-# #  Black
-
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White
@@ -312,52 +253,69 @@ def writePattern1ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
-###############################################################################
-# writePattern2ToExcel
 #  This method provides a re-usable method to write output to excel
 #  The Pattern it writes is:
 #    White
 #    Yellow
 #    Orange
 #    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+#    Green, Green Stripe
 #
 #  arguments:
 #  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern2ToExcel(filename, compositMask):
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern1ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     print(time.strftime("%X") + " Generating " + fullpath)
 
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+
+    wmk = newDataFrameFromQuery(combined_query)
     writeFormattedExcelSheet(wmk, writer, 'White')
 
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
+    rank_query = f"Rank == '{constants.YELLOW_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
     writeFormattedExcelSheet(wmk, writer, 'Yellow')
 
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
+    rank_query = f"Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
     writeFormattedExcelSheet(wmk, writer, 'Orange')
 
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
+    rank_query = f"Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
     writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
 
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
 
-    #
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-    #    wmk.to_excel(writer,'Black')
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}' or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
 
     # writer.save()
     writer.close()
@@ -413,6 +371,82 @@ def writePattern3ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+#  This method provides a re-usable method to write output to excel
+#  The Pattern it writes is:
+#    White
+#    Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern3ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'White')
+
+    rank_query = f"Rank == '{constants.YELLOW_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Yellow')
+
+    rank_query = f"Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Orange')
+
+    rank_query = f"Rank == '{constants.PURPLE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Purple')
+
+
+    rank_query = f"Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}' or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
+
 ###############################################################################
 # writePattern4ToExcel
 #  This method provides a re-usable method to write output to excel
@@ -467,6 +501,66 @@ def writePattern4ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+#  This method provides a re-usable method to write output to excel
+#  The Pattern it writes is:
+#    White, Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern4ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}' or Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'White, Yellow, Orange')
+
+    rank_query = f"Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}' or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Black')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
 
 ###############################################################################
 # writePattern5ToExcel
@@ -513,6 +607,74 @@ def writePattern5ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
+
+#  This method provides a re-usable method to write output to excel
+#  The Pattern it writes is:
+#    White, Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe, Brown
+#
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern5ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
+
+    rank_query = f"Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Orange')
+
+    rank_query = f"Rank == '{constants.PURPLE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Purple')
+
+
+    rank_query = f"Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}' or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
 
 
 ###############################################################################
@@ -569,6 +731,88 @@ def writePattern6ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
+
+#  This method provides a re-usable method to write output to excel
+#  The Pattern it writes is:
+#    White, Yellow
+#    Orange
+#    Purple
+#    Blue, Blue Stripe
+#    Green, Green Stripe
+#    Brown
+#    Black
+#
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern6ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
+
+    rank_query = f"Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Orange')
+
+    rank_query = f"Rank == '{constants.PURPLE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Purple')
+
+
+    rank_query = f"Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Brown')
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Black')
+
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
 
 
 ###############################################################################
@@ -637,6 +881,74 @@ def writePattern7ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+#  This method provides a re-usable method to write output to excel
+#  The Pattern it writes is:
+#    White, Yellow & Orange
+#    Purple, Blue & Blue Stripe
+#    Green, Green Stripe,
+#    Brown
+#    Black
+#
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#  writePattern1ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
+def writePattern7ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}' or Rank == '{constants.ORANGE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'White, Yellow, Orange')
+
+    rank_query = f"Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
+
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Brown')
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Black')
+
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
 
 ###############################################################################
 # writeWeaponsDivision1ToExcel
@@ -664,6 +976,47 @@ def writeWeaponsDivision1ToExcel(filename, compositMask):
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 1')
 
     # writer.save()
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+###############################################################################
+# writeWeaponsDivision1ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision1ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    combined_query= f'{division_type_query} and {age_query} {gender_query}'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 1')
+
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
@@ -745,6 +1098,58 @@ def writeWeaponsDivision2ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+###############################################################################
+# writeWeaponsDivision2ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision2ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}' or Rank == '{constants.ORANGE_BELT}' or Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+
+    # rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}'"
+    # rank_query = f"Rank == '{constants.ORANGE_BELT}'"
+    # rank_query = f"Rank == '{constants.PURPLE_BELT}'"
+    # rank_query = f"Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    # rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}'"
+    # rank_query = f"Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    # rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 2')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
 
 ###############################################################################
 # writeWeaponsDivision2ToDetailReport
@@ -817,6 +1222,54 @@ def writeWeaponsDivision3ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+###############################################################################
+# writeWeaponsDivision3ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision3ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+
+
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}'"
+    rank_query = f"{rank_query} or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.THIRD_DEGREE_BROWN_BELT}'"
+    rank_query = f"{rank_query} or Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 2')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
 
 ###############################################################################
 # writeWeaponsDivision3ToDetailReport
@@ -879,6 +1332,49 @@ def writeWeaponsDivision4ToExcel(filename, compositMask):
     # writer.save()
     writer.close()
     time.sleep(constants.SLEEP_TIME)
+
+###############################################################################
+# writeWeaponsDivision4ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision4ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}' or Rank == '{constants.ORANGE_BELT}' or Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 4')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
 
 
 ###############################################################################
@@ -948,6 +1444,49 @@ def writeWeaponsDivision5ToExcel(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+###############################################################################
+# writeWeaponsDivision5ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision5ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.WHITE_BELT}' or Rank == '{constants.YELLOW_BELT}' or Rank == '{constants.ORANGE_BELT}' or Rank == '{constants.PURPLE_BELT}' or Rank == '{constants.BLUE_BELT}' or Rank == '{constants.BLUE_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 5')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
 
 ###############################################################################
 # writeWeaponsDivision5ToDetailReport
@@ -1013,6 +1552,48 @@ def writeWeaponsDivision6ToFile(filename, compositMask):
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
+###############################################################################
+# writeWeaponsDivision6ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision6ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+    rank_query = f"Rank == '{constants.GREEN_BELT}' or Rank == '{constants.GREEN_STRIPE_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 5')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
 
 ###############################################################################
 # writeWeaponsDivision6ToDetailReport
@@ -1062,6 +1643,49 @@ def writeWeaponsDivision7ToFile(filename, compositMask):
     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
 
     #writer.save()
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+###############################################################################
+# writeWeaponsDivision7ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision7ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+
+    rank_query = f"Rank == '{constants.THIRD_DEGREE_BROWN_BELT}' or Rank == '{constants.SECOND_DEGREE_BROWN_BELT}' or Rank == '{constants.FIRST_DEGREE_BROWN_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
+
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
@@ -1117,6 +1741,49 @@ def writeWeaponsDivision8ToFile(filename, compositMask):
 
 
 ###############################################################################
+# writeWeaponsDivision8ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision8ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+###############################################################################
 # writeWeaponsDivision8ToDetailReport
 #
 def writeWeaponsDivision8ToDetailReport(event_time, division_name, age, compositMask):
@@ -1144,6 +1811,71 @@ def writeWeaponsDivision8ToKataScoreSheet(event_time, division_name, age, compos
     wmk = newDataFrameFromMask(mask)
 
     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Jr. Black & Black")
+
+###############################################################################
+#  writeWeaponsDivision9ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  compsitMask - a mask made up of everything but the belts that you want
+#
+def writeWeaponsDivision9ToFile(filename, compositMask):
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    mask1 = mask_AllBlackBelt & compositMask
+    mask = mask1
+    wmk = newDataFrameFromMask(mask)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 9')
+
+    # writer.save()
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+###############################################################################
+# writeWeaponsDivision8ToExcel
+#  arguments:
+#  filename - the filename without path to write
+#  arguments:
+#  filename - the filename without path to write
+#  gender - gender used in the query 'male', 'female', or '*'
+#  minimum_age - the minimum age used in the query
+#  maximum_age - the maxinum age used in the query
+#
+def writeWeaponsDivision9ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int):
+
+    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+    writer = pd.ExcelWriter(fullpath)
+    print(time.strftime("%X") + " Generating " + fullpath)
+
+    # Hack for 3 year olds
+    if minimum_age == 4:
+        minimum_age = 2
+
+    age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
+
+    if gender == '*':
+        gender_query = ''
+    else:
+        gender_query = 'and Gender == "' + gender + '"'
+
+
+    assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms', "Error: Invalid division_type"
+    if division_type == 'Weapons':
+        division_type_query = 'Weapons.str.contains("Weapons")'
+    else:
+        division_type_query = 'Events.str.contains("' + division_type + '")'
+
+
+    rank_query = f"Rank == '{constants.FIRST_DEGREE_BLACK_BELT}' or Rank == '{constants.SECOND_DEGREE_BLACK_BELT}' or Rank == '{constants.THIRD_DEGREE_BLACK_BELT}' or Rank == '{constants.FOURTH_DEGREE_BLACK_BELT}' or Rank == '{constants.FIFTH_DEGREE_BLACK_BELT}' or Rank == '{constants.JUNIOR_BLACK_BELT}'"
+    combined_query= f'{division_type_query} and {age_query} {gender_query} and ({rank_query})'
+    wmk = newDataFrameFromQuery(combined_query)
+    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
+
+    writer.close()
+    time.sleep(constants.SLEEP_TIME)
+
+
 
 ###############################################################################
 # writeWeaponsDivision9ToDetailReport
@@ -1430,8 +2162,9 @@ else:
     ###############################################################################
     # Kids Kata  - 4-6 year olds
     #
-    compositMask = mask_Forms & mask_Age4to6
-    writePattern1ToExcel("KidsKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age4to6
+    # writePattern1ToExcel("KidsKata.xlsx", compositMask)
+    writePattern1ToExcelViaQuery(filename="KidsKata.xlsx", division_type='Forms', gender="*",minimum_age=4, maximum_age=6)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],  ranks=[constants.WHITE_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
@@ -1443,8 +2176,10 @@ else:
     ###############################################################################
     # Youth Kata  - 7-8 year olds
     #
-    compositMask = mask_Forms & mask_Age7to8
-    writePattern3ToExcel("YouthKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age7to8
+    # writePattern3ToExcel("YouthKata.xlsx", compositMask)
+    writePattern3ToExcelViaQuery(filename="YouthKata.xlsx", division_type='Forms', gender="*",minimum_age=7, maximum_age=8)
+
 
     writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="White",                     minimum_age=7, maximum_age=8, rings=[8],    ranks=[constants.WHITE_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Youth Kata",gender="*",rank_label="Yellow",                    minimum_age=7, maximum_age=8, rings=[9],    ranks=[constants.YELLOW_BELT], clean_df=clean_df)
@@ -1458,8 +2193,9 @@ else:
     ###############################################################################
     # Kids Sparring Spreadsheet - 4-6 year olds
     #
-    compositMask = mask_Sparring & mask_Age4to6
-    writePattern2ToExcel("KidsSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Age4to6
+    # writePattern1ToExcel("KidsSparring.xlsx", compositMask)
+    writePattern1ToExcelViaQuery(filename="KidsSparring.xlsx", division_type='Sparring', gender="*",minimum_age=4, maximum_age=6)
 
     writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="White",                     minimum_age=4, maximum_age=6, rings=[1],     ranks=[constants.WHITE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Yellow",                    minimum_age=4, maximum_age=6, rings=[2,3],  ranks=[constants.YELLOW_BELT],clean_df=clean_df)
@@ -1471,8 +2207,9 @@ else:
     ###############################################################################
     # Boy's & Girl's Kata  - 9-11 year olds
     #
-    compositMask = mask_Forms & mask_Age9to11
-    writePattern6ToExcel("BoysGirlsKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age9to11
+    # writePattern6ToExcel("BoysGirlsKata.xlsx", compositMask)
+    writePattern6ToExcelViaQuery(filename="BoysGirlsKata.xlsx", division_type='Forms', gender="*",minimum_age=9, maximum_age=11)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="White, Yellow",         minimum_age=9, maximum_age=11, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="9:45am",division_name="Boy's & Girl's Kata",gender="*", rank_label="Orange",                minimum_age=9, maximum_age=11, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
@@ -1487,8 +2224,9 @@ else:
     ###############################################################################
     # Youth Girl's Sparring  - 7-8 year olds
     #
-    compositMask = mask_Sparring & mask_Female & mask_Age7to8
-    writePattern5ToExcel("YouthGirlSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Female & mask_Age7to8
+    # writePattern5ToExcel("YouthGirlSparring.xlsx", compositMask)
+    writePattern5ToExcelViaQuery(filename="YouthGirlSparring.xlsx", division_type='Forms', gender="Female",minimum_age=7, maximum_age=8)
 
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Girl's Sparring",gender="Female", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
@@ -1499,8 +2237,9 @@ else:
     ###############################################################################
     # Youth Boy's Sparring - 7-8 year olds
     #
-    compositMask = mask_Sparring & mask_Male & mask_Age7to8
-    writePattern5ToExcel("YouthBoysSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Male & mask_Age7to8
+    # writePattern5ToExcel("YouthBoysSparring.xlsx", compositMask)
+    writePattern5ToExcelViaQuery(filename="YouthBoysSparring.xlsx", division_type='Forms', gender="Male",minimum_age=7, maximum_age=8)
 
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, rings=[6], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=7, maximum_age=8, rings=[7], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
@@ -1511,8 +2250,9 @@ else:
     ###############################################################################
     # Girl's Sparring - 9-11 year olds
     #
-    compositMask = mask_Sparring & mask_Age9to11 & mask_Female
-    writePattern4ToExcel("GirlsSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Age9to11 & mask_Female
+    # writePattern4ToExcel("GirlsSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="GirlsSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=9, maximum_age=11)
 
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, rings=[11], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=9, maximum_age=11, rings=[12], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1524,8 +2264,9 @@ else:
     ###############################################################################
     # Boy's Sparring - 9-11 year olds
     #
-    compositMask = mask_Sparring & mask_Age9to11 & mask_Male
-    writePattern6ToExcel("BoysSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Age9to11 & mask_Male
+    # writePattern6ToExcel("BoysSparring.xlsx", compositMask)
+    writePattern6ToExcelViaQuery(filename="BoysSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=9, maximum_age=11)
 
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=9, maximum_age=11, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=9, maximum_age=11, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
@@ -1539,23 +2280,29 @@ else:
     # Weapons Division 1 - 4-8 year olds
     #
     compositMask = mask_Weapons & mask_Age4to8
-    writeWeaponsDivision1ToExcel("WeaponsDivision1.xlsx", compositMask)
+    # writeWeaponsDivision1ToExcel("WeaponsDivision1.xlsx", compositMask)
+    writeWeaponsDivision1ToExcelViaQuery(filename="WeaponsDivision1.xlsx", division_type='Weapons', gender="*",minimum_age=4, maximum_age=8)
+
     writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-8", compositMask)
     writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-8", compositMask)
 
     ###############################################################################
-    # Weapons Division 2 - 10-12 year olds
+    # Weapons Division 2 - 9-11 year olds White - Blue W/Green Stripe
     #
     compositMask = mask_Weapons & mask_Age9to11
-    writeWeaponsDivision2ToExcel("WeaponsDivision2.xlsx", compositMask)
+    # writeWeaponsDivision2ToExcel("WeaponsDivision2.xlsx", compositMask)
+    writeWeaponsDivision2ToExcelViaQuery(filename="WeaponsDivision2.xlsx", division_type='Weapons', gender="*",minimum_age=9, maximum_age=11)
+
     writeWeaponsDivision2ToDetailReport("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
     writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
 
     ###############################################################################
-    #  WeaponsDivision3 13-17 year olds
+    #  WeaponsDivision3  - 9-11 year olds Green - Jr. Black
     #
     compositMask = mask_Weapons & mask_Age9to11
-    writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
+    # writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
+    writeWeaponsDivision3ToExcelViaQuery(filename="WeaponsDivision3.xlsx", division_type='Weapons', gender="*",minimum_age=9, maximum_age=11)
+
     writeWeaponsDivision3ToDetailReport("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
     writeWeaponsDivision3ToKataScoreSheet("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
 
@@ -1566,8 +2313,9 @@ else:
     ###############################################################################
     # Men And Women's Kata - 18-39 year olds
     #
-    compositMask = mask_Forms & mask_Age18to39
-    writePattern6ToExcel("MenAndWomensKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age18to39
+    # writePattern6ToExcel("MenAndWomensKata.xlsx", compositMask)
+    writePattern6ToExcelViaQuery(filename="MenAndWomensKata.xlsx", division_type='Forms', gender="*",minimum_age=18, maximum_age=39)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="White, Yellow",         minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Orange",                minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
@@ -1581,8 +2329,9 @@ else:
     ###############################################################################
     # Teen Kata - 12-14 year olds
     #
-    compositMask = mask_Forms & mask_Age12to14
-    writePattern6ToExcel("TeenKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age12to14
+    # writePattern6ToExcel("TeenKata.xlsx", compositMask)
+    writePattern6ToExcelViaQuery(filename="TeenKata.xlsx", division_type='Forms', gender="*",minimum_age=12, maximum_age=14)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, rings=[8],     ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, rings=[9],     ranks=[constants.ORANGE_BELT], clean_df=clean_df)
@@ -1597,8 +2346,9 @@ else:
     ###############################################################################
     # Senior Men's Sparring - 40+ year olds
     #
-    compositMask = mask_Sparring & mask_Male & mask_Age40Plus
-    writePattern4ToExcel("SeniorMensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Male & mask_Age40Plus
+    # writePattern4ToExcel("SeniorMensSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="SeniorMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=40, maximum_age=100)
 
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1608,8 +2358,9 @@ else:
     ###############################################################################
     # Senior Women's Sparring - 40+ year olds
     #
-    compositMask = mask_Sparring & mask_Female & mask_Age40Plus
-    writePattern4ToExcel("SeniorWomensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Female & mask_Age40Plus
+    # writePattern4ToExcel("SeniorWomensSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="SeniorWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=40, maximum_age=100)
 
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1619,8 +2370,9 @@ else:
     ###############################################################################
     # Young Adult Kata - 15-17 year olds
     #
-    compositMask = mask_Forms & mask_Age15to17
-    writePattern4ToExcel("YoungAdultKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age15to17
+    # writePattern4ToExcel("YoungAdultKata.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="YoungAdultKata.xlsx", division_type='Forms', gender="*",minimum_age=15, maximum_age=17)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, rings=[9],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
@@ -1631,8 +2383,9 @@ else:
     ###############################################################################
     # Teen Girl's Sparring - 12-14 year olds
     #
-    compositMask = mask_Sparring & mask_Female & mask_Age12to14
-    writePattern4ToExcel("TeenGirlSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Female & mask_Age12to14
+    # writePattern4ToExcel("TeenGirlSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="TeenGirlSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=12, maximum_age=14)
 
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, rings=[13], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, rings=[14], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1645,8 +2398,9 @@ else:
     ###############################################################################
     #  Men's Sparring - 18-39 year olds
     #
-    compositMask = mask_Sparring & mask_Male & mask_Age18to39
-    writePattern4ToExcel("MensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Male & mask_Age18to39
+    # writePattern4ToExcel("MensSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="MensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=18, maximum_age=39)
 
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1656,8 +2410,9 @@ else:
     ###############################################################################
     #  Teen Boy's Sparring - 12-14 year olds
     #
-    compositMask = mask_Sparring & mask_Male & mask_Age12to14
-    writePattern7ToExcel("TeenBoysSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Male & mask_Age12to14
+    # writePattern7ToExcel("TeenBoysSparring.xlsx", compositMask)
+    writePattern7ToExcelViaQuery(filename="TeenBoysSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=12, maximum_age=14)
 
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="White, Yellow, Orange",      minimum_age=12, maximum_age=14, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=12, maximum_age=14, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1668,8 +2423,9 @@ else:
     ###############################################################################
     #  Young Adult Men's Sparring - 15-17 year olds
     #
-    compositMask = mask_Sparring & mask_Male & mask_Age15to17
-    writePattern7ToExcel("YoungAdultMensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Male & mask_Age15to17
+    # writePattern7ToExcel("YoungAdultMensSparring.xlsx", compositMask)
+    writePattern7ToExcelViaQuery(filename="YoungAdultMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=15, maximum_age=17)
 
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[10], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[11], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1681,8 +2437,9 @@ else:
     ###############################################################################
     #  Women's Sparring - 18-39 year olds
     #
-    compositMask = mask_Sparring & mask_Female & mask_Age18to39
-    writePattern4ToExcel("WomensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Female & mask_Age18to39
+    # writePattern4ToExcel("WomensSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="WomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=18, maximum_age=39)
 
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, rings=[15], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, rings=[16], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1695,8 +2452,9 @@ else:
     ###############################################################################
     # Senior Kata - 40+ year olds
     #
-    compositMask = mask_Forms & mask_Age40Plus
-    writePattern6ToExcel("SeniorKata.xlsx", compositMask)
+    # compositMask = mask_Forms & mask_Age40Plus
+    # writePattern6ToExcel("SeniorKata.xlsx", compositMask)
+    writePattern6ToExcelViaQuery(filename="SeniorKata.xlsx", division_type='Forms', gender="*",minimum_age=40, maximum_age=100)
 
     writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
@@ -1711,8 +2469,9 @@ else:
     ###############################################################################
     #  Young Adult Women's Sparring - 15-17 year olds
     #
-    compositMask = mask_Sparring & mask_Female & mask_Age15to17
-    writePattern4ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
+    # compositMask = mask_Sparring & mask_Female & mask_Age15to17
+    # writePattern4ToExcel("YoungAdultWomensSparring.xlsx", compositMask)
+    writePattern4ToExcelViaQuery(filename="YoungAdultWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=15, maximum_age=17)
 
     writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, rings=[8], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, rings=[9], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
@@ -1726,7 +2485,9 @@ else:
     #  WeaponsDivision4 12-17 White-Blue Stripe year olds
     #
     compositMask = mask_Weapons & mask_Age12to17
-    writeWeaponsDivision4ToExcel("WeaponsDivision4.xlsx", compositMask)
+    # writeWeaponsDivision4ToExcel("WeaponsDivision4.xlsx", compositMask)
+    writeWeaponsDivision4ToExcelViaQuery(filename="WeaponsDivision4.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=17)
+
     writeWeaponsDivision4ToDetailReport("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
     writeWeaponsDivision4ToKataScoreSheet("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
 
@@ -1734,7 +2495,9 @@ else:
     #  WeaponsDivision5 18+ year olds
     #
     compositMask = mask_Weapons & mask_Age18Plus
-    writeWeaponsDivision5ToExcel("WeaponsDivision5.xlsx", compositMask)
+    # writeWeaponsDivision5ToExcel("WeaponsDivision5.xlsx", compositMask)
+    writeWeaponsDivision5ToExcelViaQuery(filename="WeaponsDivision5.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=100)
+
     writeWeaponsDivision5ToDetailReport("4:15pm", "Weapons Division 5", "18+", compositMask)
     writeWeaponsDivision5ToKataScoreSheet("4:15pm", "Weapons Division 5", "18+", compositMask)
 
@@ -1742,7 +2505,9 @@ else:
     #  WeaponsDivision6 12+ year olds green belts
     #
     compositMask = mask_Weapons & mask_Age12Plus
-    writeWeaponsDivision6ToFile("WeaponsDivision6.xlsx", compositMask)
+    # writeWeaponsDivision6ToFile("WeaponsDivision6.xlsx", compositMask)
+    writeWeaponsDivision6ToExcelViaQuery(filename="WeaponsDivision6.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=100)
+
     writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "12+", compositMask)
     writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "12+", compositMask)
 
@@ -1750,15 +2515,20 @@ else:
     #  WeaponsDivision7 12+ year olds brown belts
     #
     compositMask = mask_Weapons & mask_Age12Plus
-    writeWeaponsDivision7ToFile("WeaponsDivision7.xlsx", compositMask)
+    # writeWeaponsDivision7ToFile("WeaponsDivision7.xlsx", compositMask)
+    writeWeaponsDivision7ToExcelViaQuery(filename="WeaponsDivision7.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=100)
+
     writeWeaponsDivision7ToDetailReport("4:15pm", "Weapons Division 7", "12+", compositMask)
     writeWeaponsDivision7ToKataScoreSheet("4:15pm", "Weapons Division 7", "12+", compositMask)
 
     ###############################################################################
-    #  WeaponsDivision8 12-17 year olds
+    #  WeaponsDivision8 12+ Black
     #
     compositMask = mask_Weapons & mask_Age12to17
-    writeWeaponsDivision8ToFile("WeaponsDivision8.xlsx", compositMask)
+    # writeWeaponsDivision8ToFile("WeaponsDivision8.xlsx", compositMask)
+    writeWeaponsDivision8ToExcelViaQuery(filename="WeaponsDivision8.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=17)
+
+
     writeWeaponsDivision8ToDetailReport("4:15pm", "Weapons Division 8", "12-17", compositMask)
     writeWeaponsDivision8ToKataScoreSheet("4:15pm", "Weapons Division 8", "12-17", compositMask)
 
@@ -1766,7 +2536,9 @@ else:
     #  WeaponsDivision9 18+ year olds
     #
     compositMask = mask_Weapons & mask_Age18Plus
-    writeWeaponsDivision8ToFile("WeaponsDivision8.xlsx", compositMask)
+    # writeWeaponsDivision9ToFile("WeaponsDivision9.xlsx", compositMask)
+    writeWeaponsDivision9ToExcelViaQuery(filename="WeaponsDivision9.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=100)
+
     writeWeaponsDivision9ToDetailReport("4:15pm", "Weapons Division 9", "18+", compositMask)
     writeWeaponsDivision9ToKataScoreSheet("4:15pm", "Weapons Division 9", "18+", compositMask)
 

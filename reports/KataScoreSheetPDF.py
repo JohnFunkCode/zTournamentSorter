@@ -199,20 +199,20 @@ class KataScoreSheetPDF(object):
     #  Fall 2020
     #  This method writes a single kata score sheet based on parameters provided
     #
-    def writeSingleKataScoreSheet(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,
+    def writeSingleKataScoreSheet(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label: str, minimum_age: int,
                                   maximum_age: int, rings: list, ranks: list,clean_df: pandas.DataFrame):
-        if (maximum_age == 100):
+        if (maximum_age == constants.AGELESS):
             age_label = '{0}+'.format(minimum_age)
         else:
-            age_label = '{0}-{1}'.format(minimum_age, maximum_age)
+            age_label = '{0} - {1}'.format(minimum_age, maximum_age)
 
         # Hack for 3 year olds
         if minimum_age == 4:
             minimum_age = 2
 
-        print(time.strftime(
-            "%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-        self.set_title("Forms")
+        #print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
+        print(f'{time.strftime("%X")}  Generating {division_type} Score PDF for {event_time} {division_name} {age_label}')
+        self.set_title(f'{division_type}')
 
         age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
 
@@ -222,13 +222,17 @@ class KataScoreSheetPDF(object):
             if r < len(ranks) - 1:  # Add ' and ' to everything but the last one
                 rank_query = rank_query + ' or '
 
+        assert division_type == 'Weapons' or division_type=='Forms', "Error: Invalid division_type"
+        if division_type == 'Weapons':
+            division_type_query='Weapons.str.contains("Weapons")'
+        else:
+            division_type_query='Events.str.contains("Forms")'
+
         if gender != '*':
             gender_query = 'Gender == "' + gender + '"'
-            combined_query = '(Events.str.contains("Forms")) and ({0}) and ({1}) and ({2})'.format(age_query,
-                                                                                                   rank_query,
-                                                                                                   gender_query)
+            combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query}) and ({gender_query})'
         else:
-            combined_query = '(Events.str.contains("Forms")) and ({0}) and ({1})'.format(age_query, rank_query)
+            combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         # wmk=newDataFrameFromQuery(combined_query)
         wmk = clean_df[

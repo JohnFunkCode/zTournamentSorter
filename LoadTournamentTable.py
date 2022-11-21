@@ -1,5 +1,4 @@
-# V 10/1/2017 - Changed reports to use new age groups for Fall 2017 Tournament
-
+# V 11/20/2022
 # There are 6 patterns in the Denver Tournament Guide
 #
 # Pattern1 - ranking based on size of the division it would be use for: 
@@ -79,26 +78,26 @@ def pathDelimiter():
     return delimiter
 
 
-###############################################################################
-# NewDataFrameFromMask()
-#  arguments:  mask to apply
-#  return:   new data frame
+# ###############################################################################
+# # NewDataFrameFromMask()
+# #  arguments:  mask to apply
+# #  return:   new data frame
+# #
+# def newDataFrameFromMask(mask):
+#     newdf = clean_df[
+#         ["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
+#          "Events", "Weapons"]][mask].sort_values("Age")
+#     newdf.sort_values('BMI', inplace=True)
 #
-def newDataFrameFromMask(mask):
-    newdf = clean_df[
-        ["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
-         "Events", "Weapons"]][mask].sort_values("Age")
-    newdf.sort_values('BMI', inplace=True)
-
-    ## update the hitcount every time we touch someone
-    for index, row in clean_df[mask].iterrows():
-        name = row['First_Name'] + " " + row['Last_Name']
-        hc = row['hitcount']
-        newhc = hc + 1
-        #    print name + " has a row count of " + str(newhc)
-        clean_df.at[index, 'hitcount'] = newhc
-
-    return newdf
+#     ## update the hitcount every time we touch someone
+#     for index, row in clean_df[mask].iterrows():
+#         name = row['First_Name'] + " " + row['Last_Name']
+#         hc = row['hitcount']
+#         newhc = hc + 1
+#         #    print name + " has a row count of " + str(newhc)
+#         clean_df.at[index, 'hitcount'] = newhc
+#
+#     return newdf
 
 #Experimental
 def newDataFrameFromQuery(query_string: str):
@@ -106,6 +105,14 @@ def newDataFrameFromQuery(query_string: str):
     newdf = clean_df[["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
     "Events", "Weapons"]].query(query_string).sort_values("Age").sort_values("BMI")
 
+    ## update the hitcount every time we touch someone
+    for index, row in newdf.iterrows():
+        name = row['First_Name'] + " " + row['Last_Name']
+        id= row['Registrant_ID']
+        hc=clean_df.at[index,'hitcount']
+        newhc = hc + 1
+        #print(f'{id}:{name} has a row count of {newhc}')
+        clean_df.at[index,'hitcount']=newhc
     return newdf
 
 
@@ -157,110 +164,110 @@ def writeFormattedExcelSheet(df, writer, sheetname):
     worksheet.set_column('N:N', 12)  # column N is Weapons
 
 
-###############################################################################
-# write event to file
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+# ###############################################################################
+# # write event to file
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeEventToFile(filename, compositMask):
+#     #    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
+#     #    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
 #
-def writeEventToFile(filename, compositMask):
-    #    fullpath = os.getcwd() + "\\Sorted\\" + filename  #Windows
-    #    fullpath = os.getcwd() + "/Sorted/" + filename  #Mac
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White')
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Yellow')
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Orange')
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple')
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Blue')
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green')
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Brown')
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Black')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
-
-
-###############################################################################
-# writePattern1ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White, Yellow, Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe, Brown
-#    Black
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White')
 #
-def writePattern1ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Yellow')
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Orange')
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple')
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Blue')
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green')
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Brown')
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Black')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White, Yellow, Orange')
 
-    #    mask= mask_OrangeBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-
-    #    mask= mask_PurpleBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
-
-    mask1 = mask_AllBrownBelt & compositMask
-    mask2 = mask_AllGreenBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
-
-    #    mask= mask_AllBrownBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Black')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# # writePattern1ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White, Yellow, Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #    Black
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writePattern1ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White, Yellow, Orange')
+#
+#     #    mask= mask_OrangeBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#
+#     #    mask= mask_PurpleBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
+#
+#     mask1 = mask_AllBrownBelt & compositMask
+#     mask2 = mask_AllGreenBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+#
+#     #    mask= mask_AllBrownBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Black')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 
 ###############################################################################
@@ -325,54 +332,54 @@ def writePattern1ToExcelViaQuery(filename: str, division_type: str, gender: str,
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern2ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White, Yellow & Orange
-#    Purple, Blue & Blue Stripe
-#    Green, Green Stripe,
-#    Brown
-#    Black
+# ###############################################################################
+# # writePattern2ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White, Yellow & Orange
+# #    Purple, Blue & Blue Stripe
+# #    Green, Green Stripe,
+# #    Brown
+# #    Black
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writePattern2ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask = mask1 | mask2 | mask3
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White, Yellow & Orange')
 #
-def writePattern2ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask = mask1 | mask2 | mask3
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White, Yellow & Orange')
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple, Blue & Blue Stripe')
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Brown')
-
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Black')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple, Blue & Blue Stripe')
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Brown')
+#
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Black')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 
 ###############################################################################
@@ -445,51 +452,51 @@ def writePattern2ToExcelViaQuery(filename: str, division_type: str, gender: str,
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern3ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+# ###############################################################################
+# # writePattern3ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# def writePattern3ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern3ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Orange')
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple')
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Orange')
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple')
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 
 ###############################################################################
@@ -563,54 +570,54 @@ def writePattern3ToExcelViaQuery(filename: str, division_type: str, gender: str,
 
 
 
-###############################################################################
-# writePattern4ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple, Blue, Blue Stripe
-#    Green, Green Stripe
+# ###############################################################################
+# # writePattern4ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple, Blue, Blue Stripe
+# #    Green, Green Stripe
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# def writePattern4ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern4ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White')
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Yellow')
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Orange')
-
-    mask1 = mask_PurpleBelt & compositMask
-    mask2 = mask_AllBlueBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
-    #
-    #    mask= mask_AllBlackBelt & compositMask
-    #    wmk=newDataFrameFromMask( mask )
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White')
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Yellow')
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Orange')
+#
+#     mask1 = mask_PurpleBelt & compositMask
+#     mask2 = mask_AllBlueBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple, Blue, Blue Stripe')
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+#     #
+#     #    mask= mask_AllBlackBelt & compositMask
+#     #    wmk=newDataFrameFromMask( mask )
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writePattern4ToExcelViaQuery
@@ -683,54 +690,54 @@ def writePattern4ToExcelViaQuery(filename: str, division_type: str, gender: str,
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writePattern5ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White
-#    Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe, Brown
+# ###############################################################################
+# # writePattern5ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White
+# #    Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe, Brown
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# def writePattern5ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
-def writePattern5ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask = mask_WhiteBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White')
-
-    mask = mask_YellowBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Yellow')
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Orange')
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple')
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask = mask_WhiteBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White')
+#
+#     mask = mask_YellowBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Yellow')
+#
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Orange')
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple')
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe, Brown')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writePattern5ToExcelViaQuery
@@ -810,60 +817,60 @@ def writePattern5ToExcelViaQuery(filename: str, division_type: str, gender: str,
 
 
 
-###############################################################################
-# writePattern6ToExcel
-#  This method provides a re-usable method to write output to excel
-#  The Pattern it writes is:
-#    White, Yellow
-#    Orange
-#    Purple
-#    Blue, Blue Stripe
-#    Green, Green Stripe
-#    Brown
-#    Black
+# ###############################################################################
+# # writePattern6ToExcel
+# #  This method provides a re-usable method to write output to excel
+# #  The Pattern it writes is:
+# #    White, Yellow
+# #    Orange
+# #    Purple
+# #    Blue, Blue Stripe
+# #    Green, Green Stripe
+# #    Brown
+# #    Black
+# #
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writePattern6ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask = mask1 | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
 #
-def writePattern6ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask = mask1 | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'White, Yellow')
-
-    mask = mask_OrangeBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Orange')
-
-    mask = mask_PurpleBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Purple')
-
-    mask = mask_AllBlueBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
-
-    mask = mask_AllGreenBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Brown')
-
-    mask = mask_AllBlackBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Black')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask = mask_OrangeBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Orange')
+#
+#     mask = mask_PurpleBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Purple')
+#
+#     mask = mask_AllBlueBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Blue, Blue Stripe')
+#
+#     mask = mask_AllGreenBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Green, Green Stripe')
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Brown')
+#
+#     mask = mask_AllBlackBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Black')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writePattern6ToExcelViaQuery
@@ -956,45 +963,54 @@ def writePattern6ToExcelViaQuery(filename: str, division_type: str, gender: str,
 #  This prevents a lot of duplication
 def writeSingleKataScoreSheetandDivisionReport(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
     divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
-    kata_score_sheet.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+    kata_score_sheet.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
 
 ###############################################################################
 # write_single_sparring_treeShim
 #  Provides a convenience wrapper that writes to both the division detail report and the sparring tree in one line
 #  This prevents a lot of duplication
 def writeSingleSparringTreeandDivisionReport(event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, rings: list, ranks: list, clean_df : pd.DataFrame ):
-    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
+    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Sparring", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
     sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
 
-
 ###############################################################################
-# writeWeaponsDivision1ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+# writeSingleKataScoreSheetandDivisionReport
+#  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
+#  This prevents a lot of duplication
+def writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
+    divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
+    kata_score_sheet.writeSingleKataScoreSheet(               event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+
+
+
+# ###############################################################################
+# # writeWeaponsDivision1ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision1ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-def writeWeaponsDivision1ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    mask6 = mask_AllGreenBelt & compositMask
-    mask7 = mask_AllBrownBelt & compositMask
-    mask8 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 1')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#     mask6 = mask_AllGreenBelt & compositMask
+#     mask7 = mask_AllBrownBelt & compositMask
+#     mask8 = mask_AllBlackBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 1')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision1ToExcel
@@ -1038,82 +1054,82 @@ def writeWeaponsDivision1ToExcelViaQuery(filename: str, division_type: str, gend
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writeWeaponsDivision1ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision1ToDetailReport
+# #
+# def writeWeaponsDivision1ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision1ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    mask6 = mask_AllGreenBelt & compositMask
-    mask7 = mask_AllBrownBelt & compositMask
-    mask8 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
-
-
-###############################################################################
-# writeWeaponsDivision1ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision1ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    mask6 = mask_AllGreenBelt & compositMask
-    mask7 = mask_AllBrownBelt & compositMask
-    mask8 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
-
-
-###############################################################################
-# writeWeaponsDivision2ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#     mask6 = mask_AllGreenBelt & compositMask
+#     mask7 = mask_AllBrownBelt & compositMask
+#     mask8 = mask_AllBlackBelt & compositMask
 #
-def writeWeaponsDivision2ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    #    mask6= mask_AllGreenBelt & compositMask
-    #    mask7= mask_AllBrownBelt & compositMask
-    #    mask8= mask_AllBlackBelt & compositMask
 
-    #    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
+# ###############################################################################
+# # writeWeaponsDivision1ToKataScoreSheet
+# #
+# def writeWeaponsDivision1ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#     mask6 = mask_AllGreenBelt & compositMask
+#     mask7 = mask_AllBrownBelt & compositMask
+#     mask8 = mask_AllBlackBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Jr. Black")
 
-    wmk = newDataFrameFromMask(mask)
-    #    wmk.to_excel(writer,'Weapons Division 2')
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 2')
 
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# # writeWeaponsDivision2ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision2ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#     #    mask6= mask_AllGreenBelt & compositMask
+#     #    mask7= mask_AllBrownBelt & compositMask
+#     #    mask8= mask_AllBlackBelt & compositMask
+#
+#     #    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#     #    wmk.to_excel(writer,'Weapons Division 2')
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 2')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision2ToExcel
@@ -1215,29 +1231,29 @@ def writeWeaponsDivision2ToKataScoreSheet(event_time, division_name, age, compos
     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
 
 
-###############################################################################
-# writeWeaponsDivision3ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+# ###############################################################################
+# # writeWeaponsDivision3ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision3ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-def writeWeaponsDivision3ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask3 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3
-
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 3')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask1 = mask_AllGreenBelt & compositMask
+#     mask2 = mask_AllBrownBelt & compositMask
+#     mask3 = mask_AllBlackBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3
+#
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 3')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision3ToExcel
@@ -1324,31 +1340,31 @@ def writeWeaponsDivision3ToKataScoreSheet(event_time, division_name, age, compos
     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green - Jr. Black")
 
 
-###############################################################################
-# writeWeaponsDivision4ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+# ###############################################################################
+# # writeWeaponsDivision4ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision4ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
 #
-def writeWeaponsDivision4ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 4')
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 4')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision4ToExcel
@@ -1394,72 +1410,72 @@ def writeWeaponsDivision4ToExcelViaQuery(filename: str, division_type: str, gend
 
 
 
-###############################################################################
-# writeWeaponsDivision4ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision4ToDetailReport
+# #
+# def writeWeaponsDivision4ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision4ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age,
-                                                       "White - Blue w/Green Stripe")
-
-
-###############################################################################
-# writeWeaponsDivision4ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision4ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue w/Green Stripe")
-
-
-###############################################################################
-#  writeWeaponsDivision5ToExcel  18+ year Blue and Green
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
 #
-def writeWeaponsDivision5ToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    print(time.strftime("%X") + " Generating " + fullpath)
-    writer = pd.ExcelWriter(fullpath)
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age,
+#                                                        "White - Blue w/Green Stripe")
 
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
 
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
+# ###############################################################################
+# # writeWeaponsDivision4ToKataScoreSheet
+# #
+# def writeWeaponsDivision4ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue w/Green Stripe")
 
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 5')
 
-    #writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# #  writeWeaponsDivision5ToExcel  18+ year Blue and Green
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision5ToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#     writer = pd.ExcelWriter(fullpath)
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 5')
+#
+#     #writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision5ToExcel
@@ -1505,69 +1521,69 @@ def writeWeaponsDivision5ToExcelViaQuery(filename: str, division_type: str, gend
 
 
 
-###############################################################################
-# writeWeaponsDivision5ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision5ToDetailReport
+# #
+# def writeWeaponsDivision5ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision5ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age,
-                                                       "White - Blue w/Green Stripe")
-
-
-###############################################################################
-# writeWeaponsDivision5ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision5ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue w/Green Stripe")
-
-
-###############################################################################
-#  writeWeaponsDivision6ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
 #
-def writeWeaponsDivision6ToFile(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age,
+#                                                        "White - Blue w/Green Stripe")
+#
 
-    mask1 = mask_AllGreenBelt & compositMask
-    # mask2= mask_AllBrownBelt & compositMask
-    mask = mask1  # | mask2
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 6')
+# ###############################################################################
+# # writeWeaponsDivision5ToKataScoreSheet
+# #
+# def writeWeaponsDivision5ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_WhiteBelt & compositMask
+#     mask2 = mask_YellowBelt & compositMask
+#     mask3 = mask_OrangeBelt & compositMask
+#     mask4 = mask_PurpleBelt & compositMask
+#     mask5 = mask_AllBlueBelt & compositMask
+#
+#     mask = mask1 | mask2 | mask3 | mask4 | mask5
+#
+#     wmk = newDataFrameFromMask(mask)
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue w/Green Stripe")
 
-    ##writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+
+# ###############################################################################
+# #  writeWeaponsDivision6ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision6ToFile(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     # mask2= mask_AllBrownBelt & compositMask
+#     mask = mask1  # | mask2
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 6')
+#
+#     ##writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision6ToExcel
@@ -1612,56 +1628,56 @@ def writeWeaponsDivision6ToExcelViaQuery(filename: str, division_type: str, gend
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writeWeaponsDivision6ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision6ToDetailReport
+# #
+# def writeWeaponsDivision6ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision6ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    # mask2= mask_AllBrownBelt & compositMask
-    mask = mask1  # | mask2
-    wmk = newDataFrameFromMask(mask)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green")
-
-
-###############################################################################
-# writeWeaponsDivision6ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision6ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    # mask2= mask_AllBrownBelt & compositMask
-    mask = mask1  # | mask2
-    wmk = newDataFrameFromMask(mask)
-
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Green")
-
-
-###############################################################################
-#  writeWeaponsDivision7ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_AllGreenBelt & compositMask
+#     # mask2= mask_AllBrownBelt & compositMask
+#     mask = mask1  # | mask2
+#     wmk = newDataFrameFromMask(mask)
 #
-def writeWeaponsDivision7ToFile(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green")
 
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
 
-    #writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# # writeWeaponsDivision6ToKataScoreSheet
+# #
+# def writeWeaponsDivision6ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_AllGreenBelt & compositMask
+#     # mask2= mask_AllBrownBelt & compositMask
+#     mask = mask1  # | mask2
+#     wmk = newDataFrameFromMask(mask)
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Green")
+
+
+# ###############################################################################
+# #  writeWeaponsDivision7ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision7ToFile(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 7')
+#
+#     #writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision7ToExcel
@@ -1707,54 +1723,54 @@ def writeWeaponsDivision7ToExcelViaQuery(filename: str, division_type: str, gend
     time.sleep(constants.SLEEP_TIME)
 
 
-###############################################################################
-# writeWeaponsDivision7ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision7ToDetailReport
+# #
+# def writeWeaponsDivision7ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision7ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Brown")
-
-
-###############################################################################
-# writeWeaponsDivision7ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision7ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    #  mask1= mask_AllGreenBelt & compositMask
-    mask = mask_AllBrownBelt & compositMask
-    wmk = newDataFrameFromMask(mask)
-
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Brown")
-
-
-###############################################################################
-#  writeWeaponsDivision8ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
 #
-def writeWeaponsDivision8ToFile(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Brown")
 
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
 
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# # writeWeaponsDivision7ToKataScoreSheet
+# #
+# def writeWeaponsDivision7ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     #  mask1= mask_AllGreenBelt & compositMask
+#     mask = mask_AllBrownBelt & compositMask
+#     wmk = newDataFrameFromMask(mask)
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Brown")
+
+
+# ###############################################################################
+# #  writeWeaponsDivision8ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision8ToFile(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 8')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 
 ###############################################################################
@@ -1800,54 +1816,54 @@ def writeWeaponsDivision8ToExcelViaQuery(filename: str, division_type: str, gend
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
-###############################################################################
-# writeWeaponsDivision8ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision8ToDetailReport
+# #
+# def writeWeaponsDivision8ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision8ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Jr Black & Black")
-
-
-###############################################################################
-# writeWeaponsDivision8ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision8ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Jr. Black & Black")
-
-###############################################################################
-#  writeWeaponsDivision9ToExcel
-#  arguments:
-#  filename - the filename without path to write
-#  compsitMask - a mask made up of everything but the belts that you want
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
 #
-def writeWeaponsDivision9ToFile(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Jr Black & Black")
 
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-    writeFormattedExcelSheet(wmk, writer, 'Weapons Division 9')
 
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# ###############################################################################
+# # writeWeaponsDivision8ToKataScoreSheet
+# #
+# def writeWeaponsDivision8ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Jr. Black & Black")
+
+# ###############################################################################
+# #  writeWeaponsDivision9ToExcel
+# #  arguments:
+# #  filename - the filename without path to write
+# #  compsitMask - a mask made up of everything but the belts that you want
+# #
+# def writeWeaponsDivision9ToFile(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
+#     writeFormattedExcelSheet(wmk, writer, 'Weapons Division 9')
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 ###############################################################################
 # writeWeaponsDivision8ToExcel
@@ -1894,50 +1910,50 @@ def writeWeaponsDivision9ToExcelViaQuery(filename: str, division_type: str, gend
 
 
 
-###############################################################################
-# writeWeaponsDivision9ToDetailReport
+# ###############################################################################
+# # writeWeaponsDivision9ToDetailReport
+# #
+# def writeWeaponsDivision9ToDetailReport(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
 #
-def writeWeaponsDivision9ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Black")
-
-
-###############################################################################
-# writeWeaponsDivision9ToKataScoreSheet
+#     DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
 #
-def writeWeaponsDivision9ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_AllBlackBelt & compositMask
-    mask = mask1
-    wmk = newDataFrameFromMask(mask)
-
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Black")
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
+#
+#     divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Black")
 
 
-def writeSparingTreeToExcel(filename, compositMask):
-    fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
-    writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+# ###############################################################################
+# # writeWeaponsDivision9ToKataScoreSheet
+# #
+# def writeWeaponsDivision9ToKataScoreSheet(event_time, division_name, age, compositMask):
+#     print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
+#
+#     kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
+#
+#     mask1 = mask_AllBlackBelt & compositMask
+#     mask = mask1
+#     wmk = newDataFrameFromMask(mask)
+#
+#     kata_score_sheet.put_dataframe_on_pdfpage(wmk, "tba", event_time, division_name, age, "Black")
 
-    wmk = newDataFrameFromMask(compositMask)
 
-    byDojo = wmk.groupby('Dojo')
-
-    print(byDojo.size())
-
-    # writer.save()
-    writer.close()
-    time.sleep(constants.SLEEP_TIME)
+# def writeSparingTreeToExcel(filename, compositMask):
+#     fullpath = os.getcwd() + pathDelimiter() + "Sorted" + pathDelimiter() + filename
+#     writer = pd.ExcelWriter(fullpath)
+#     print(time.strftime("%X") + " Generating " + fullpath)
+#
+#     wmk = newDataFrameFromMask(compositMask)
+#
+#     byDojo = wmk.groupby('Dojo')
+#
+#     print(byDojo.size())
+#
+#     # writer.save()
+#     writer.close()
+#     time.sleep(constants.SLEEP_TIME)
 
 
 ###############################################################################
@@ -1946,6 +1962,14 @@ def writeSparingTreeToExcel(filename, compositMask):
 #
 
 # get the filename from the environment var named  tourname_filename
+
+#assert False
+# Last thing you did is update the hit counter
+# The next thing you need to do is remove all the weapons division code that doesnt use queries - look for composit mask
+# Once thats done check that all references to compositMask are commented out, and everything still works.  Then you
+# can comment out all the masking.
+# Once that all works - check it in, then go back and delete all the dead code
+
 filename = os.getenv("tournament_filename")
 
 if filename is None:
@@ -1995,153 +2019,153 @@ except:
     #print("expected error")
 
 
-####################
-# Filtering        #
-####################
-
-
-###############################################################################
-#  Define all the atomic masks for filtering
-
-# Atomic masks for Belts
-mask_WhiteBelt = clean_df['Rank'] == 'White'
-mask_YellowBelt = clean_df['Rank'] == 'Yellow'
-mask_OrangeBelt = clean_df['Rank'] == 'Orange'
-mask_PurpleBelt = clean_df['Rank'] == 'Purple'
-mask_BlueBelt = clean_df['Rank'] == 'Blue'
-mask_BlueStripeBelt = clean_df['Rank'] == 'Blue w/Stripe'
-mask_AllBlueBelt = mask_BlueBelt | mask_BlueStripeBelt  # all blue and blue stripe
-# testBluedf=newDataFrameFromMask( mask_AllBlueBelt )
-mask_GreenBelt = clean_df['Rank'] == 'Green'
-mask_GreenStripeBelt = clean_df['Rank'] == 'Green w/Stripe'
-mask_AllGreenBelt = mask_GreenBelt | mask_GreenStripeBelt  # all Green and Green stripe
-# testGreendf=newDataFrameFromMask( mask_AllGreenBelt )
-mask_3rdBrownBelt = clean_df['Rank'] == 'Brown 3rd Degree'
-mask_2ndBrownBelt = clean_df['Rank'] == 'Brown 2nd Degree'
-mask_1stBrownBelt = clean_df['Rank'] == 'Brown 1st Degree'
-mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt  # all 1st 2nd and 3rd Brown
-# testBrowndf=newDataFrameFromMask( mask_AllBrownBelt )
-mask_1stBlackBelt = clean_df['Rank'] == 'Black 1st Degree'
-mask_2ndBlackBelt = clean_df['Rank'] == 'Black 2nd Degree'
-mask_3rdBlackBelt = clean_df['Rank'] == 'Black 3rd Degree'
-mask_4thBlackBelt = clean_df['Rank'] == 'Black 4th Degree'
-mask_5thBlackBelt = clean_df['Rank'] == 'Black 5th Degree'
-mask_JrBlackBelt = clean_df['Rank'] == 'Black Junior'
-mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt  # all Jr, 1st, 2nd, and 3rd degree black
-# testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
-
-# Atomic mask for Gender
-mask_Male = clean_df['Gender'] == 'Male'
-mask_Female = clean_df['Gender'] == 'Female'
-
-# Atomic and composit mask for which event Sparring, Kata, Weapons
-mask_SparringAndForms = clean_df['Events'] == '2 Events - Forms & Sparring ($75)'
-mask_FormsOnly = clean_df['Events'] == '1 Event - Forms ($75)'
-mask_SparringOnly = clean_df['Events'] == '1 Event - Sparring ($75)'
-# Mask for Weapons
-mask_Weapons = clean_df['Weapons'] == 'Weapons ($35)'
-# testdf = clean_df[['First_Name', 'Last_Name', 'Gender', 'Rank', 'Age', 'Weight', 'Height', 'Events', 'Weapons']][mask_Weapons]
-
-# Composit Masks for Sparring or Forms
-mask_Sparring = mask_SparringAndForms | mask_SparringOnly
-mask_Forms = mask_SparringAndForms | mask_FormsOnly
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Forms]
-
-# Atomic mask for age groups found in the tournament guide
-# 4-6 used for kids kata, kids sparring,
-maskLowAge = clean_df["Age"] >= 3
-maskHighAge = clean_df["Age"] <= 6
-mask_Age4to6 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to6]
-
-# 7-9 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring
-maskLowAge = clean_df["Age"] >= 7
-maskHighAge = clean_df["Age"] <= 9
-mask_Age7to9 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age7to9]
-
-
-# 4-8 used for Weapons Division 1 - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 4
-maskHighAge = clean_df["Age"] <= 8
-mask_Age4to8 = maskLowAge & maskHighAge
-
-# 7-8 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 7
-maskHighAge = clean_df["Age"] <= 8
-mask_Age7to8 = maskLowAge & maskHighAge
-
-# 9-11 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 9
-maskHighAge = clean_df["Age"] <= 11
-mask_Age9to11 = maskLowAge & maskHighAge
-
-# 12-14 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 12
-maskHighAge = clean_df["Age"] <= 14
-mask_Age12to14 = maskLowAge & maskHighAge
-
-# 12-17 used in Weapons Division 4 - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 12
-maskHighAge = clean_df["Age"] <= 17
-mask_Age12to17 = maskLowAge & maskHighAge
-
-# 15-17 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
-maskLowAge = clean_df["Age"] >= 15
-maskHighAge = clean_df["Age"] <= 17
-mask_Age15to17 = maskLowAge & maskHighAge
-
-# 10-12 used in Boy's Sparring, Boy's & Girl's Kata, Girl's Sparring
-maskLowAge = clean_df["Age"] >= 10
-maskHighAge = clean_df["Age"] <= 12
-mask_Age10to12 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age10to12]
-
-# 13-15 used in Teen Girl's Sparring, Teen Kata, Teen Boy's Sparring,
-maskLowAge = clean_df["Age"] >= 13
-maskHighAge = clean_df["Age"] <= 15
-mask_Age13to15 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to15]
-
-# 4-9 used in Weapons Division 1
-maskLowAge = clean_df["Age"] >= 4
-maskHighAge = clean_df["Age"] <= 9
-mask_Age4to9 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to9]
-
-# 18-39 used in Womans Sprring, Men and Women's Kata
-maskLowAge = clean_df["Age"] >= 18
-maskHighAge = clean_df["Age"] <= 39
-mask_Age18to39 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18to39]
-
-# 40 plus used in Senior Men's Sparring, Senior Women's Sparring, Senior Kata
-mask_Age40Plus = clean_df["Age"] >= 40
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age40Plus]
-
-# 16-17 used in Young Adult Kata, Young Men's Sparring, Young Adult Women's Sparring
-maskLowAge = clean_df["Age"] >= 16
-maskHighAge = clean_df["Age"] <= 17
-mask_Age16to17 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age16to17]
-
-# 13-17 used in Weapons Division 3
-maskLowAge = clean_df["Age"] >= 13
-maskHighAge = clean_df["Age"] <= 17
-mask_Age13to17 = maskLowAge & maskHighAge
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to17]
-
-# 18 plus used in Weapons Division 4 and 5
-mask_Age18Plus = clean_df["Age"] >= 18
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18Plus]
-
-# 13 plus used in Weapons Division 6
-mask_Age13Plus = clean_df["Age"] >= 13
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
-
-# 12 plus used in Weapons Division 6 and Weapons Division 7 - new added for Fall 2017
-mask_Age12Plus = clean_df["Age"] >= 12
-# testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
+# ####################
+# # Filtering        #
+# ####################
+#
+#
+# ###############################################################################
+# #  Define all the atomic masks for filtering
+#
+# # Atomic masks for Belts
+# mask_WhiteBelt = clean_df['Rank'] == 'White'
+# mask_YellowBelt = clean_df['Rank'] == 'Yellow'
+# mask_OrangeBelt = clean_df['Rank'] == 'Orange'
+# mask_PurpleBelt = clean_df['Rank'] == 'Purple'
+# mask_BlueBelt = clean_df['Rank'] == 'Blue'
+# mask_BlueStripeBelt = clean_df['Rank'] == 'Blue w/Stripe'
+# mask_AllBlueBelt = mask_BlueBelt | mask_BlueStripeBelt  # all blue and blue stripe
+# # testBluedf=newDataFrameFromMask( mask_AllBlueBelt )
+# mask_GreenBelt = clean_df['Rank'] == 'Green'
+# mask_GreenStripeBelt = clean_df['Rank'] == 'Green w/Stripe'
+# mask_AllGreenBelt = mask_GreenBelt | mask_GreenStripeBelt  # all Green and Green stripe
+# # testGreendf=newDataFrameFromMask( mask_AllGreenBelt )
+# mask_3rdBrownBelt = clean_df['Rank'] == 'Brown 3rd Degree'
+# mask_2ndBrownBelt = clean_df['Rank'] == 'Brown 2nd Degree'
+# mask_1stBrownBelt = clean_df['Rank'] == 'Brown 1st Degree'
+# mask_AllBrownBelt = mask_3rdBrownBelt | mask_2ndBrownBelt | mask_1stBrownBelt  # all 1st 2nd and 3rd Brown
+# # testBrowndf=newDataFrameFromMask( mask_AllBrownBelt )
+# mask_1stBlackBelt = clean_df['Rank'] == 'Black 1st Degree'
+# mask_2ndBlackBelt = clean_df['Rank'] == 'Black 2nd Degree'
+# mask_3rdBlackBelt = clean_df['Rank'] == 'Black 3rd Degree'
+# mask_4thBlackBelt = clean_df['Rank'] == 'Black 4th Degree'
+# mask_5thBlackBelt = clean_df['Rank'] == 'Black 5th Degree'
+# mask_JrBlackBelt = clean_df['Rank'] == 'Black Junior'
+# mask_AllBlackBelt = mask_1stBlackBelt | mask_2ndBlackBelt | mask_3rdBlackBelt | mask_4thBlackBelt | mask_5thBlackBelt | mask_JrBlackBelt  # all Jr, 1st, 2nd, and 3rd degree black
+# # testBlackdf=newDataFrameFromMask( mask_AllBlackBelt )
+#
+# # Atomic mask for Gender
+# mask_Male = clean_df['Gender'] == 'Male'
+# mask_Female = clean_df['Gender'] == 'Female'
+#
+# # Atomic and composit mask for which event Sparring, Kata, Weapons
+# mask_SparringAndForms = clean_df['Events'] == '2 Events - Forms & Sparring ($75)'
+# mask_FormsOnly = clean_df['Events'] == '1 Event - Forms ($75)'
+# mask_SparringOnly = clean_df['Events'] == '1 Event - Sparring ($75)'
+# # Mask for Weapons
+# mask_Weapons = clean_df['Weapons'] == 'Weapons ($35)'
+# # testdf = clean_df[['First_Name', 'Last_Name', 'Gender', 'Rank', 'Age', 'Weight', 'Height', 'Events', 'Weapons']][mask_Weapons]
+#
+# # Composit Masks for Sparring or Forms
+# mask_Sparring = mask_SparringAndForms | mask_SparringOnly
+# mask_Forms = mask_SparringAndForms | mask_FormsOnly
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Forms]
+#
+# # Atomic mask for age groups found in the tournament guide
+# # 4-6 used for kids kata, kids sparring,
+# maskLowAge = clean_df["Age"] >= 3
+# maskHighAge = clean_df["Age"] <= 6
+# mask_Age4to6 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to6]
+#
+# # 7-9 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring
+# maskLowAge = clean_df["Age"] >= 7
+# maskHighAge = clean_df["Age"] <= 9
+# mask_Age7to9 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age7to9]
+#
+#
+# # 4-8 used for Weapons Division 1 - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 4
+# maskHighAge = clean_df["Age"] <= 8
+# mask_Age4to8 = maskLowAge & maskHighAge
+#
+# # 7-8 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 7
+# maskHighAge = clean_df["Age"] <= 8
+# mask_Age7to8 = maskLowAge & maskHighAge
+#
+# # 9-11 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 9
+# maskHighAge = clean_df["Age"] <= 11
+# mask_Age9to11 = maskLowAge & maskHighAge
+#
+# # 12-14 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 12
+# maskHighAge = clean_df["Age"] <= 14
+# mask_Age12to14 = maskLowAge & maskHighAge
+#
+# # 12-17 used in Weapons Division 4 - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 12
+# maskHighAge = clean_df["Age"] <= 17
+# mask_Age12to17 = maskLowAge & maskHighAge
+#
+# # 15-17 used in Youth Kata, Young Girl's Sparring, Youth Boy's Sparring - new added for Fall 2017
+# maskLowAge = clean_df["Age"] >= 15
+# maskHighAge = clean_df["Age"] <= 17
+# mask_Age15to17 = maskLowAge & maskHighAge
+#
+# # 10-12 used in Boy's Sparring, Boy's & Girl's Kata, Girl's Sparring
+# maskLowAge = clean_df["Age"] >= 10
+# maskHighAge = clean_df["Age"] <= 12
+# mask_Age10to12 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age10to12]
+#
+# # 13-15 used in Teen Girl's Sparring, Teen Kata, Teen Boy's Sparring,
+# maskLowAge = clean_df["Age"] >= 13
+# maskHighAge = clean_df["Age"] <= 15
+# mask_Age13to15 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to15]
+#
+# # 4-9 used in Weapons Division 1
+# maskLowAge = clean_df["Age"] >= 4
+# maskHighAge = clean_df["Age"] <= 9
+# mask_Age4to9 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age4to9]
+#
+# # 18-39 used in Womans Sprring, Men and Women's Kata
+# maskLowAge = clean_df["Age"] >= 18
+# maskHighAge = clean_df["Age"] <= 39
+# mask_Age18to39 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18to39]
+#
+# # 40 plus used in Senior Men's Sparring, Senior Women's Sparring, Senior Kata
+# mask_Age40Plus = clean_df["Age"] >= 40
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age40Plus]
+#
+# # 16-17 used in Young Adult Kata, Young Men's Sparring, Young Adult Women's Sparring
+# maskLowAge = clean_df["Age"] >= 16
+# maskHighAge = clean_df["Age"] <= 17
+# mask_Age16to17 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age16to17]
+#
+# # 13-17 used in Weapons Division 3
+# maskLowAge = clean_df["Age"] >= 13
+# maskHighAge = clean_df["Age"] <= 17
+# mask_Age13to17 = maskLowAge & maskHighAge
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13to17]
+#
+# # 18 plus used in Weapons Division 4 and 5
+# mask_Age18Plus = clean_df["Age"] >= 18
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age18Plus]
+#
+# # 13 plus used in Weapons Division 6
+# mask_Age13Plus = clean_df["Age"] >= 13
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
+#
+# # 12 plus used in Weapons Division 6 and Weapons Division 7 - new added for Fall 2017
+# mask_Age12Plus = clean_df["Age"] >= 12
+# # testdf=cdf[['First_Name','Last_Name', 'Gender','Rank','Age','Competitor\'s Weight (in lbs.)?','Competitor\'s Height (in feet and inches)?','Events','Weapons']][mask_Age13Plus]
 
 
 clean_df['hitcount'] = 0  # setup a new column for hit rate.
@@ -2168,9 +2192,9 @@ sparing_tree_pdf.set_source_file( filename )
 ### Special Handling for files with less than 30 competitors- Added for Fall 2022 Tournament
 if clean_df.shape[0] < 30:
     print("\u001b[31m*** Warning: Special Handling!  Printing Just One Kata Sheet and One Sparring Tree with the small data file provided!\u001b[0m")
-    #divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(               event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(              event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=99, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    #divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(               event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(              event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 else:
 
 
@@ -2289,39 +2313,65 @@ else:
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=9, maximum_age=11, rings=[2], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=9, maximum_age=11, rings=[3], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, rings=[4,5], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=9, maximum_age=11, rings=[21], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=9, maximum_age=11, rings=[21], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Brown",                     minimum_age=9, maximum_age=11, rings=[22], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(event_time="11:15am",division_name="Boy's Sparring",gender="Male", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, rings=[23], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Weapons Division 1 - 4-8 year olds
     #
-    compositMask = mask_Weapons & mask_Age4to8
+    # compositMask = mask_Weapons & mask_Age4to8
     # writeWeaponsDivision1ToExcel("WeaponsDivision1.xlsx", compositMask)
     writeWeaponsDivision1ToExcelViaQuery(filename="WeaponsDivision1.xlsx", division_type='Weapons', gender="*",minimum_age=4, maximum_age=8)
 
-    writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-8", compositMask)
-    writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-8", compositMask)
+    # writeWeaponsDivision1ToDetailReport("11:15am", "Weapons Division 1", "4-8", compositMask)
+    # writeWeaponsDivision1ToKataScoreSheet("11:15am", "Weapons Division 1", "4-8", compositMask)
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Weapons Division 1",gender="*", rank_label="White to Jr. Back", minimum_age=4, maximum_age=8, rings=['*TBA'],
+                                               ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,
+                                                      constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,
+                                                      constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,
+                                                      constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,
+                                                      constants.JUNIOR_BLACK_BELT],
+                                               clean_df= clean_df)
+
 
     ###############################################################################
     # Weapons Division 2 - 9-11 year olds White - Blue W/Green Stripe
     #
-    compositMask = mask_Weapons & mask_Age9to11
+    # compositMask = mask_Weapons & mask_Age9to11
     # writeWeaponsDivision2ToExcel("WeaponsDivision2.xlsx", compositMask)
     writeWeaponsDivision2ToExcelViaQuery(filename="WeaponsDivision2.xlsx", division_type='Weapons', gender="*",minimum_age=9, maximum_age=11)
 
-    writeWeaponsDivision2ToDetailReport("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
-    writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
+    # writeWeaponsDivision2ToDetailReport("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
+    # writeWeaponsDivision2ToKataScoreSheet("11:15am", "Weapons Division 2: White - Blue Stripe", "9-11", compositMask)
+
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Weapons Division 2-new",gender="*", rank_label="White to Blue w/Green Stripe", minimum_age=9, maximum_age=11, rings=['*TBA'],
+                                                                ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
+                                                                       constants.ORANGE_BELT,constants.PURPLE_BELT,
+                                                                       constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
+                                                                clean_df= clean_df)
+
 
     ###############################################################################
     #  WeaponsDivision3  - 9-11 year olds Green - Jr. Black
     #
-    compositMask = mask_Weapons & mask_Age9to11
+    # compositMask = mask_Weapons & mask_Age9to11
     # writeWeaponsDivision3ToExcel("WeaponsDivision3.xlsx", compositMask)
     writeWeaponsDivision3ToExcelViaQuery(filename="WeaponsDivision3.xlsx", division_type='Weapons', gender="*",minimum_age=9, maximum_age=11)
 
-    writeWeaponsDivision3ToDetailReport("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
-    writeWeaponsDivision3ToKataScoreSheet("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+    # writeWeaponsDivision3ToDetailReport("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+    # writeWeaponsDivision3ToKataScoreSheet("11:15pm", "Weapons Division 3 Green - Jr. Black", "9-11", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Weapons Division 3-new",gender="*", rank_label="Green - Jr. Black", minimum_age=9, maximum_age=11, rings=['*TBA'],
+                                                                ranks=[constants.GREEN_BELT,
+                                                                       constants.GREEN_STRIPE_BELT,
+                                                                       constants.THIRD_DEGREE_BROWN_BELT,
+                                                                       constants.SECOND_DEGREE_BROWN_BELT,
+                                                                       constants.FIRST_DEGREE_BROWN_BELT,
+                                                                       constants.JUNIOR_BLACK_BELT],
+                                               clean_df= clean_df)
+
 
 
 
@@ -2365,24 +2415,24 @@ else:
     #
     # compositMask = mask_Sparring & mask_Male & mask_Age40Plus
     # writePattern1ToExcel("SeniorMensSparring.xlsx", compositMask)
-    writePattern1ToExcelViaQuery(filename="SeniorMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=40, maximum_age=100)
+    writePattern1ToExcelViaQuery(filename="SeniorMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=40, maximum_age=constants.AGELESS)
 
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, rings=[2], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, rings=[3], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, rings=[4], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Senior Women's Sparring - 40+ year olds
     #
     # compositMask = mask_Sparring & mask_Female & mask_Age40Plus
     # writePattern1ToExcel("SeniorWomensSparring.xlsx", compositMask)
-    writePattern1ToExcelViaQuery(filename="SeniorWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=40, maximum_age=100)
+    writePattern1ToExcelViaQuery(filename="SeniorWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=40, maximum_age=constants.AGELESS)
 
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=100, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, rings=[5], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, rings=[6], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, rings=[7], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+    writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, rings=[8], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
     ###############################################################################
     # Young Adult Kata - 15-17 year olds
@@ -2471,15 +2521,15 @@ else:
     #
     # compositMask = mask_Forms & mask_Age40Plus
     # writePattern6ToExcel("SeniorKata.xlsx", compositMask)
-    writePattern6ToExcelViaQuery(filename="SeniorKata.xlsx", division_type='Forms', gender="*",minimum_age=40, maximum_age=100)
+    writePattern6ToExcelViaQuery(filename="SeniorKata.xlsx", division_type='Forms', gender="*",minimum_age=40, maximum_age=constants.AGELESS)
 
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=100, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=100, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=100, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=100, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=100, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=100, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=100, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow",         minimum_age=40, maximum_age=constants.AGELESS, rings=[1], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Orange",                minimum_age=40, maximum_age=constants.AGELESS, rings=[2], ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=constants.AGELESS, rings=[3], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=constants.AGELESS, rings=[4], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=constants.AGELESS, rings=[5], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=constants.AGELESS, rings=[6], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+    writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=constants.AGELESS, rings=[7], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
 
@@ -2501,64 +2551,126 @@ else:
     ###############################################################################
     #  WeaponsDivision4 12-17 White-Blue Stripe year olds
     #
-    compositMask = mask_Weapons & mask_Age12to17
+    # compositMask = mask_Weapons & mask_Age12to17
     # writeWeaponsDivision4ToExcel("WeaponsDivision4.xlsx", compositMask)
     writeWeaponsDivision4ToExcelViaQuery(filename="WeaponsDivision4.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=17)
 
-    writeWeaponsDivision4ToDetailReport("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
-    writeWeaponsDivision4ToKataScoreSheet("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
+    # writeWeaponsDivision4ToDetailReport("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
+    # writeWeaponsDivision4ToKataScoreSheet("4:15pm", "Weapons Division 4", "12 - 17", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 4-new",
+                                                                gender="*",
+                                                                rank_label="White - Blue w/Green Stripe",
+                                                                minimum_age=12, maximum_age=17,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
+                                                                       constants.ORANGE_BELT,constants.PURPLE_BELT,
+                                                                       constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
+                                                                clean_df= clean_df)
+
 
     ###############################################################################
     #  WeaponsDivision5 18+ year olds
     #
-    compositMask = mask_Weapons & mask_Age18Plus
+    # compositMask = mask_Weapons & mask_Age18Plus
     # writeWeaponsDivision5ToExcel("WeaponsDivision5.xlsx", compositMask)
-    writeWeaponsDivision5ToExcelViaQuery(filename="WeaponsDivision5.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=100)
+    writeWeaponsDivision5ToExcelViaQuery(filename="WeaponsDivision5.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=constants.AGELESS)
 
-    writeWeaponsDivision5ToDetailReport("4:15pm", "Weapons Division 5", "18+", compositMask)
-    writeWeaponsDivision5ToKataScoreSheet("4:15pm", "Weapons Division 5", "18+", compositMask)
+    # writeWeaponsDivision5ToDetailReport("4:15pm", "Weapons Division 5", "18+", compositMask)
+    # writeWeaponsDivision5ToKataScoreSheet("4:15pm", "Weapons Division 5", "18+", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 5-new",
+                                                                gender="*",
+                                                                rank_label="White - Blue w/Green Stripe",
+                                                                minimum_age=18, maximum_age=constants.AGELESS,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
+                                                                       constants.ORANGE_BELT,constants.PURPLE_BELT,
+                                                                       constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
+                                                                clean_df= clean_df)
 
     ###############################################################################
     #  WeaponsDivision6 12+ year olds green belts
     #
-    compositMask = mask_Weapons & mask_Age12Plus
+    # compositMask = mask_Weapons & mask_Age12Plus
     # writeWeaponsDivision6ToFile("WeaponsDivision6.xlsx", compositMask)
-    writeWeaponsDivision6ToExcelViaQuery(filename="WeaponsDivision6.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=100)
+    writeWeaponsDivision6ToExcelViaQuery(filename="WeaponsDivision6.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=constants.AGELESS)
 
-    writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "12+", compositMask)
-    writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "12+", compositMask)
+    # writeWeaponsDivision6ToDetailReport("4:15pm", "Weapons Division 6", "12+", compositMask)
+    # writeWeaponsDivision6ToKataScoreSheet("4:15pm", "Weapons Division 6", "12+", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 6-new",
+                                                                gender="*",
+                                                                rank_label="Green, Green w/Brown Stripe",
+                                                                minimum_age=12,maximum_age=constants.AGELESS,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.GREEN_BELT,
+                                                                       constants.GREEN_STRIPE_BELT],
+                                                                clean_df=clean_df)
 
     ###############################################################################
     #  WeaponsDivision7 12+ year olds brown belts
     #
-    compositMask = mask_Weapons & mask_Age12Plus
+    # compositMask = mask_Weapons & mask_Age12Plus
     # writeWeaponsDivision7ToFile("WeaponsDivision7.xlsx", compositMask)
-    writeWeaponsDivision7ToExcelViaQuery(filename="WeaponsDivision7.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=100)
+    writeWeaponsDivision7ToExcelViaQuery(filename="WeaponsDivision7.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=constants.AGELESS)
 
-    writeWeaponsDivision7ToDetailReport("4:15pm", "Weapons Division 7", "12+", compositMask)
-    writeWeaponsDivision7ToKataScoreSheet("4:15pm", "Weapons Division 7", "12+", compositMask)
+    # writeWeaponsDivision7ToDetailReport("4:15pm", "Weapons Division 7", "12+", compositMask)
+    # writeWeaponsDivision7ToKataScoreSheet("4:15pm", "Weapons Division 7", "12+", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 7-new",
+                                                                gender="*",
+                                                                rank_label="Brown",
+                                                                minimum_age=12,maximum_age=constants.AGELESS,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.THIRD_DEGREE_BROWN_BELT,
+                                                                       constants.SECOND_DEGREE_BROWN_BELT,
+                                                                       constants.FIRST_DEGREE_BROWN_BELT],
+                                                                clean_df=clean_df)
 
     ###############################################################################
     #  WeaponsDivision8 12+ Black
     #
-    compositMask = mask_Weapons & mask_Age12to17
+    # compositMask = mask_Weapons & mask_Age12to17
     # writeWeaponsDivision8ToFile("WeaponsDivision8.xlsx", compositMask)
     writeWeaponsDivision8ToExcelViaQuery(filename="WeaponsDivision8.xlsx", division_type='Weapons', gender="*",minimum_age=12, maximum_age=17)
 
 
-    writeWeaponsDivision8ToDetailReport("4:15pm", "Weapons Division 8", "12-17", compositMask)
-    writeWeaponsDivision8ToKataScoreSheet("4:15pm", "Weapons Division 8", "12-17", compositMask)
+    # writeWeaponsDivision8ToDetailReport("4:15pm", "Weapons Division 8", "12-17", compositMask)
+    # writeWeaponsDivision8ToKataScoreSheet("4:15pm", "Weapons Division 8", "12-17", compositMask)
+
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 8-new",
+                                                                gender="*",
+                                                                rank_label="Jr. Back & Black",
+                                                                minimum_age=12,maximum_age=17,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.JUNIOR_BLACK_BELT,
+                                                                       constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],
+                                                                clean_df=clean_df)
 
     ###############################################################################
     #  WeaponsDivision9 18+ year olds
     #
-    compositMask = mask_Weapons & mask_Age18Plus
+    # compositMask = mask_Weapons & mask_Age18Plus
     # writeWeaponsDivision9ToFile("WeaponsDivision9.xlsx", compositMask)
-    writeWeaponsDivision9ToExcelViaQuery(filename="WeaponsDivision9.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=100)
+    writeWeaponsDivision9ToExcelViaQuery(filename="WeaponsDivision9.xlsx", division_type='Weapons', gender="*",minimum_age=18, maximum_age=constants.AGELESS)
 
-    writeWeaponsDivision9ToDetailReport("4:15pm", "Weapons Division 9", "18+", compositMask)
-    writeWeaponsDivision9ToKataScoreSheet("4:15pm", "Weapons Division 9", "18+", compositMask)
+    # writeWeaponsDivision9ToDetailReport("4:15pm", "Weapons Division 9", "18+", compositMask)
+    # writeWeaponsDivision9ToKataScoreSheet("4:15pm", "Weapons Division 9", "18+", compositMask)
 
+    writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
+                                                                division_name="Weapons Division 9-new",
+                                                                gender="*",
+                                                                rank_label="Black",
+                                                                minimum_age=18,maximum_age=constants.AGELESS,
+                                                                rings=['*TBA'],
+                                                                ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],
+                                                                clean_df=clean_df)
 
 print(time.strftime("%X") + " Saving PDFs to disk")
 divison_detail_report_pdf.write_pdfpage()

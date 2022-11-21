@@ -35,7 +35,10 @@ SECOND_ALPHABETIC_SPLIT_REGEX=r'^[m-zM-Z]'  # means letters in the set m-z
 SECOND_ALPHABETIC_SPLIT_LABEL='M - Z'
 
 #Sleep time after writing a file
-SLEEP_TIME=1
+SLEEP_TIME=0
 
 #Number of competitors in a division to raise an alert
 TOO_MANY_COMPETITORS = 20
+
+#Ageless - we replace this with + (e.g. 18-100 gets expressed as 18+)
+AGELESS = 100

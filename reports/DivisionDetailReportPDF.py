@@ -207,10 +207,10 @@ class DivisionDetailReportPDF(object):
     #  This method provides a re-usable method to write output to the Divsion Detail Report PDF
 
     def writeSingleDivisionDetailReport(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, clean_df: pandas.DataFrame):
-        if(maximum_age==100):
+        if(maximum_age==constants.AGELESS):
             age_label= '{0}+'.format(minimum_age)
         else:
-            age_label= '{0}-{1}'.format(minimum_age,maximum_age)
+            age_label= '{0} - {1}'.format(minimum_age,maximum_age)
 
         # Hack for 3 year olds
         if minimum_age==4:
@@ -232,13 +232,13 @@ class DivisionDetailReportPDF(object):
         if division_type == 'Weapons':
             division_type_query='Weapons.str.contains("Weapons")'
         else:
-            division_type_query='Events.str.contains("'+division_type+'")'
+            division_type_query=f'Events.str.contains("{division_type}")'
 
         if gender != '*':
             gender_query= 'Gender == "'+ gender +'"'
-            combined_query='({0}) and ({1}) and ({2}) and ({3})'.format(division_type_query,age_query,rank_query,gender_query)
+            combined_query=f'({division_type_query}) and ({age_query}) and ({rank_query}) and ({gender_query})'
         else:
-            combined_query='({0}) and ({1}) and ({2})'.format(division_type_query, age_query,rank_query)
+            combined_query=f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         #wmk = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
         wmk=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",

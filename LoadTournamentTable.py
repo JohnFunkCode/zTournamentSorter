@@ -687,54 +687,6 @@ def writeWeaponsDivision2ToExcelViaQuery(filename: str, division_type: str, gend
     writer.close()
     time.sleep(constants.SLEEP_TIME)
 
-
-###############################################################################
-# writeWeaponsDivision2ToDetailReport
-#
-def writeWeaponsDivision2ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    #    mask6= mask_AllGreenBelt & compositMask
-    #    mask7= mask_AllBrownBelt & compositMask
-    #    mask8= mask_AllBlackBelt & compositMask
-
-    #    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age,
-                                                       "White - Blue Stripe")
-
-
-###############################################################################
-# writeWeaponsDivision2ToKataScoreSheet
-def writeWeaponsDivision2ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_WhiteBelt & compositMask
-    mask2 = mask_YellowBelt & compositMask
-    mask3 = mask_OrangeBelt & compositMask
-    mask4 = mask_PurpleBelt & compositMask
-    mask5 = mask_AllBlueBelt & compositMask
-    #    mask6= mask_AllGreenBelt & compositMask
-    #    mask7= mask_AllBrownBelt & compositMask
-    #    mask8= mask_AllBlackBelt & compositMask
-
-    #    mask = mask1 | mask2 | mask3 | mask4 | mask5 | mask6 | mask7 | mask8
-    mask = mask1 | mask2 | mask3 | mask4 | mask5
-
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "White - Blue Stripe")
-
-
 ###############################################################################
 # writeWeaponsDivision3ToExcel
 #  arguments:
@@ -782,42 +734,6 @@ def writeWeaponsDivision3ToExcelViaQuery(filename: str, division_type: str, gend
 
     writer.close()
     time.sleep(constants.SLEEP_TIME)
-
-
-###############################################################################
-# writeWeaponsDivision3ToDetailReport
-#
-def writeWeaponsDivision3ToDetailReport(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age)
-
-    DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Weapons")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask3 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3
-
-    wmk = newDataFrameFromMask(mask)
-    divison_detail_report_pdf.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green - Jr. Black")
-
-
-###############################################################################
-# writeWeaponsDivision3ToKataScoreSheet
-#
-def writeWeaponsDivision3ToKataScoreSheet(event_time, division_name, age, compositMask):
-    print(time.strftime("%X") + " Generating Kata Score Sheet PDF for " + event_time + " " + division_name + " " + age)
-
-    kata_score_sheet_pdf.KataScoreSheetPDF.set_title("Weapons")
-
-    mask1 = mask_AllGreenBelt & compositMask
-    mask2 = mask_AllBrownBelt & compositMask
-    mask3 = mask_AllBlackBelt & compositMask
-
-    mask = mask1 | mask2 | mask3
-
-    wmk = newDataFrameFromMask(mask)
-    kata_score_sheet.put_dataframe_on_pdfpage(wmk, "*TBA", event_time, division_name, age, "Green - Jr. Black")
 
 
 ###############################################################################

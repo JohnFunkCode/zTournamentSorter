@@ -57,7 +57,7 @@ class TestLoadTournamentTable(unittest.TestCase):
 
 
 
-                    # def test_participants_has_correct_number_of_entries(self):
+    # def test_participants_has_correct_number_of_entries(self):
     #     p = parts.Participants()
     #     #print p._participant_list
     #     shape=p._participant_list.shape

@@ -47,6 +47,7 @@
 #  Black
 
 import os
+import sys
 import time
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
@@ -55,6 +56,7 @@ import pandas as pd
 
 from cleaninput import cleaninput
 from cleaninput import rename_colums as RN
+from cleaninput import input_errors
 
 from reports import DivisionDetailReportPDF
 from reports import KataScoreSheetPDF as kata_score_sheet_pdf
@@ -126,17 +128,20 @@ if os.name == "nt":
 errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
 errorLogFile = open(errorLogFileName, "w")
 
-cleaninput.clean_unicode_from_file(filename, errorLogFile)
 
-raw_df = pd.read_csv(filename)
+cleaninput.clean_unicode_from_file(filename, errorLogFile)
 
 # rename all the columns in the dataframe to usable names
 r = RN.RenameColumns(filename)
 r.rename_all_columns()
 renamed_df = r.get_dataframe_copy()
 
-clean_df = cleaninput.clean_all_input_errors(renamed_df, errorLogFile)
-del raw_df  # make sure we don't use the raw_df again
+input_error_list = input_errors.InputErrors()
+clean_df,error_count = cleaninput.clean_all_input_errors(renamed_df, errorLogFile, input_error_list)
+del renamed_df  # make sure we don't use the renamed_df again
+# print(f'Input Errors:{input_error_list.error_list}')
+if error_count > 0:
+    sys.exit("Exiting - The input must be fixed manually")
 
 # create test data
 clean_df.to_pickle("pickled_clean_dataframe.pkl")

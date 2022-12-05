@@ -58,6 +58,29 @@ class DataValidationView(ttk.Frame):
         self.table.setRowColors(rows=error_rows,clr='red',cols=age_columns)
         self.table.redraw()
 
+    def highlight_weight_error(self, row_with_error):
+        error_rows = range(row_with_error-1,row_with_error)
+        age_column = self.table.model.df.columns.get_loc('Weight')
+        age_columns = range(age_column,age_column+1)
+        self.table.setRowColors(rows=error_rows,clr='red',cols=age_columns)
+        self.table.redraw()
+
+
+    def highlight_height_error(self, row_with_error):
+        error_rows = range(row_with_error-1,row_with_error)
+        age_column = self.table.model.df.columns.get_loc('Height')
+        age_columns = range(age_column,age_column+1)
+        self.table.setRowColors(rows=error_rows,clr='red',cols=age_columns)
+        self.table.redraw()
+
+    def highlight_rank_error(self, row_with_error):
+        error_rows = range(row_with_error-1,row_with_error)
+        age_column = self.table.model.df.columns.get_loc('Rank')
+        age_columns = range(age_column,age_column+1)
+        self.table.setRowColors(rows=error_rows,clr='red',cols=age_columns)
+        self.table.redraw()
+
+
     def goto_row_column(self,row, column_title):
         column_number = self.app_container.database.columns.get_loc(column_title)
         self.table.movetoSelection(row=row-1, idx=column_title,offset=7)

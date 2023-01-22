@@ -141,13 +141,20 @@ class DataValidationController():
         self.data_validation_view.goto_row_column(row,column)
 
 
-    def process_data(self):
-        showinfo(title='Info', message="Start processing data")
+    # def process_data(self):
+    #     showinfo(title='Info', message="Start processing data")
 
     def process_data(self):
         self.data_validation_view.error_log.delete("1.0",tk.END)
         self.data_validation_view.error_log.insert(tk.INSERT,self.app_container.database.to_string())
         showinfo(title='Info', message="Start processing data")
+        self.app_container.data_validation_controller.hide_view()
+        self.app_container.report_generation_controller.show_view()
+        self.app_container.report_generation_controller.generate_reports()
+        # self.app_container.after(1,lambda:self.app_container.report_generation_controller.generate_reports())
+        # import threading
+        # self.app_container.after(1,lambda:threading.Thread(target=self.app_container.report_generation_controller.generate_reports()))
+        # self.app_container.after(200,self.app_container.report_generation_controller.generate_reports())
 
     def test_one(self):
         self.data_validation_view.highlight_age_error(11)

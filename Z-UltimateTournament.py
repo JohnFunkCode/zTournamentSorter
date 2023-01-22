@@ -3,6 +3,7 @@ import tkinter as tk
 import GUI.splashscreen.splash_screen
 import GUI.menubar.menu_bar
 import GUI.datavalidation.data_validation_controller
+import GUI.reportgeneration.report_generation_controller
 import pandas as pd
 
 class zAppController(tk.Tk):
@@ -19,9 +20,11 @@ class zAppController(tk.Tk):
 
         self.database = pd.DataFrame()
         self.menu_bar = GUI.menubar.menu_bar.MenuBar(self)
+        self.report_generation_controller = GUI.reportgeneration.report_generation_controller.ReportGenerationController(self)
         self.data_validation_controller=GUI.datavalidation.data_validation_controller.DataValidationController(self)
         self.splash_screen = GUI.splashscreen.splash_screen.SpashScreen(self)
 
+        self.report_generation_controller.hide_view()
         self.data_validation_controller.hide_view()
         self.splash_screen.show_view()
 

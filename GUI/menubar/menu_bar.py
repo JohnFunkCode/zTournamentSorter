@@ -41,4 +41,8 @@ class MenuBar:
         self.app_container.data_validation_controller.test_one()
 
     def test_two(self):
-        self.app_container.data_validation_controller.data_validation_view.goto_row_column(11,'Age')
+        # self.app_container.data_validation_controller.data_validation_view.goto_row_column(11,'Age')
+        self.app_container.data_validation_controller.hide_view()
+        self.app_container.splash_screen.hide_view()
+
+        self.app_container.report_generation_controller.show_view()

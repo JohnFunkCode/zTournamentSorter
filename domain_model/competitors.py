@@ -1,5 +1,6 @@
 """ this module contains code to manage a collection of competitors """
 
+import logging
 import pandas as pd
 
 
@@ -40,20 +41,20 @@ class Competitors(pd.DataFrame):
             # dojo2 = ''
             for i in range(1, len(comps)):
                 if comps.iloc[i].Dojo != dojo1:
-                    # print(i,"Different Dojo")
+                    # logging.info(i,"Different Dojo")
                     name2 = comps.iloc[i]['First_Name']
                     reg_id_2 = comps.iloc[i]['Registrant_ID']
                     dojo2 = comps.iloc[i]['Dojo']
                     break
                 # else:
-                # print(i,"Same Dojo")
+                # logging.info(i,"Same Dojo")
 
             if reg_id_2 == '':
                 name2 = comps.iloc[1]['First_Name']
                 reg_id_2 = comps.iloc[1]['Registrant_ID']
                 dojo2 = comps.iloc[1]['Dojo']
 
-            #print(name1, dojo1, '|', name2, dojo2)
+            #logging.info(name1, dojo1, '|', name2, dojo2)
             result_list.append(comps.iloc[0])
             result_list.append(comps.iloc[i])
 
@@ -68,13 +69,13 @@ class Competitors(pd.DataFrame):
 #            name1 = comps.iloc[0]['First_Name']
             reg_id_1 = comps.iloc[0]['Registrant_ID']
             dojo1 = comps.iloc[0]['Dojo']
-            # print(name1, dojo1)
+            # logging.info(name1, dojo1)
             result_list.append(comps.iloc[0])
 
-        # print(result_list)
+        # logging.info(result_list)
         column_names = comps.columns.values.tolist()
-        # print(column_names)
-        # print(result_list)
+        # logging.info(column_names)
+        # logging.info(result_list)
         result_df = Competitors(data=result_list, columns=column_names)
         return result_df
 
@@ -94,4 +95,4 @@ if __name__ == '__main__':
     # c = Competitors()
     c = Competitors(data, columns=cols)
     s = c.get_number_of_competitors()
-    print(s)
+    logging.info(s)

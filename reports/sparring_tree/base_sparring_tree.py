@@ -1,4 +1,5 @@
 """ this module contains code to base sparring tree"""
+import logging
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import cm
@@ -60,16 +61,16 @@ class SparringTree():
     def calculate_canvas_coordinates_from_competitor_index(self, competitor_count: int, competitor_index: int):
         ''' calculates the canvas coordinates (physical x,s) for a competitor based on how many competitors there are
          and what this competitor place in at list '''
-        # print(competitor_index)
+        # logging.info(competitor_index)
         column, row = BPM.calculate_bracket_position_from_competitor_index(competitor_count, competitor_index)
-        #print('backet coordinate: ', column, row)
+        #logging.info('backet coordinate: ', column, row)
         if column == 1:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column1(row - 1)
         else:
             x_coordinate, y_coordinate = self.get_canvas_coord_for_nth_competitor_in_column2(row - 1)
         x_coordinate = x_coordinate * cm
         y_coordinate = y_coordinate * cm
-        #print('canvas coordinate, {}, {} '.format(x_coordinate, y_coordinate))
+        #logging.info('canvas coordinate, {}, {} '.format(x_coordinate, y_coordinate))
         return x_coordinate, y_coordinate
 
 
@@ -77,7 +78,7 @@ class SparringTree():
         ''' adds a compleate page with a tree and the competitors '''
 
         if competitors.get_number_of_competitors() > 20:
-            print("\u001b[31m*** Warning: {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,event_title,ring,competitors.get_number_of_competitors()))
+            logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,event_title,ring,competitors.get_number_of_competitors()))
 
         # lay down the template
         self.draw_static_template()
@@ -105,4 +106,4 @@ if __name__ == '__main__':
     import os
 
     if os.path.exists("BlankTree.pdf"):
-        print("It worked")
+        logging.info("It worked")

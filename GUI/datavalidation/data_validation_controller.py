@@ -1,3 +1,6 @@
+import os
+import sys
+import logging
 import time
 import tkinter as tk
 from tkinter import ttk
@@ -19,7 +22,7 @@ class DataValidationController():
         self.data_validation_view = GUI.datavalidation.data_validation_view.DataValidationView(app_container,self)
         self.input_error_list = input_errors.InputErrors()
         self.error_cursor = 0
-        self.errorLogFileName=''
+        # self.errorLogFileName=''
 
 
     def hide_view(self):
@@ -29,35 +32,49 @@ class DataValidationController():
         self.data_validation_view.show_view()
 
     def load_tournament_file(self):
-        filename = filedialog.askopenfilename(title="Select the file with the tournament data",filetypes=[("csv","*.csv")])
+        self.app_container.input_data_filename = filedialog.askopenfilename(title="Select the file with the tournament data",filetypes=[("csv","*.csv")])
 
-        self.errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
-        errorLogFile = open(self.errorLogFileName, "w")
+        errorLogFileName = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Error.txt"
 
-        cleaninput.clean_unicode_from_file(filename, errorLogFile)
+        logger = logging.getLogger('')
+        logger.setLevel(logging.INFO)
+        fh = logging.FileHandler(errorLogFileName)
+        sh = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
+        fh.setFormatter(formatter)
+        sh.setFormatter(formatter)
+        logger.addHandler(fh)
+        logger.addHandler(sh)
+
+        logging.info(" Reading the data from:" + self.app_container.input_data_filename + "....")
+
+        cleaninput.clean_unicode_from_file(self.app_container.input_data_filename)
 
         # rename all the columns in the dataframe to usable names
-        r = RN.RenameColumns(filename)
+        r = RN.RenameColumns(self.app_container.input_data_filename)
         r.rename_all_columns()
         renamed_df = r.get_dataframe_copy()
-        # self.input_error_list = input_errors.InputErrors()
-        clean_df,error_count=cleaninput.clean_all_input_errors(renamed_df, errorLogFile, self.input_error_list)
-        self.app_container.database =clean_df
-        self.data_validation_view.update_table()
+        self.app_container.database = renamed_df
 
-        print(f'Input Errors:{self.input_error_list.error_list}')
-        for i in range(len(self.input_error_list.error_list)):
-            if self.input_error_list.error_list[i][1]=='Age':
-                self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
-            if self.input_error_list.error_list[i][1]=='Height':
-                self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
-            if self.input_error_list.error_list[i][1]=='Weight':
-                self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
-            if self.input_error_list.error_list[i][1] == 'Rank':
-                self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
-        self.input_error_list.error_list.sort()
+        self.validate_data()
+        # # self.input_error_list = input_errors.InputErrors()
+        # clean_df,error_count=cleaninput.clean_all_input_errors(renamed_df, self.app_container.errorLogFile, self.input_error_list)
+        # self.app_container.database =clean_df
+        # self.data_validation_view.update_table()
+        #
+        # logging.info(f'Input Errors:{self.input_error_list.error_list}')
+        # for i in range(len(self.input_error_list.error_list)):
+        #     if self.input_error_list.error_list[i][1]=='Age':
+        #         self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
+        #     if self.input_error_list.error_list[i][1]=='Height':
+        #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
+        #     if self.input_error_list.error_list[i][1]=='Weight':
+        #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
+        #     if self.input_error_list.error_list[i][1] == 'Rank':
+        #         self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
+        # self.input_error_list.error_list.sort()
 
-        errorLogFile.close()
+        # self.app_container.errorLogFile.close()
         self.data_validation_view.table.show()
         self.data_validation_view.show_view()
 
@@ -69,43 +86,40 @@ class DataValidationController():
 
 
     def validate_data(self):
-        errorLogFile = open(self.errorLogFileName, "a")
         self.input_error_list = []
         self.input_error_list = input_errors.InputErrors()
-        self.data_validation_view.reset_color()
+        # self.data_validation_view.reset_color()
 
         df=self.app_container.database
-        clean_df,error_count=cleaninput.clean_all_input_errors(df, errorLogFile, self.input_error_list)
+        clean_df,error_count= cleaninput.clean_all_input_errors(df, self.input_error_list)
         self.app_container.database =clean_df
         self.data_validation_view.update_table()
 
         self.input_error_list.error_list.sort()
-        print(f'{time.strftime("%X")} Input Errors:{self.input_error_list.error_list}')
+        logging.info(f'Input Errors:{self.input_error_list.error_list}')
         for i in range(len(self.input_error_list.error_list)):
             if self.input_error_list.error_list[i][1]=='Age':
                 self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
-                # print(f'Age:{time.strftime("%X")}')
+                # logging.info(f'Age:')
 
             if self.input_error_list.error_list[i][1]=='Height':
                 self.data_validation_view.highlight_height_error(self.input_error_list.error_list[i][0]+1)
-                # print(f'Height:{time.strftime("%X")}')
+                # logging.info(f'Height:')
 
             if self.input_error_list.error_list[i][1]=='Weight':
                 self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
-                # print(f'Weight:{time.strftime("%X")}')
+                # logging.info(f'Weight:')
 
             if self.input_error_list.error_list[i][1] == 'Rank':
                 self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
-                # print(f'Rank:{time.strftime("%X")}')
+                # logging.info(f'Rank:')
 
-        print(time.strftime("%X"))
-
-        errorLogFile.close()
-        self.data_validation_view.table.redraw()
-        self.data_validation_view.table.show()
-        self.data_validation_view.show_view()
-        print(time.strftime("%X"))
-
+        # logging.info('Start')
+        #
+        # self.data_validation_view.table.redraw()
+        # self.data_validation_view.table.show()
+        # self.data_validation_view.show_view()
+        # logging.info('End')
 
 
     def load_division_file(self):
@@ -134,11 +148,21 @@ class DataValidationController():
         #showinfo(title='Info', message="Next error")
 
     def recheck_data(self):
+        self.data_validation_view.reset_color()
+
         self.validate_data()
+
+        logging.info('Start')
+        self.data_validation_view.table.redraw()
+        self.data_validation_view.table.show()
+        self.data_validation_view.show_view()
+        logging.info('End')
+
         self.error_cursor=0
-        row= self.input_error_list.error_list[self.error_cursor][0] + 1
-        column = self.input_error_list.error_list[self.error_cursor][1]
-        self.data_validation_view.goto_row_column(row,column)
+        if len(self.input_error_list.error_list) >0 :
+            row= self.input_error_list.error_list[self.error_cursor][0] + 1
+            column = self.input_error_list.error_list[self.error_cursor][1]
+            self.data_validation_view.goto_row_column(row,column)
 
 
     # def process_data(self):

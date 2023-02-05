@@ -1,3 +1,5 @@
+import logging
+
 class InputErrors():
 
     def __init__(self):
@@ -15,7 +17,7 @@ if __name__ == '__main__':
     ie.append(33,"Height")
     ie.append(35,"Weight")
 
-    print(ie.error_list)
+    logging.info(ie.error_list)
     for i in range(len(ie.error_list)):
-        print(ie.error_list[i][1])
+        logging.info(ie.error_list[i][1])
 

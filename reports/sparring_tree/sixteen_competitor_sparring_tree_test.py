@@ -4,6 +4,7 @@ to run this test go to the main directory and run
 nosetests --with-coverage
 '''''
 
+import logging
 import unittest
 import os
 from reportlab.pdfgen import canvas
@@ -42,7 +43,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
         try:
             os.mkdir("testoutput")
         except:
-            print("exptedted error")
+            logging.info("exptedted error")
         return
 
     def test_creating_a_file(self):
@@ -97,7 +98,7 @@ class TestSixteenCompetitorTree(unittest.TestCase):
 
     def draw_n_names_on_tree(self, names: list, test_file_name: str):
         ''' tests to make sure the names in a 16 person tree get put in the right place'''
-        print("\nDrawing {} ".format(test_file_name))
+        logging.info("\nDrawing {} ".format(test_file_name))
         # setup a 16 person tree
         test_canvas = canvas.Canvas(test_file_name)
         tree = SixteenCompetitorTree(test_canvas, test_file_name)
@@ -106,9 +107,9 @@ class TestSixteenCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
-            #print("{}, {}".format(px,py))
+            #logging.info("{}, {}".format(px,py))
             test_canvas.drawString(px, py, names[i])
 
         # draw the tree just for the heck of it

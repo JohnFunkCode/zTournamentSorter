@@ -2,6 +2,7 @@
 Sparring_Tree_Report
 Contains code to create a report containing all the sparring trees for a tournament
 '''
+import logging
 import time
 
 import pandas
@@ -69,7 +70,7 @@ class SparringTreeReportPDF():
         if minimum_age == 4:
             minimum_age = 2
 
-        print(time.strftime("%X") + " Generating Sparring Trees PDF for " + event_time + " " + division_name + " " + age_label)
+        logging.info("Generating Sparring Trees PDF for " + event_time + " " + division_name + " " + age_label)
 
         age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
 
@@ -132,7 +133,7 @@ class SparringTreeReportPDF():
             Purple, Blue, Blue Stripe
             Green, Green Stripe
          '''
-        print(time.strftime("%X") + " Generating Sparring Trees PDF for " + event_time + " " + event_title)
+        logging.info("Generating Sparring Trees PDF for " + event_time + " " + event_title)
 
         assert len(
             rings) != 4, "Coding Error: Not enough rings provided for this event"  # check there are just enough rings for this event

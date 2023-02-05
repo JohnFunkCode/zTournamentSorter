@@ -5,6 +5,8 @@ nosetests --with-coverage
 '''''
 
 import unittest
+import logging
+
 from domain_model import competitors as competitors
 
 
@@ -48,7 +50,7 @@ class TestCompetitors(unittest.TestCase):
         c= c.sort_by_body_mass_index_and_dojo()
         last_bmi = 0
         for index, competitor in c.iterrows():
-            # print(index,competitor['First Name'],competitor.BMI)
+            # logging.info(index,competitor['First Name'],competitor.BMI)
             self.assertTrue(competitor.BMI >= last_bmi)
             last_bmi = competitor.BMI
 
@@ -74,12 +76,12 @@ class TestCompetitors(unittest.TestCase):
         # pd.set_option('display.width',200)
         #
 
-        print( "Initial Competitors:")
-        print(some_competitors)
+        logging.info( "Initial Competitors:")
+        logging.info(some_competitors)
 
         arranged_competitors = some_competitors.arrange_competitors_for_sparring()
-        print( "Sorted Competitors:")
-        print(some_competitors)
+        logging.info( "Sorted Competitors:")
+        logging.info(some_competitors)
 
         self.assertTrue(arranged_competitors.get_number_of_competitors() == 5)
 

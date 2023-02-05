@@ -159,7 +159,7 @@ class Participants(object):
 
     def print_participants(self):
         """Print the participant list to standard out."""
-        print(self._participant_list)
+        logging.info(self._participant_list)
 
     def participants_from_mask( self, mask ):
       """Gets participants from a mask

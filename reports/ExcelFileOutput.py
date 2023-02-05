@@ -4,6 +4,7 @@
 @author: john funk
 """
 
+import logging
 import os
 import time
 import pandas as pd
@@ -81,7 +82,7 @@ def writeFormattedExcelSheet(df, writer, sheetname):
 def writePattern1ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -143,7 +144,7 @@ def writePattern1ToExcelViaQuery(filename: str, division_type: str, gender: str,
 def writePattern2ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -213,7 +214,7 @@ def writePattern2ToExcelViaQuery(filename: str, division_type: str, gender: str,
 def writePattern3ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -283,7 +284,7 @@ def writePattern3ToExcelViaQuery(filename: str, division_type: str, gender: str,
 def writePattern4ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -355,7 +356,7 @@ def writePattern4ToExcelViaQuery(filename: str, division_type: str, gender: str,
 def writePattern5ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -432,7 +433,7 @@ def writePattern5ToExcelViaQuery(filename: str, division_type: str, gender: str,
 def writePattern6ToExcelViaQuery(filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -507,7 +508,7 @@ def writeWeaponsDivision1ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -549,7 +550,7 @@ def writeWeaponsDivision2ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -594,7 +595,7 @@ def writeWeaponsDivision3ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -643,7 +644,7 @@ def writeWeaponsDivision4ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -686,7 +687,7 @@ def writeWeaponsDivision5ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -730,7 +731,7 @@ def writeWeaponsDivision6ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -774,7 +775,7 @@ def writeWeaponsDivision7ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -820,7 +821,7 @@ def writeWeaponsDivision8ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:
@@ -864,7 +865,7 @@ def writeWeaponsDivision9ToExcelViaQuery(filename: str, division_type: str, gend
 
     fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
     writer = pd.ExcelWriter(fullpath)
-    print(time.strftime("%X") + " Generating " + fullpath)
+    logging.info("Generating " + fullpath)
 
     # Hack for 3 year olds
     if minimum_age == 4:

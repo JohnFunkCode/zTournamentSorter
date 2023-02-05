@@ -1,6 +1,7 @@
 #to run this test go to the main directory and run
 # nosetests --with-coverage --verbose
 
+import logging
 import pandas as pd
 import numpy as np
 import unittest

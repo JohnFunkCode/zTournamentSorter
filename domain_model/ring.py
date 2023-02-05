@@ -1,4 +1,5 @@
 '''  this module contains code to represent a ring'''
+import logging
 
 from domain_model import event
 from domain_model import competitors
@@ -20,4 +21,4 @@ class Ring():
 if __name__ == '__main__':
     ''' Very simple test try to create an event '''
     r=Ring(None, 9, 'A-Z', ['White', 'Yellow'])
-    print(r.event, r.last_name_filter, r.rank_filter)
+    logging.info(r.event, r.last_name_filter, r.rank_filter)

@@ -49,6 +49,9 @@
 import os
 import sys
 import time
+import logging
+import re
+
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
@@ -100,6 +103,7 @@ def writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time: str,
 #
 # Main Function
 #
+# logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
 
 # get the filename from the environment var named  tourname_filename
 filename = os.getenv("tournament_filename")
@@ -117,19 +121,26 @@ else:
 # filename = "C:\\Users\\Maria\\Downloads\\tournamentprojectmaterial\\RegistrantExport.csv"
 # filename = "/users/johnfunk/CloudStation/TournamentProject/Clean_RegistrantExport_EM0393_20160411140713.csv"  # For Testing on John's machine
 
-print(time.strftime("%X") + " Reading the data from:" + filename + "....")
+errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
+
+logger = logging.getLogger('')
+logger.setLevel(logging.INFO)
+fh = logging.FileHandler(errorLogFileName)
+sh = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
+fh.setFormatter(formatter)
+sh.setFormatter(formatter)
+logger.addHandler(fh)
+logger.addHandler(sh)
+
+logging.info("Reading the data from:" + filename + "....")
 
 #### SET Encoding to UTF-8 added 3/27/2022
-if os.name == "nt":
-    import _locale
-    _locale._gdl_bak = _locale._getdefaultlocale
-    _locale._getdefaultlocale = (lambda *args: (_locale._gdl_bak()[0], 'utf8'))
-
-errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
-errorLogFile = open(errorLogFileName, "w")
+cleaninput.set_utf_encoding()
 
 
-cleaninput.clean_unicode_from_file(filename, errorLogFile)
+
+cleaninput.clean_unicode_from_file(filename)
 
 # rename all the columns in the dataframe to usable names
 r = RN.RenameColumns(filename)
@@ -137,9 +148,9 @@ r.rename_all_columns()
 renamed_df = r.get_dataframe_copy()
 
 input_error_list = input_errors.InputErrors()
-clean_df,error_count = cleaninput.clean_all_input_errors(renamed_df, errorLogFile, input_error_list)
+clean_df,error_count = cleaninput.clean_all_input_errors(renamed_df, input_error_list)
 del renamed_df  # make sure we don't use the renamed_df again
-# print(f'Input Errors:{input_error_list.error_list}')
+# logging.info(f'Input Errors:{input_error_list.error_list}')
 if error_count > 0:
     sys.exit("Exiting - The input must be fixed manually")
 
@@ -151,12 +162,12 @@ try:
     os.mkdir("sorted")
 except:
     assert(1==1)
-    #print("expected error")
+    #logging.info("expected error")
 
 
 clean_df['hitcount'] = 0  # setup a new column for hit rate.
 
-print(time.strftime("%X") + " Generating the output results...")
+logging.info("Generating the output results...")
 
 ###############################################################################
 # Setup a few things for the Division Detail PDF report
@@ -177,7 +188,7 @@ sparing_tree_pdf.set_source_file( filename )
 
 ### Special Handling for files with less than 30 competitors- Added for Fall 2022 Tournament
 if clean_df.shape[0] < 30:
-    print("\u001b[31m*** Warning: Special Handling!  Printing Just One Kata Sheet and One Sparring Tree with the small data file provided!\u001b[0m")
+    logging.warning("\u001b[31m*** Special Handling!  Printing Just One Kata Sheet and One Sparring Tree with the small data file provided!\u001b[0m")
     #divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
     writeSingleKataScoreSheetandDivisionReport(               event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
     writeSingleSparringTreeandDivisionReport(              event_time="", division_name="",                       gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
@@ -562,22 +573,20 @@ else:
                                                                 ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],
                                                                 clean_df=clean_df)
 
-print(time.strftime("%X") + " Saving PDFs to disk")
+logging.info("Saving PDFs to disk")
 divison_detail_report_pdf.write_pdfpage()
 kata_score_sheet.write_pdfpage()
 sparing_tree_pdf.close()
 
 #print hitcount warnings
 if clean_df.shape[0] > 30:
-    print("\u001b[31mWarning: Investigate these entries in the spreadsheet!  They didn't get put into any events:")
+    logging.warning("\u001b[31mInvestigate these entries in the spreadsheet!  They didn't get put into any events:\u001b[0m")
     for index, row in clean_df.iterrows():
         name = row['First_Name'] + " " + row['Last_Name']
         events = row['Events']
         hc = row['hitcount']
         if hc < 1 :
-            # print("  " + name + ": " + str(hc))
-            print(f'   Name:{name} Events:{events} <---was put in {hc} events')
-    print('\u001b[0m')
+            # logging.info("  " + name + ": " + str(hc))
+            logging.warning(f'\u001b[31m   Name:{name} Events:{events} <---was put in {hc} events\u001b[0m')
 
-localtime = time.asctime(time.localtime(time.time()))
-print(time.strftime("%X") + " Done!")
+logging.info("Done!")

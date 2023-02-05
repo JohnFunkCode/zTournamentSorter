@@ -1,5 +1,5 @@
 """ this module contains code to create a 16 person sparring tree"""
-
+import logging
 import datetime
 
 from reportlab.pdfgen import canvas
@@ -51,8 +51,8 @@ class SixteenCompetitorTree(SparringTree):
             self._first_column_text_coordinates.append([initial_first_column_text_coords[1][0],
                                                         initial_first_column_text_coords[1][1] - offset])
 
-            #print("0,{},{}, {}".format(initial_first_column_text_coords[0][1],offset,initial_first_column_text_coords[0][1] - offset))
-            #print("1,{},{}, {}".format(initial_first_column_text_coords[1][1],offset,initial_first_column_text_coords[1][1] - offset))
+            #logging.info("0,{},{}, {}".format(initial_first_column_text_coords[0][1],offset,initial_first_column_text_coords[0][1] - offset))
+            #logging.info("1,{},{}, {}".format(initial_first_column_text_coords[1][1],offset,initial_first_column_text_coords[1][1] - offset))
 
 
         self._second_column_text_coordinates = []
@@ -166,16 +166,16 @@ class SixteenCompetitorTree(SparringTree):
 
     def draw_competitors_on_tree(self, competitors: Competitors) -> object:
         ''' draw the competitors on the tree '''
-        # print(competitors)
+        # logging.info(competitors)
 
         competitor_count = competitors.get_number_of_competitors()
         if competitor_count > 16:
-            print("*** Something is wrong! we have {} competitors for an 16 person tree".format(competitor_count))
+            logging.info("*** Something is wrong! we have {} competitors for an 16 person tree".format(competitor_count))
             competitor_count = 16
         i = 0
         for index, competitor in competitors.iterrows():
             name = competitor['First_Name'] + ' ' + competitor['Last_Name']
-            # print('\n' + name)
+            # logging.info('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             self._c.drawString(px, py, name)
             self._c.setFont("Courier", 7)
@@ -200,4 +200,4 @@ if __name__ == '__main__':
     import os
 
     if os.path.exists("16PersonTree.pdf"):
-        print("It worked")
+        logging.info("It worked")

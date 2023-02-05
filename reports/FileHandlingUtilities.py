@@ -3,6 +3,7 @@ FileHandlingUtilities
 Utilities used by various reports for file handling
 '''
 
+import logging
 import os
 import pandas as pd
 import reports.ExcelFileOutput
@@ -31,6 +32,6 @@ def newDataFrameFromQuery(clean_df:pd.DataFrame, query_string: str):
         id= row['Registrant_ID']
         hc=clean_df.at[index,'hitcount']
         newhc = hc + 1
-        #print(f'{id}:{name} has a row count of {newhc}')
+        #logging.info(f'{id}:{name} has a row count of {newhc}')
         clean_df.at[index,'hitcount']=newhc
     return newdf

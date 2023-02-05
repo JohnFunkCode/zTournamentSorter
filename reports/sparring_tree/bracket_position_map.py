@@ -1,4 +1,5 @@
 """ this code to calculate the bracket position of competitors in a sparring tree"""
+import logging
 from typing import Tuple
 
 # braket position map
@@ -47,14 +48,14 @@ def calculate_bracket_position_from_competitor_index(number_of_competitors: int,
     '''
     compettitors_in_column1 = BRAKET_POSITION_MAP[number_of_competitors][1]
     second_column_starting_index = BRAKET_POSITION_MAP[number_of_competitors][2]
-    # print('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
+    # logging.info('competitors in column 1: {} starting index for column 2: {}'.format(compettitors_in_column1, second_column_starting_index))
     if competitor_index < compettitors_in_column1:
         row = competitor_index + 1
         column = 1
     else:
         row = second_column_starting_index + (competitor_index - compettitors_in_column1) + 1
         column = 2
-    # print(column,row)
+    # logging.info(column,row)
     return column, row
 
 
@@ -62,4 +63,4 @@ if __name__ == '__main__':
     PEOPLE_IN_RING = 5
     for i in range(PEOPLE_IN_RING):
         x, y = calculate_bracket_position_from_competitor_index(PEOPLE_IN_RING, i)
-        print(x, y)
+        logging.info(x, y)

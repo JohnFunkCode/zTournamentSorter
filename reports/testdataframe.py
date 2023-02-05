@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import numpy as np
 
@@ -11,7 +12,7 @@ data=[(255,'Lucas','May','Male','CO- Parker',10,'Yellow',4,3,'4 ft. 3 in.',52,15
       (194,'jake','coleson','Male','CO- Cheyenne Mountain',10,'Yellow',4,0,'4',60,156,'2 Events - Forms & Sparring ($75)','Weapons ($35)'),
       (195,'katie','coleson','Female','CO- Cheyenne Mountain',12,'Yellow',4,0,'4',65.161,'2 Events - Forms & Sparring ($75)','Weapons ($35)')]
 df=pd.DataFrame(data,columns=columns)
-print(df)
+logging.info(df)
 
 # create a test data frame
 #index = ['a', 'b', 'c', 'd']

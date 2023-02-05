@@ -4,6 +4,7 @@ to run this test go to the main directory and run
 nosetests --with-coverage
 '''''
 
+import logging
 import unittest
 import pandas as pd
 

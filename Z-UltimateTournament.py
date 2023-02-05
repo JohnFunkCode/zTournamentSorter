@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 
 import GUI.splashscreen.splash_screen
@@ -28,6 +29,8 @@ class zAppController(tk.Tk):
         self.data_validation_controller.hide_view()
         self.splash_screen.show_view()
 
+        # a few globals from the old driver code
+        self.input_data_filename = ''   # the name of the input file - used in a lot of reports
 
 
 if __name__ == "__main__":

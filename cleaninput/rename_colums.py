@@ -9,6 +9,7 @@ Experiment to rename columns in a dataframe
 """
 
 import os
+import logging
 import pandas as pd
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
@@ -25,12 +26,12 @@ class RenameColumns:
         return self.raw_df
 
     def dump_raw_df(self):
-        print((self.raw_df))
+        logging.info((self.raw_df))
 
     def print_column_names(self):
         headers = list(self.raw_df.columns)
         for header in headers:
-            print(header)
+            logging.info(header)
 
     def is_YourSudio_a_column_name(self):
         import re
@@ -43,8 +44,8 @@ class RenameColumns:
         #m=[x for x in headers if compiled_regx.match(x)]
 
         newlist = list(filter(compiled_regx.match,headers))
-        print(newlist[0])
-        print(len(newlist))
+        logging.info(newlist[0])
+        logging.info(len(newlist))
 
     def get_column_name_containing(self,reg_ex_seach_string):
         import re
@@ -61,27 +62,27 @@ class RenameColumns:
         old_column_name=self.get_column_name_containing(reg_ex_seach_string)
         if(old_column_name is not None):
             if(verbose):
-                print("Replacing "+old_column_name+" with "+ new_column_name)
+                logging.info("Replacing "+old_column_name+" with "+ new_column_name)
             self.raw_df.rename( columns={old_column_name:new_column_name},inplace=True)
         else:
-            print("Column not found: {}".format(reg_ex_seach_string))
+            logging.info("Column not found: {}".format(reg_ex_seach_string))
 
     def rename_all_columns(self):
-        print("The Column Headers must contain the follow:")
-        print("  Event Date")
-        print("  Registrant ID")
-        print("  First Name")
-        print("  Last Name")
-        print("  Select Your Studio")
-        print("  Out of State Studio")
-        print("  Age")
-        print("  Weight")
-        print("  Height")
-        print("  Division")
-        print("  Rank")
-        print("  Forms or Sparring")
-        print("  Weapons")
-        print("  Tickets")
+        logging.info("The Column Headers must contain the following:")
+        logging.info("  Event Date")
+        logging.info("  Registrant ID")
+        logging.info("  First Name")
+        logging.info("  Last Name")
+        logging.info("  Select Your Studio")
+        logging.info("  Out of State Studio")
+        logging.info("  Age")
+        logging.info("  Weight")
+        logging.info("  Height")
+        logging.info("  Division")
+        logging.info("  Rank")
+        logging.info("  Forms or Sparring")
+        logging.info("  Weapons")
+        logging.info("  Tickets")
 
         self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
         self.replace_column_name_containing(".*Registrant.*", "Registrant_ID")
@@ -122,16 +123,16 @@ if __name__ == '__main__':
         filename = askopenfilename()
         root.update() # Prevent the askfilename() window doesn't stay open
     else:
-        print("Using the file " + filename + "from the environment")
+        logging.info("Using the file " + filename + "from the environment")
 
     r=RenameColumns(filename)
     #r.dump_raw_df()
     r.print_column_names()
-    print("-----")
+    logging.info("-----")
     #r.is_YourSudio_a_column_name()
-    print("r.get_column_name_containing('.*Age.*')")
-    print(r.get_column_name_containing(".*Age.*"))
-    print("-----")
+    logging.info("r.get_column_name_containing('.*Age.*')")
+    logging.info(r.get_column_name_containing(".*Age.*"))
+    logging.info("-----")
 
     r.rename_all_columns()
 
@@ -151,11 +152,11 @@ if __name__ == '__main__':
     # r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator_Tickets")
 
 
-    print("-----")
+    logging.info("-----")
     r.print_column_names()
 
     newdf = r.get_dataframe_copy()
-    print(newdf)
+    logging.info(newdf)
 
 
 # newdf.rename(

@@ -6,6 +6,7 @@ Created on Wed April 5 2017
 @author: john funk
 """
 
+import logging
 import pandas
 import datetime
 import time
@@ -96,7 +97,7 @@ class KataScoreSheetPDF(object):
         elements.append(Spacer(1, 0.1 * inch))
 
         if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
-            print("\u001b[31m*** Warning: {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
+            logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
 
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
@@ -210,8 +211,8 @@ class KataScoreSheetPDF(object):
         if minimum_age == 4:
             minimum_age = 2
 
-        #print(time.strftime("%X") + " Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
-        print(f'{time.strftime("%X")}  Generating {division_type} Score PDF for {event_time} {division_name} {age_label}')
+        #logging.info("Generating Kata Score PDF for " + event_time + " " + division_name + " " + age_label)
+        logging.info(f'Generating {division_type} Score PDF for {event_time} {division_name} {age_label}')
         self.set_title(f'{division_type}')
 
         age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)

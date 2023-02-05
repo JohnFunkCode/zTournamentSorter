@@ -1,5 +1,6 @@
 """ this module contains code to create a 32 person sparring tree"""
 
+import logging
 import datetime
 
 from reportlab.pdfgen import canvas
@@ -176,16 +177,16 @@ class ThirtyTwoCompetitorTree(SparringTree):
 
     def draw_competitors_on_tree(self, competitors: Competitors) -> object:
         ''' draw the competitors on the tree '''
-        # print(competitors)
+        # logging.info(competitors)
 
         competitor_count = competitors.get_number_of_competitors()
         if competitor_count > 32:
-            print("*** Something is wrong! we have {} competitors for an 32 person tree".format(competitor_count))
+            logging.info("*** Something is wrong! we have {} competitors for an 32 person tree".format(competitor_count))
             competitor_count = 32
         i = 0
         for index, competitor in competitors.iterrows():
             name = competitor['First_Name'] + ' ' + competitor['Last_Name']
-            # print('\n' + name)
+            # logging.info('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             if competitor_count > constants.TOO_MANY_COMPETITORS :
                 self._c.setFillColorRGB(255, 0, 0)
@@ -215,4 +216,4 @@ if __name__ == '__main__':
     import os
 
     if os.path.exists("16PersonTree.pdf"):
-        print("It worked")
+        logging.info("It worked")

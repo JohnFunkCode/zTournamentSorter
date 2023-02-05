@@ -8,6 +8,7 @@ Created on Sun November 26 2017
 """
 
 import os
+import logging
 import pandas as pd
 from s3fs.core import S3FileSystem
 
@@ -18,7 +19,7 @@ bucket='jpf-python-datastore'
 
 f=s3.open('{}/{}'.format(bucket,filename),mode='rb')
 s3df=pd.read_csv(f)
-print(s3df)
+logging.info(s3df)
 
 # or using simplified url handling - don't know how permissions work here yet
 #file='S3://{}/{}'.format(bucket,filename)
@@ -29,7 +30,7 @@ print(s3df)
 filename = "/users/johnfunk/CloudStation/TournamentProject/CleanerTournamentParticipantsNOTTHEFINALLIST-10-15-17.csv"
 f=open(filename,mode='rb')
 fsdf=pd.read_csv(f)
-print(fsdf)
+logging.info(fsdf)
 
 # or using simplified url handling
 #file='file://{}'.format(filename)

@@ -1,3 +1,4 @@
+import logging
 import time
 import tkinter as tk
 from tkinter import ttk
@@ -23,7 +24,7 @@ class ReportGenerationController():
     def generate_reports(self):
         import threading
         x=threading.Thread(target=self.dowork)
-        print("go")
+        logging.info("go")
         x.start()
         # self.app_container.after(500,lambda:x.start())
         #
@@ -54,7 +55,7 @@ class ReportGenerationController():
     def generate_reportline(self,i):
         # self.app_container.after(100,lambda:self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r'))
         self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r')
-        print(f'processing {i}')
+        logging.info(f'processing {i}')
         # time.sleep(1)
 
     def process_data(self):

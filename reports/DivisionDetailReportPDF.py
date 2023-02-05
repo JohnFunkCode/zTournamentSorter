@@ -5,6 +5,7 @@ Created on Sat Nov  5 20:36:56 2016
 
 @author: john funk
 """
+import logging
 import pandas
 import datetime
 import time
@@ -77,7 +78,7 @@ class DivisionDetailReportPDF(object):
         elements.append(Spacer(1, 0.1 * inch))
 
         if df.shape[0] > constants.TOO_MANY_COMPETITORS:
-            print("\u001b[31m*** Warning: {} {} Ring {} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,df.shape[0]))
+            logging.warning("\u001b[31m***{} {} Ring {} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,df.shape[0]))
 
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
@@ -216,7 +217,7 @@ class DivisionDetailReportPDF(object):
         if minimum_age==4:
             minimum_age=2
 
-        print(time.strftime("%X") + " Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label)
+        logging.info("Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label)
 
         self.set_title(division_name)
 

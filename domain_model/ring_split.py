@@ -1,4 +1,5 @@
 ''' this module contains code for an ring_split.  It is used to hold the subset of compettitors when a ring has to be split '''
+import logging
 
 class RingSplit():
     ''' class to represent an ring_split '''
@@ -12,4 +13,4 @@ class RingSplit():
 if __name__ == '__main__':
     ''' Very simple test try to create an RingSplit '''
     r = RingSplit(9)
-    print(r.ring_number)
+    logging.info(r.ring_number)

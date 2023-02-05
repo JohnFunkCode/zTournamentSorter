@@ -5,6 +5,8 @@ nosetests --with-coverage
 '''''
 
 import unittest
+import logging
+
 from domain_model import event as ev
 
 class TestEvent(unittest.TestCase):

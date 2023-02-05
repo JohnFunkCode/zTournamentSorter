@@ -6,6 +6,8 @@ nosetests --with-coverage
 
 import unittest
 import os
+import logging
+
 from reportlab.pdfgen import canvas
 from reports.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
 from domain_model.competitors import Competitors
@@ -40,7 +42,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         try:
             os.mkdir("testoutput")
         except:
-            print("exptedted error")
+            logging.info("exptedted error")
         return
 
     def test_creating_a_file(self):
@@ -107,7 +109,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -133,7 +135,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -159,7 +161,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -185,7 +187,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -211,7 +213,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -237,7 +239,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -263,7 +265,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 
@@ -289,7 +291,7 @@ class TestEightCompetitorTree(unittest.TestCase):
         competitor_count = len(names)
         i = 0
         for i in range(competitor_count):
-            # print('\n' + names[i])
+            # logging.info('\n' + names[i])
             px, py = tree.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
             test_canvas.drawString(px, py, names[i])
 

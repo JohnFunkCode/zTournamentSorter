@@ -6,6 +6,7 @@ from tkinter import filedialog
 import pandas as pd
 from tkinter.messagebox import showinfo
 
+from GUI.listbox_log_handler import ListboxHandler
 import GUI.reportgeneration.report_generation_view
 
 class ReportGenerationController():
@@ -22,6 +23,21 @@ class ReportGenerationController():
         self.report_generation_view.show_view()
 
     def generate_reports(self):
+        logger = logging.getLogger('')
+        # logger.setLevel(logging.INFO)
+        # fh = logging.FileHandler(errorLogFileName)
+        # sh = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
+        # fh.setFormatter(formatter)
+        # sh.setFormatter(formatter)
+        # logger.addHandler(fh)
+        # logger.addHandler(sh)
+
+        lh = ListboxHandler(self.report_generation_view.processing_log_textbox)
+        lh.setFormatter(formatter)
+        logger.addHandler(lh)
+        # logger.addHandler(ListboxHandler(self.data_validation_view.error_log))
+
         import threading
         x=threading.Thread(target=self.dowork)
         logging.info("go")
@@ -54,7 +70,7 @@ class ReportGenerationController():
 
     def generate_reportline(self,i):
         # self.app_container.after(100,lambda:self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r'))
-        self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r')
+        # self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r')
         logging.info(f'processing {i}')
         # time.sleep(1)
 

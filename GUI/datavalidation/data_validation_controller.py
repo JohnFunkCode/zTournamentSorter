@@ -7,13 +7,17 @@ from tkinter import ttk
 from tkinter import filedialog
 import pandas as pd
 from tkinter.messagebox import showinfo
-
+from GUI.listbox_log_handler import ListboxHandler
 
 from cleaninput import cleaninput
 from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
 import GUI.datavalidation.data_validation_view
+
+from logging import Handler, getLogger
+
+
 
 class DataValidationController():
     def __init__(self, app_container: ttk.Frame):
@@ -45,6 +49,11 @@ class DataValidationController():
         sh.setFormatter(formatter)
         logger.addHandler(fh)
         logger.addHandler(sh)
+
+        lh = ListboxHandler(self.data_validation_view.error_log)
+        lh.setFormatter(formatter)
+        logger.addHandler(lh)
+        # logger.addHandler(ListboxHandler(self.data_validation_view.error_log))
 
         logging.info(" Reading the data from:" + self.app_container.input_data_filename + "....")
 

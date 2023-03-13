@@ -39,7 +39,11 @@ class ReportGenerationController():
         # logger.addHandler(ListboxHandler(self.data_validation_view.error_log))
 
         import threading
-        x=threading.Thread(target=self.dowork)
+        import LoadTournamentTable
+        ltt = LoadTournamentTable.LoadTournamentTable()
+        x=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database])
+
+        # x=threading.Thread(target=self.dowork)
         logging.info("go")
         x.start()
         # self.app_container.after(500,lambda:x.start())

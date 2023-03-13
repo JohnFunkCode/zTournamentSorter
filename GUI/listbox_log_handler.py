@@ -5,13 +5,14 @@
 
 from logging import Handler, getLogger
 import tkinter as tk
-
+import tkinter.scrolledtext
 
 class ListboxHandler(Handler):
-    def __init__(self, box):
+    def __init__(self, box: tkinter.scrolledtext.ScrolledText):
         self._box = box
         Handler.__init__(self)
 
     def emit(self, record):
         r = self.format(record)
         self._box.insert(tk.INSERT, r + '\n')
+        self._box.see(tk.INSERT)

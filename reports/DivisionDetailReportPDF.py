@@ -9,6 +9,7 @@ import logging
 import pandas
 import datetime
 import time
+import pathlib
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
@@ -18,18 +19,24 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
+import reports
 
 
 class DivisionDetailReportPDF(object):
-    def __init__(self):
-        self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
+    def __init__(self, title:str, sourcefile:str,output_folder_path:str):
+        filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
+
+        # self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
+        self.doc = SimpleDocTemplate(filename_with_path, pagesize=landscape(letter),topMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
         DivisionDetailReportPDF.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        DivisionDetailReportPDF.sourcefile = "not initialized"
+        # DivisionDetailReportPDF.sourcefile = "not initialized"
+        DivisionDetailReportPDF.sourcefile = sourcefile
         DivisionDetailReportPDF.pageinfo = "not initialized"
-        DivisionDetailReportPDF.Title = "not initialized"
+        # DivisionDetailReportPDF.Title = "not initialized"
+        DivisionDetailReportPDF.Title = title
         DivisionDetailReportPDF.PAGE_HEIGHT =  11 * inch
         DivisionDetailReportPDF.PAGE_WIDTH = 8.5 * inch
         DivisionDetailReportPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used

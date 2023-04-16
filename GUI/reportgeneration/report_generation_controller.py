@@ -41,17 +41,20 @@ class ReportGenerationController():
         import threading
         import LoadTournamentTable
         ltt = LoadTournamentTable.LoadTournamentTable()
-        x=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database])
+        worker_thread=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database,self.app_container.tournament_output_folder_path])
 
         # x=threading.Thread(target=self.dowork)
         logging.info("go")
-        x.start()
+        worker_thread.start()
         # self.app_container.after(500,lambda:x.start())
         #
         # x.start()
         # self.dowork()
         # self.report_generation_view.show_final_reports()
         # pass
+        # time.sleep(5)
+        show_reports_thread = threading.Thread(target=self.report_generation_view.show_final_reports_when_work_done, args=[worker_thread])
+        show_reports_thread.start()
 
     def dowork(self):
         for i in range(0,10):

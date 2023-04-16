@@ -23,8 +23,8 @@ class DataValidationView(ttk.Frame):
         # pandas table
         self.pandas_table_frame = ttk.Frame(self,borderwidth=2,relief='sunken')
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
-                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1550, height=400)
-        self.pandas_table_frame.grid(row=1,column=0,rowspan=3, columnspan=3,**options)
+                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1550, height=551)
+        self.pandas_table_frame.grid(row=1,column=0,rowspan=4, columnspan=3,**options)
         self.table.redraw()
 
         self.previous_button = ttk.Button(self, text='Previous')
@@ -42,16 +42,16 @@ class DataValidationView(ttk.Frame):
 
         # error log label
         self.error_log_label = ttk.Label(self, text='Data Errors')
-        self.error_log_label.grid(row=4, column=0, sticky=tk.W, **options)
+        self.error_log_label.grid(row=5, column=0, sticky=tk.W, **options)
 
         # error log textbox
-        self.error_log = tk.scrolledtext.ScrolledText(self,width=200,wrap="none")
-        self.error_log.grid(row=5, column=0, columnspan=3, **options)
+        self.error_log = tk.scrolledtext.ScrolledText(self,width=200,height=19,wrap="none")
+        self.error_log.grid(row=6, column=0, columnspan=3, **options)
 
         # button 1
         self.process_data_button = ttk.Button(self, text='Process Data')
         self.process_data_button['command'] = self.process_data
-        self.process_data_button.grid(row=6, column=3,sticky=tk.E, **options)
+        self.process_data_button.grid(row=4, column=3,sticky=tk.E, **options)
 
     def show_view(self):
         self.grid()

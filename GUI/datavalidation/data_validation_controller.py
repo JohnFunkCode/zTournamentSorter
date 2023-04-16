@@ -2,11 +2,16 @@ import os
 import sys
 import logging
 import time
+import pathlib
+from shutil import copyfile
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import pandas as pd
 from tkinter.messagebox import showinfo
+
+import reports.FileHandlingUtilities
 from GUI.listbox_log_handler import ListboxHandler
 
 from cleaninput import cleaninput
@@ -36,9 +41,23 @@ class DataValidationController():
         self.data_validation_view.show_view()
 
     def load_tournament_file(self):
-        self.app_container.input_data_filename = filedialog.askopenfilename(title="Select the file with the tournament data",filetypes=[("csv","*.csv")])
+        print(self.app_container.tournament_output_folder_path)
+        working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
+                                                                            initialdir=self.app_container.tournament_output_folder_path,
+                                                                            filetypes=[("csv","*.csv")])
+        # if the input file isn't in the folder for the tournament date ask to move it.
+        path_to_selected_file = str(pathlib.Path(working_file_name).parent)
+        if path_to_selected_file != self.app_container.tournament_output_folder_path:
+            tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
+            source=pathlib.Path(working_file_name)
+            # source_filename_only = source.name
+            destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )
+            copyfile(source,destination)
+            working_file_name=str(destination)
 
-        errorLogFileName = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Error.txt"
+        self.app_container.input_data_filename = working_file_name
+
+        errorLogFileName = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-ErrorLog.txt"
 
         logger = logging.getLogger('')
         logger.setLevel(logging.INFO)
@@ -180,7 +199,7 @@ class DataValidationController():
     def process_data(self):
         self.data_validation_view.error_log.delete("1.0",tk.END)
         self.data_validation_view.error_log.insert(tk.INSERT,self.app_container.database.to_string())
-        showinfo(title='Info', message="Start processing data")
+        # showinfo(title='Info', message="Start processing data")
         self.app_container.data_validation_controller.hide_view()
         self.app_container.report_generation_controller.show_view()
         self.app_container.report_generation_controller.generate_reports()

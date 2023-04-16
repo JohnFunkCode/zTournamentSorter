@@ -4,10 +4,12 @@ Contains code to create a report containing all the sparring trees for a tournam
 '''
 import logging
 import time
+import pathlib
 
 import pandas
 from reportlab.pdfgen import canvas
 
+import reports
 from domain_model.competitors import Competitors
 from reports.sparring_tree.eight_competitor_sparring_tree import EightCompetitorTree
 from reports.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
@@ -38,11 +40,17 @@ def create_sparring_tree( letter_canvas: canvas, legal_canvas: canvas, number_of
 class SparringTreeReportPDF():
     ''' Class to Create a Sparring Tree Report for each sparring event in the tournament '''
 
-    def __init__(self):
+    def __init__(self,sourcefile:str,output_folder_path:str):
+        self._letter_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
+        self._legal_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
+
         ''' Create a Sparring Tree'''
-        self._letter_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LETTER_FILE_NAME)
-        self._legal_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LEGAL_FILE_NAME)
-        self._source_filename = "not initialized"
+        # self._letter_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LETTER_FILE_NAME)
+        # self._legal_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LEGAL_FILE_NAME)
+        self._letter_canvas = canvas.Canvas(self._letter_filename_with_path)
+        self._legal_canvas = canvas.Canvas(self._legal_filename_with_path)
+        # self._source_filename = "not initialized"
+        self._source_filename = sourcefile
 
     #  seems to cause problems for debugging
     #    def __del__(self):

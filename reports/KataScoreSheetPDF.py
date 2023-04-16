@@ -10,6 +10,8 @@ import logging
 import pandas
 import datetime
 import time
+import pathlib
+
 
 #
 import pandas as pd
@@ -21,18 +23,24 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
+import reports
 
 
 class KataScoreSheetPDF(object):
-    def __init__(self):
-        self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+    def __init__(self,title:str, sourcefile:str,output_folder_path:str):
+        filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf'))
+
+        # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        self.doc = SimpleDocTemplate(filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
         KataScoreSheetPDF.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        KataScoreSheetPDF.sourcefile = "not initialized"
+        # KataScoreSheetPDF.sourcefile = "not initialized"
+        KataScoreSheetPDF.sourcefile = sourcefile
         KataScoreSheetPDF.pageinfo = "not initialized"
-        KataScoreSheetPDF.Title = "not initialized"
+        # KataScoreSheetPDF.Title = "not initialized"
+        KataScoreSheetPDF.Title = title
         KataScoreSheetPDF.PAGE_HEIGHT = 11 * inch
         KataScoreSheetPDF.PAGE_WIDTH = 8.5 * inch
         KataScoreSheetPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used

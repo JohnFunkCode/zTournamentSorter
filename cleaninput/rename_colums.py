@@ -10,6 +10,8 @@ Experiment to rename columns in a dataframe
 
 import os
 import logging
+import sys
+
 import pandas as pd
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
@@ -73,6 +75,7 @@ class RenameColumns:
         logging.info("  Registrant ID")
         logging.info("  First Name")
         logging.info("  Last Name")
+        logging.info("  Gender")
         logging.info("  Select Your Studio")
         logging.info("  Out of State Studio")
         logging.info("  Age")
@@ -106,10 +109,13 @@ class RenameColumns:
 #        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
         self.replace_column_name_containing(".*Tickets.*", "Spectator_Tickets")
 
+        self.re_order_columns()
         return
-
 #good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
 
+    def re_order_columns(self):
+        self.re_ordered_df=self.raw_df[['Registrant_ID','First_Name','Last_Name','Gender','Age','Weight','Height','Rank','Division','Dojo','Out_of_State_Dojo','Events','Weapons']]
+        self.raw_df=self.re_ordered_df
 
 if __name__ == '__main__':
     #get the filename from the environment var named  tourname_filename
@@ -125,14 +131,35 @@ if __name__ == '__main__':
     else:
         logging.info("Using the file " + filename + "from the environment")
 
+    errorLogFileName = filename[0:len(filename) - 4] + "-Error.txt"
+
+    logger = logging.getLogger('')
+    logger.setLevel(logging.INFO)
+    fh = logging.FileHandler(errorLogFileName)
+    sh = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
+    fh.setFormatter(formatter)
+    sh.setFormatter(formatter)
+    logger.addHandler(fh)
+    logger.addHandler(sh)
+
     r=RenameColumns(filename)
     #r.dump_raw_df()
+    logging.info("1-----")
     r.print_column_names()
-    logging.info("-----")
+    logging.info("2-----")
+    r.rename_all_columns()
+    logging.info("3-----")
+    r.print_column_names()
+    logging.info("4-----")
+    r.re_order_columns()
+    r.print_column_names()
+    logging.info("5-----")
+
     #r.is_YourSudio_a_column_name()
     logging.info("r.get_column_name_containing('.*Age.*')")
     logging.info(r.get_column_name_containing(".*Age.*"))
-    logging.info("-----")
+    logging.info("6-----")
 
     r.rename_all_columns()
 

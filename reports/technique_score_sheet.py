@@ -23,7 +23,7 @@ from reports.kata_score_sheet import KataScoreSheet
 
 class TechniqueScoreSheet(KataScoreSheet):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
-        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniquesScoreSheet.pdf'))
+        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))
 
         # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)

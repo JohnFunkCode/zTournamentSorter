@@ -27,7 +27,7 @@ class ReportGenerationView(ttk.Frame):
         self.processing_log_label.grid(row=0, column=0, sticky=tk.W, **options)
 
         # processing log textbox
-        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=212,height=46,wrap="none")
+        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=212,height=43,wrap="none")
         self.processing_log_textbox.grid(row=1, column=0, columnspan=3, **options)
 
         # button 1
@@ -69,22 +69,29 @@ class ReportGenerationView(ttk.Frame):
         self.division_detail_label.bind('<Button-1>', lambda x: webbrowser.open(division_detail_report_filename_with_path))
 
         # Kata Detail Report label
-        self.kata_score_sheet_lable = ttk.Label(self.final_output_labelframe, text='  kata detail report.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
+        self.kata_score_sheet_lable = ttk.Label(self.final_output_labelframe, text='  kata score sheet.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
         self.kata_score_sheet_lable.grid(row=2, column=0, sticky=tk.W, **options)
         # self.kata_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open("file://C:/Users/John/Documents/Tournaments/2023-April-30/KataScoreSheet.pdf"))
         kata_score_sheet_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'KataScoreSheet.pdf'))
         self.kata_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open(kata_score_sheet_filename_with_path))
 
+        # Technique Detail Report label
+        self.technique_score_sheet_lable = ttk.Label(self.final_output_labelframe, text='  technique score sheet.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
+        self.technique_score_sheet_lable.grid(row=3, column=0, sticky=tk.W, **options)
+        self.kata_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open("file://C:/Users/John/Documents/Tournaments/2023-April-30/TechniqueScoreSheet.pdf"))
+        technique_score_sheet_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'TechniqueScoreSheet.pdf'))
+        self.technique_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open(technique_score_sheet_filename_with_path))
+
         # Sparring Tree - letter report label
         self.sparring_tree_letter_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - letter size.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
-        self.sparring_tree_letter_size_label.grid(row=3, column=0, sticky=tk.W, **options)
+        self.sparring_tree_letter_size_label.grid(row=4, column=0, sticky=tk.W, **options)
         # self.sparring_tree_letter_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Legal.pdf"))
         sparring_tree_letter_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'SparringTreeReport-Letter.pdf'))
         self.sparring_tree_letter_size_label.bind('<Button-1>', lambda x: webbrowser.open(sparring_tree_letter_filename_with_path))
 
         # Sparring Tree - legal report label
         self.sparring_tree_legal_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - legal size.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
-        self.sparring_tree_legal_size_label.grid(row=4, column=0, sticky=tk.W, **options)
+        self.sparring_tree_legal_size_label.grid(row=5, column=0, sticky=tk.W, **options)
         # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
         sparring_tree_legal_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'SparringTreeReport-Legal.pdf'))
         self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open(sparring_tree_legal_filename_with_path))

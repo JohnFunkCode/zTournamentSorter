@@ -26,41 +26,41 @@ import domain_model.constants as constants
 import reports
 
 
-class KataScoreSheetPDF(object):
+class KataScoreSheet(object):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
-        filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf'))
+        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf'))
 
         # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
-        self.doc = SimpleDocTemplate(filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        KataScoreSheetPDF.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        # KataScoreSheetPDF.sourcefile = "not initialized"
-        KataScoreSheetPDF.sourcefile = sourcefile
-        KataScoreSheetPDF.pageinfo = "not initialized"
-        # KataScoreSheetPDF.Title = "not initialized"
-        KataScoreSheetPDF.Title = title
-        KataScoreSheetPDF.PAGE_HEIGHT = 11 * inch
-        KataScoreSheetPDF.PAGE_WIDTH = 8.5 * inch
-        KataScoreSheetPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
-        KataScoreSheetPDF.ring_number= "not initialized"
-        KataScoreSheetPDF.event_time= "not initialized"
-        KataScoreSheetPDF.division_name= "not initialized"
-        KataScoreSheetPDF.age= "not initialized"
-        KataScoreSheetPDF.belts= "not initialized"
+        KataScoreSheet.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        # KataScoreSheet.sourcefile = "not initialized"
+        KataScoreSheet.sourcefile = sourcefile
+        KataScoreSheet.pageinfo = "not initialized"
+        # KataScoreSheet.Title = "not initialized"
+        KataScoreSheet.Title = title
+        KataScoreSheet.PAGE_HEIGHT = 11 * inch
+        KataScoreSheet.PAGE_WIDTH = 8.5 * inch
+        KataScoreSheet.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        KataScoreSheet.ring_number= "not initialized"
+        KataScoreSheet.event_time= "not initialized"
+        KataScoreSheet.division_name= "not initialized"
+        KataScoreSheet.age= "not initialized"
+        KataScoreSheet.belts= "not initialized"
 
     @staticmethod
     def set_title(title):
-        KataScoreSheetPDF.Title = title
+        KataScoreSheet.Title = title
 
     @staticmethod
     def set_pageInfo(pageinfo):
-        KataScoreSheetPDF.pageinfo = pageinfo
+        KataScoreSheet.pageinfo = pageinfo
 
     @staticmethod
     def set_sourcefile(sourcefile):
-        KataScoreSheetPDF.sourcefile = sourcefile
+        KataScoreSheet.sourcefile = sourcefile
 
     def convert_inputdf_to_outputdf(self,inputdf):
         columns = ['Compettitors Name', 'Form', 'Scores', '', 'Total', 'Place']
@@ -81,15 +81,15 @@ class KataScoreSheetPDF(object):
 
     def put_dataframe_on_pdfpage(self, inputdf, ring_number, event_time, division_name, age, belts, split_warning_text=None):
         # put args in class variables so the static page header functions can use them
-        KataScoreSheetPDF.ring_number = ring_number
-        KataScoreSheetPDF.event_time = event_time
-        KataScoreSheetPDF.division_name = division_name
-        KataScoreSheetPDF.age = age
-        KataScoreSheetPDF.belts = belts
+        KataScoreSheet.ring_number = ring_number
+        KataScoreSheet.event_time = event_time
+        KataScoreSheet.division_name = division_name
+        KataScoreSheet.age = age
+        KataScoreSheet.belts = belts
 
         elements = []
 
-        headerdata1 = [[KataScoreSheetPDF.Title,'Score Sheet']]
+        headerdata1 = [[KataScoreSheet.Title, 'Score Sheet']]
 
         t = Table(headerdata1)
 
@@ -246,8 +246,7 @@ class KataScoreSheetPDF(object):
         # wmk=newDataFrameFromQuery(combined_query)
         wmk = clean_df[
             ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
-             "Weight", "BMI",
-             "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+             "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
 
         if len(rings) > 1:  # more than 1 ring means we split
             # filter to only keep contestants who's last name fall into the first alphabetic split
@@ -283,45 +282,45 @@ def first_page_layout(canvas, doc):
     # # Report Header
     # canvas.setFont('Times-Bold',28)
     # #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    # canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheetPDF.Title)
+    # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheet.Title)
     # canvas.setFont('Times-Bold', 12)
-    # canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
+    # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
     #
     # #####
     # # Ring and Divisional Details
     # y=10.75
     # canvas.setFont('Times-Bold', 12)
     # canvas.drawString(5.95 *inch, y * inch, "RING")
-    # canvas.drawString(6.5 *inch, y * inch, KataScoreSheetPDF.ring_number)
-    # canvas.drawString(7*inch, y * inch, KataScoreSheetPDF.event_time)
+    # canvas.drawString(6.5 *inch, y * inch, KataScoreSheet.ring_number)
+    # canvas.drawString(7*inch, y * inch, KataScoreSheet.event_time)
     # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.55
     # canvas.setFont('Times-Bold', 12)
     # canvas.drawString(5.6 * inch, y * inch, "DIVISION")
     # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.division_name)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.division_name)
     # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.35
     # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.age)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.age)
     # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.15
     # canvas.setFont('Times-Bold', 12)
     # canvas.drawString(5.8 * inch, y * inch, "RANKS")
     # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheetPDF.belts)
+    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.belts)
     # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
 
 
     #####
     # Footer
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
-                          doc.page, KataScoreSheetPDF.timestamp, KataScoreSheetPDF.sourcefile))
+                                 doc.page, KataScoreSheet.timestamp, KataScoreSheet.sourcefile))
 
     canvas.restoreState()
 
@@ -337,39 +336,39 @@ def later_page_layout(canvas, doc):
     ## Report Header
     #canvas.setFont('Times-Bold',28)
     ##    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    #canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheetPDF.Title)
+    #canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheet.Title)
     #canvas.setFont('Times-Bold', 12)
-    #canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
+    #canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
 
     # #####
     # # Ring and Divisional Details
     # y=10.75
     # canvas.setFont('Times-Bold', 12)
     # canvas.drawString(6.45 *inch, y * inch, "RING")
-    # canvas.drawString(7 *inch, y * inch, KataScoreSheetPDF.ring_number)
-    # canvas.drawString(7.5*inch, y * inch, KataScoreSheetPDF.event_time)
+    # canvas.drawString(7 *inch, y * inch, KataScoreSheet.ring_number)
+    # canvas.drawString(7.5*inch, y * inch, KataScoreSheet.event_time)
     # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.55
     # canvas.drawString(6.1 * inch, y * inch, "DIVISION")
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.division_name)
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.division_name)
     # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.35
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.age)
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.age)
     # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
     #
     # y=10.15
     # canvas.drawString(6.3 * inch, y * inch, "RANKS")
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheetPDF.belts)
+    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.belts)
     # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
 
 
     # Footer
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(KataScoreSheetPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
                              "Page: %d     Generated: %s     From file: %s" % (
-                                 doc.page, KataScoreSheetPDF.timestamp, KataScoreSheetPDF.sourcefile))
+                                 doc.page, KataScoreSheet.timestamp, KataScoreSheet.sourcefile))
 
     canvas.restoreState()
 
@@ -381,15 +380,15 @@ def page_layout(canvas, doc):
     canvas.setFont('Times-Roman', 9)
     canvas.drawString(inch * 3, 0.75 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
-                          doc.page, KataScoreSheetPDF.timestamp, KataScoreSheetPDF.sourcefile))
+                          doc.page, KataScoreSheet.timestamp, KataScoreSheet.sourcefile))
     canvas.restoreState()
 
 
 if __name__ == "__main__":
   #setup the Kata Score Sheet PDF
-  kata_score_sheet=KataScoreSheetPDF()
-  KataScoreSheetPDF.set_title("Forms")
-  KataScoreSheetPDF.set_sourcefile("testing//no//file//name")
+  kata_score_sheet=KataScoreSheet()
+  KataScoreSheet.set_title("Forms")
+  KataScoreSheet.set_sourcefile("testing//no//file//name")
 
   # # create a test data frame
   # index = ['a', 'b', 'c', 'd']

@@ -90,7 +90,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
     import re
     compiledRegex=re.compile('\d+')
     for index, row in cleanDataFrame.iterrows():
-        rawWeightString=row['Weight']
+        rawWeightString=str(row['Weight'])
         if pd.isnull(rawWeightString):
             errorCount += 1
             errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(

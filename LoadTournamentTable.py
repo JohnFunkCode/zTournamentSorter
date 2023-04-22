@@ -16,8 +16,9 @@ from cleaninput import cleaninput
 from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
-from reports import DivisionDetailReportPDF
-from reports import KataScoreSheetPDF
+from reports.division_detail_report import DivisionDetailReport
+from reports.kata_score_sheet import KataScoreSheet
+from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
 import reports.ExcelFileOutput
 import reports.FileHandlingUtilities
@@ -28,14 +29,14 @@ class LoadTournamentTable:
     def __int__(self):
         ###############################################################################
         # Setup a few variables to hold all the reports
-        self.divison_detail_report_pdf =None #= DivisionDetailReportPDF.DivisionDetailReportPDF()
-        #self.kata_score_sheet = None #kata_score_sheet_pdf.KataScoreSheetPDF()
-        self.kata.score_sheet_pdf = None
+        self.divison_detail_report_pdf =None #= DivisionDetailReport.DivisionDetailReport()
+        #self.kata_score_sheet = None #kata_score_sheet_pdf.KataScoreSheet()
+        self.kata_score_sheet_pdf = None
+        self.technique_score_sheet_pdf = None
         self.sparing_tree_pdf = None #reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
 
-
     ###############################################################################
-    # self.writeSingleKataScoreSheetandDivisionReport
+    # writeSingleKataScoreSheetandDivisionReport
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
@@ -61,7 +62,15 @@ class LoadTournamentTable:
     def writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
         self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
         self.kata_score_sheet_pdf.writeSingleKataScoreSheet(               event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
-    
+
+    ###############################################################################
+    # writeSingleKataScoreSheetandDivisionReport
+    #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
+    #  This prevents a lot of duplication
+    def writeSingleTechniqueScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
+        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings, ranks=ranks, clean_df=clean_df)
+        self.technique_score_sheet_pdf.writeSingleTechniqueScoreSheet(event_time=event_time, division_name=division_name,division_type="Techniques", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+
 
 
     ###############################################################################
@@ -143,15 +152,19 @@ class LoadTournamentTable:
     
         ###############################################################################
         # Setup a few things for the Division Detail PDF report
-        self.divison_detail_report_pdf = DivisionDetailReportPDF.DivisionDetailReportPDF("Division Detail",filename,output_folder_path)
-        # DivisionDetailReportPDF.DivisionDetailReportPDF.set_title("Division Detail")
-        # DivisionDetailReportPDF.DivisionDetailReportPDF.set_sourcefile(filename)
+        self.divison_detail_report_pdf = DivisionDetailReport("Division Detail",filename,output_folder_path)
+        # DivisionDetailReport.DivisionDetailReport.set_title("Division Detail")
+        # DivisionDetailReport.DivisionDetailReport.set_sourcefile(filename)
 
         ###############################################################################
         # Setup a few things for the Kata Score Sheet PDF report
-        self.kata_score_sheet_pdf = KataScoreSheetPDF.KataScoreSheetPDF("Forms", filename, output_folder_path)
+        self.kata_score_sheet_pdf = KataScoreSheet("Forms", filename, output_folder_path)
         # self.kata_score_sheet_pdf.set_title("Forms")
         # self.kata_score_sheet_pdf.set_sourcefile(filename)
+
+        ###############################################################################
+        # Setup a few things for the Techniques Score Sheet PDF report
+        self.technique_score_sheet_pdf = TechniqueScoreSheet("Techniques", filename, output_folder_path)
     
         ###############################################################################
         # Setup a few things for the Sparring Tree PDF report
@@ -275,14 +288,14 @@ class LoadTournamentTable:
             # TBD - Figure out how to write Def Techs to excel
             # reports.ExcelFileOutput.writePattern6ToExcelViaQuery(output_folder_path=output_folder_path, filename="BoysSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=9, maximum_age=11,clean_df=clean_df)
 
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4,  maximum_age=11,                rings=[9], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=12, maximum_age=17,                rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=18, maximum_age=39,                rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=40, maximum_age=constants.AGELESS, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Jr. Black",                  minimum_age=4,  maximum_age=11,                rings=[13], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Jr. Black & Black",          minimum_age=12, maximum_age=17,                rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Black",                      minimum_age=18, maximum_age=39,                rings=[15], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Black",                      minimum_age=40, maximum_age=constants.AGELESS, rings=[16], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4,  maximum_age=11,                rings=[9], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=12, maximum_age=17,                rings=[10], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=18, maximum_age=39,                rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=40, maximum_age=constants.AGELESS, rings=[11], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Jr. Black",                  minimum_age=4,  maximum_age=11,                rings=[13], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Jr. Black & Black",          minimum_age=12, maximum_age=17,                rings=[14], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Black",                      minimum_age=18, maximum_age=39,                rings=[15], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="11:15am",division_name="Defense Technique",gender="*", rank_label="Black",                      minimum_age=40, maximum_age=constants.AGELESS, rings=[16], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
             ###############################################################################
             # Weapons Division 1 - 4-8 year olds
@@ -564,6 +577,7 @@ class LoadTournamentTable:
         logging.info("Saving PDFs to disk")
         self.divison_detail_report_pdf.write_pdfpage()
         self.kata_score_sheet_pdf.write_pdfpage()
+        self.technique_score_sheet_pdf.write_pdfpage()
         self.sparing_tree_pdf.close()
     
         #print hitcount warnings
@@ -587,12 +601,14 @@ if __name__ == '__main__':
     # get the filename from the environment var named  tourname_filename
     filename = os.getenv("tournament_filename")
 
+
     if filename is None:
         # Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
         root = Tk()
         root.withdraw()  # we don't want a full GUI, so keep the root window from appearing
         root.update()  # Prevent the askfilename() window doesn't stay open
-        filename = askopenfilename()
+        # filename = askopenfilename()
+        filename = askopenfilename(title="Select the file with the tournament data",filetypes=[("csv","*.csv"),("excel","*.xls")])
         root.update()  # Prevent the askfilename() window doesn't stay open
     else:
         print("Using the file " + filename + "from the environment")

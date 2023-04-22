@@ -7,8 +7,8 @@ import logging
 import os
 import pandas as pd
 import reports.ExcelFileOutput
-import reports.DivisionDetailReportPDF
-import reports.KataScoreSheetPDF
+import reports.division_detail_report
+import reports.kata_score_sheet
 import reports.sparring_tree
 
 def pathDelimiter():

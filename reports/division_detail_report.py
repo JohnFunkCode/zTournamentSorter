@@ -22,7 +22,7 @@ import domain_model.constants as constants
 import reports
 
 
-class DivisionDetailReportPDF(object):
+class DivisionDetailReport(object):
     def __init__(self, title:str, sourcefile:str,output_folder_path:str):
         filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
 
@@ -31,27 +31,27 @@ class DivisionDetailReportPDF(object):
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        DivisionDetailReportPDF.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        # DivisionDetailReportPDF.sourcefile = "not initialized"
-        DivisionDetailReportPDF.sourcefile = sourcefile
-        DivisionDetailReportPDF.pageinfo = "not initialized"
-        # DivisionDetailReportPDF.Title = "not initialized"
-        DivisionDetailReportPDF.Title = title
-        DivisionDetailReportPDF.PAGE_HEIGHT =  11 * inch
-        DivisionDetailReportPDF.PAGE_WIDTH = 8.5 * inch
-        DivisionDetailReportPDF.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        DivisionDetailReport.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        # DivisionDetailReport.sourcefile = "not initialized"
+        DivisionDetailReport.sourcefile = sourcefile
+        DivisionDetailReport.pageinfo = "not initialized"
+        # DivisionDetailReport.Title = "not initialized"
+        DivisionDetailReport.Title = title
+        DivisionDetailReport.PAGE_HEIGHT = 11 * inch
+        DivisionDetailReport.PAGE_WIDTH = 8.5 * inch
+        DivisionDetailReport.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
 
     @staticmethod
     def set_title(title):
-        DivisionDetailReportPDF.Title = title
+        DivisionDetailReport.Title = title
 
     @staticmethod
     def set_pageInfo(pageinfo):
-        DivisionDetailReportPDF.pageinfo = pageinfo
+        DivisionDetailReport.pageinfo = pageinfo
 
     @staticmethod
     def set_sourcefile(sourcefile):
-        DivisionDetailReportPDF.sourcefile = sourcefile
+        DivisionDetailReport.sourcefile = sourcefile
 
     def put_dataframe_on_pdfpage(self, df, ring_number, event_time, division_name, age, belts, split_warning_text=None):
         elements = []
@@ -236,11 +236,14 @@ class DivisionDetailReportPDF(object):
             if r<len(ranks)-1:  #Add ' and ' to everything but the last one
                 rank_query=rank_query + ' or '
 
-        assert division_type == 'Weapons' or division_type=='Sparring' or division_type=='Forms', "Error: Invalid division_type"
+        assert division_type == 'Weapons' or division_type=='Sparring' or division_type=='Forms' or division_type=='Techniques', "Error: Invalid division_type"
         if division_type == 'Weapons':
             division_type_query='Weapons.str.contains("Weapons")'
+        elif division_type == 'Techniques':
+            division_type_query='Techniques.str.contains("Technique")'
         else:
             division_type_query=f'Events.str.contains("{division_type}")'
+
 
         if gender != '*':
             gender_query= 'Gender == "'+ gender +'"'
@@ -250,8 +253,7 @@ class DivisionDetailReportPDF(object):
 
         #wmk = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
         wmk=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
-             "Weight", "BMI",
-             "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+             "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
 
         if len(rings)>1:
 
@@ -279,9 +281,9 @@ def first_page_layout(canvas, doc):
     canvas.saveState()
     canvas.setFont('Times-Bold', 16)
     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 8 * inch, DivisionDetailReportPDF.Title)
+    canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 8 * inch, DivisionDetailReport.Title)
     canvas.setFont('Times-Roman', 9)
-    canvas.canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % DivisionDetailReportPDF.pageinfo)
+    canvas.canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % DivisionDetailReport.pageinfo)
     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -290,9 +292,9 @@ def later_page_layout(canvas, doc):
     #logo = ImageReader('Z_LOGO_HalfInch.jpg')
     #canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d   Generated: %s   From file: %s" % (
-                          doc.page, DivisionDetailReportPDF.timestamp, DivisionDetailReportPDF.sourcefile))
+                                 doc.page, DivisionDetailReport.timestamp, DivisionDetailReport.sourcefile))
     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -301,9 +303,9 @@ def page_layout(canvas, doc):
     logo = ImageReader('Z_LOGO_HalfInch.jpg')
     canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(DivisionDetailReportPDF.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d   Generated: %s   From file: %s" % (
-                          doc.page, DivisionDetailReportPDF.timestamp, DivisionDetailReportPDF.sourcefile))
+                                 doc.page, DivisionDetailReport.timestamp, DivisionDetailReport.sourcefile))
     canvas.restoreState()
 
 ########

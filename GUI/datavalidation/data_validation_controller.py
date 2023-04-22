@@ -197,6 +197,17 @@ class DataValidationController():
     #     showinfo(title='Info', message="Start processing data")
 
     def process_data(self):
+        # Save the database to file
+        save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
+        save_file_name=filedialog.asksaveasfilename(filetypes=[("csv","*.csv")],initialfile=save_file_name,title='Save Data as...')
+        if(save_file_name != ''):
+            logging.info(f"Saving processed file to {save_file_name}")
+            df = pd.DataFrame(self.app_container.database)
+            df.to_csv(save_file_name,index=False)
+        else:
+            logging.warning(f"Not saving processed file!")
+
+
         self.data_validation_view.error_log.delete("1.0",tk.END)
         self.data_validation_view.error_log.insert(tk.INSERT,self.app_container.database.to_string())
         # showinfo(title='Info', message="Start processing data")

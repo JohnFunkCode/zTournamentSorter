@@ -41,7 +41,7 @@ class DataValidationController():
         self.data_validation_view.show_view()
 
     def load_tournament_file(self):
-        print(self.app_container.tournament_output_folder_path)
+        # print(self.app_container.tournament_output_folder_path)
         working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
                                                                             initialdir=self.app_container.tournament_output_folder_path,
                                                                             filetypes=[("csv","*.csv")])
@@ -151,8 +151,44 @@ class DataValidationController():
 
 
     def load_division_file(self):
-        filename = filedialog.askopenfilename(title="Select the file with the division data",filetypes=[("csv","*.csv"),("excel","*.xls")])
-        self.app_container.database = pd.read_csv(filename)
+        self.is_custom_division=True
+        # filename = filedialog.askopenfilename(title="Select the file with the division data",filetypes=[("csv","*.csv"),("excel","*.xls")])
+        working_file_name = filedialog.askopenfilename(title="Select the file with the division data",
+                                                                            initialdir=self.app_container.tournament_output_folder_path,
+                                                                            filetypes=[("csv","*.csv"),("excel","*.xls")])
+        # if the input file isn't in the folder for the tournament date ask to move it.
+        path_to_selected_file = str(pathlib.Path(working_file_name).parent)
+        if path_to_selected_file != self.app_container.tournament_output_folder_path:
+            tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
+            source=pathlib.Path(working_file_name)
+            # source_filename_only = source.name
+            destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )
+            copyfile(source,destination)
+            working_file_name=str(destination)
+
+        self.app_container.input_data_filename = working_file_name
+
+        errorLogFileName = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-ErrorLog.txt"
+
+        logger = logging.getLogger('')
+        logger.setLevel(logging.INFO)
+        fh = logging.FileHandler(errorLogFileName)
+        sh = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
+        fh.setFormatter(formatter)
+        sh.setFormatter(formatter)
+        logger.addHandler(fh)
+        logger.addHandler(sh)
+
+        lh = ListboxHandler(self.data_validation_view.error_log)
+        lh.setFormatter(formatter)
+        logger.addHandler(lh)
+        # logger.addHandler(ListboxHandler(self.data_validation_view.error_log))
+
+        logging.info(" Reading the data from:" + self.app_container.input_data_filename + "....")
+
+
+        self.app_container.database = pd.read_csv(working_file_name)
         self.data_validation_view.update_table()
         self.data_validation_view.table.show()
         self.data_validation_view.show_view()

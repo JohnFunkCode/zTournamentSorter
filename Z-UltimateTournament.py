@@ -24,6 +24,7 @@ class zAppController(tk.Tk):
         self.input_data_filename = ''  # the name of the input file - used in a lot of reports
         self.tournament_output_folder_path = '' # the path to all the ouput
         self.database = pd.DataFrame()
+        self.is_custom_division = False # used to signal special processing if processing a custom division
 
         self.menu_bar = GUI.menubar.menu_bar.MenuBar(self)
         self.report_generation_controller = GUI.reportgeneration.report_generation_controller.ReportGenerationController(self)

@@ -78,7 +78,7 @@ class ReportGenerationView(ttk.Frame):
         # Technique Detail Report label
         self.technique_score_sheet_lable = ttk.Label(self.final_output_labelframe, text='  technique score sheet.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
         self.technique_score_sheet_lable.grid(row=3, column=0, sticky=tk.W, **options)
-        self.kata_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open("file://C:/Users/John/Documents/Tournaments/2023-April-30/TechniqueScoreSheet.pdf"))
+        # self.technique_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open("file://C:/Users/John/Documents/Tournaments/2023-April-30/TechniqueScoreSheet.pdf"))
         technique_score_sheet_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'TechniqueScoreSheet.pdf'))
         self.technique_score_sheet_lable.bind('<Button-1>', lambda x: webbrowser.open(technique_score_sheet_filename_with_path))
 

@@ -99,6 +99,15 @@ class SparringTreeReportPDF():
         division_competitors = Competitors(clean_df.query(combined_query).sort_values("Age").sort_values("BMI"))
         t=division_competitors.get_number_of_competitors()
 
+        ## update the hitcount every time we touch someone
+        for index, row in division_competitors.iterrows():
+            name = row['First_Name'] + " " + row['Last_Name']
+            id = row['Registrant_ID']
+            hc = clean_df.at[index, 'hitcount']
+            newhc = hc + 1
+            # logging.info(f'{id}:{name} has a row count of {newhc}')
+            clean_df.at[index, 'hitcount'] = newhc
+
         if len(rings) > 1:  # more than 1 ring means we split
             # filter to only keep contestants who's last name fall into the first alphabetic split
             first_alphabetic_split = division_competitors[division_competitors['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]

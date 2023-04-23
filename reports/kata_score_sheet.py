@@ -244,9 +244,20 @@ class KataScoreSheet(object):
             combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         # wmk=newDataFrameFromQuery(combined_query)
-        wmk = clean_df[
-            ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
-             "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        # wmk = clean_df[
+        #     ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
+        #      "Weight", "BMI", "Events", "Techniques", "Weapons", "Tickets"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        wmk = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
+
+
+        ## update the hitcount every time we touch someone
+        for index, row in wmk.iterrows():
+            name = row['First_Name'] + " " + row['Last_Name']
+            id = row['Registrant_ID']
+            hc = clean_df.at[index, 'hitcount']
+            newhc = hc + 1
+            # logging.info(f'{id}:{name} has a row count of {newhc}')
+            clean_df.at[index, 'hitcount'] = newhc
 
         if len(rings) > 1:  # more than 1 ring means we split
             # filter to only keep contestants who's last name fall into the first alphabetic split

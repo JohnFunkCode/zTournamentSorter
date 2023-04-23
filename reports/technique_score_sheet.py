@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed April 23 2023
+
+@author: john funk
+"""
+
 import logging
 import pandas
 import datetime
@@ -18,36 +26,186 @@ import domain_model.constants as constants
 import reports
 
 
-from reports.kata_score_sheet import KataScoreSheet
-
-
-class TechniqueScoreSheet(KataScoreSheet):
+class TechniqueScoreSheet(object):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
         self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))
 
-        # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        # self.doc = SimpleDocTemplate("TechniqueScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        KataScoreSheet.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        # KataScoreSheet.sourcefile = "not initialized"
-        KataScoreSheet.sourcefile = sourcefile
-        KataScoreSheet.pageinfo = "not initialized"
-        # KataScoreSheet.Title = "not initialized"
-        KataScoreSheet.Title = title
-        KataScoreSheet.PAGE_HEIGHT = 11 * inch
-        KataScoreSheet.PAGE_WIDTH = 8.5 * inch
-        KataScoreSheet.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
-        KataScoreSheet.ring_number= "not initialized"
-        KataScoreSheet.event_time= "not initialized"
-        KataScoreSheet.division_name= "not initialized"
-        KataScoreSheet.age= "not initialized"
-        KataScoreSheet.belts= "not initialized"
+        TechniqueScoreSheet.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        # TechniqueScoreSheet.sourcefile = "not initialized"
+        TechniqueScoreSheet.sourcefile = sourcefile
+        TechniqueScoreSheet.pageinfo = "not initialized"
+        # TechniqueScoreSheet.Title = "not initialized"
+        TechniqueScoreSheet.Title = title
+        TechniqueScoreSheet.PAGE_HEIGHT = 11 * inch
+        TechniqueScoreSheet.PAGE_WIDTH = 8.5 * inch
+        TechniqueScoreSheet.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        TechniqueScoreSheet.ring_number= "not initialized"
+        TechniqueScoreSheet.event_time= "not initialized"
+        TechniqueScoreSheet.division_name= "not initialized"
+        TechniqueScoreSheet.age= "not initialized"
+        TechniqueScoreSheet.belts= "not initialized"
+
+    @staticmethod
+    def set_title(title):
+        TechniqueScoreSheet.Title = title
+
+    @staticmethod
+    def set_pageInfo(pageinfo):
+        TechniqueScoreSheet.pageinfo = pageinfo
+
+    @staticmethod
+    def set_sourcefile(sourcefile):
+        TechniqueScoreSheet.sourcefile = sourcefile
+
+    def convert_inputdf_to_outputdf(self,inputdf):
+        columns = ['Compettitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
+        data=[]
+        outputdf = pd.DataFrame(data, columns=columns)
+
+        counter=1
+        for index, row in inputdf.iterrows():
+            outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            outputdf.at[index, 'Technique'] = ''
+            outputdf.at[index,'Scores'] = ''
+            outputdf.at[index,''] = ''
+            outputdf.at[index,'Total'] = ''
+            outputdf.at[index, 'Place'] = ''
+            counter = counter+1
+
+        return outputdf
+
+    def put_dataframe_on_pdfpage(self, inputdf, ring_number, event_time, division_name, age, belts, split_warning_text=None):
+        # put args in class variables so the static page header functions can use them
+        TechniqueScoreSheet.ring_number = ring_number
+        TechniqueScoreSheet.event_time = event_time
+        TechniqueScoreSheet.division_name = division_name
+        TechniqueScoreSheet.age = age
+        TechniqueScoreSheet.belts = belts
+
+        elements = []
+
+        headerdata1 = [[TechniqueScoreSheet.Title, 'Score Sheet']]
+
+        t = Table(headerdata1)
+
+        # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+        # - see reportlab users guide chapter 7, page 78 for details
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 20),
+                               ('ALIGN', (0, 0), (1, 0), 'CENTER'),
+                               ('LEADING', (0, 0), (1, -1), 9)]))
+
+        elements.append(t)
+        elements.append(Spacer(1, 0.1 * inch))
+
+        if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
+            logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
+
+        if split_warning_text is None:
+            headerdata2 = [['RING', ring_number + '   ' + event_time],
+                           ['DIVISION', division_name],
+                           ['AGE', age],
+                           ['RANKS', belts],
+                           ['COMPETITORS',inputdf.shape[0]]]
+            t = Table(headerdata2)
+
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                                   ('FONTSIZE', (0, 0), (1, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (1, -1), 7)]))
+        else:
+            headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
+                           ['DIVISION', division_name, '' ],
+                           ['AGE', age,''],
+                           ['RANKS', belts,split_warning_text],
+                           ['COMPETITORS',inputdf.shape[0]]]
+            t = Table(headerdata2)
+
+            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+            # - see reportlab users guide chapter 7, page 78 for details
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
+                                   ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
+                                   ('FONTSIZE', (0, 0), (2, -1), 10),
+                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                                   ('ALIGN', (2, 0), (2, -1), 'LEFT'),
+                                   ('LEADING', (0, 0), (-1, -1), 7)]))
+
+
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                               ('LEADING', (0, 0), (1, -1), 7)]))
+
+        elements.append(t)
+        elements.append(Spacer(1, 0.1 * inch))
+
+        # Data Frame
+        outputdf=self.convert_inputdf_to_outputdf(inputdf)
+
+        #  Convert data frame to a list format
+        data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
+
+        t = Table(data_list)
+        if len(data_list) > constants.TOO_MANY_COMPETITORS +1:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
+                                   ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                                   ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('SPAN', (2, 0), (3, 0)),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        else:
+            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 8),
+                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
+                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('SPAN',(2,0),(3,0)),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
+
+        t._argW[0] = 3 *inch
+        t._argW[1] = 1.75 * inch
+        t._argW[2] = 0.625 * inch
+        t._argW[3] = 0.625 * inch
+        t._argW[4] = 1 * inch
+        t._argW[5] = 1 * inch
+#        t._argH[1] = .4375 * inch
+
+
+
+        elements.append(t)
+        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(PageBreak())
+
+        #    # write the document to disk
+        #    doc.build(elements)
+
+        ####tbd - figure out how to add a page break, and also add headers and footers
+        self.docElements.extend(elements)
+        return elements;
+
+    def write_pdfpage(self):
+        self.doc.build(self.docElements, onFirstPage=first_page_layout, onLaterPages=first_page_layout)
 
     ###############################################################################
-    # writeSingleKataScoreSheet
-    #  Spring 2023
+    # writeSingleTechniqueScoreSheet
+    #  Fall 2020
     #  This method writes a single kata score sheet based on parameters provided
     #
     def writeSingleTechniqueScoreSheet(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label: str, minimum_age: int,
@@ -83,9 +241,19 @@ class TechniqueScoreSheet(KataScoreSheet):
             combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         # wmk=newDataFrameFromQuery(combined_query)
-        wmk = clean_df[
-            ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
-             "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        # wmk = clean_df[
+        # ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
+        #  "Weight", "BMI", "Events", "Techniques", "Weapons", "Tickets"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        wmk = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
+
+        ## update the hitcount every time we touch someone
+        for index, row in wmk.iterrows():
+            name = row['First_Name'] + " " + row['Last_Name']
+            id = row['Registrant_ID']
+            hc = clean_df.at[index, 'hitcount']
+            newhc = hc + 1
+            # logging.info(f'{id}:{name} has a row count of {newhc}')
+            clean_df.at[index, 'hitcount'] = newhc
 
         if len(rings) > 1:  # more than 1 ring means we split
             # filter to only keep contestants who's last name fall into the first alphabetic split
@@ -106,4 +274,73 @@ class TechniqueScoreSheet(KataScoreSheet):
         else:
             self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label,
                                                       rank_label)
+
+
+# define layout for first page
+def first_page_layout(canvas, doc):
+    canvas.saveState()
+
+    #####
+    # Logo
+    logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
+
+
+
+    #####
+    # Footer
+    canvas.setFont('Times-Roman', 9)
+    canvas.drawCentredString(TechniqueScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
+                      "Page: %d     Generated: %s     From file: %s" % (
+                                 doc.page, TechniqueScoreSheet.timestamp, TechniqueScoreSheet.sourcefile))
+
+    canvas.restoreState()
+
+# define layout for subsequent pages
+def later_page_layout(canvas, doc):
+    canvas.saveState()
+
+    # Footer
+    canvas.setFont('Times-Roman', 9)
+    canvas.drawCentredString(TechniqueScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
+                             "Page: %d     Generated: %s     From file: %s" % (
+                                 doc.page, TechniqueScoreSheet.timestamp, TechniqueScoreSheet.sourcefile))
+
+    canvas.restoreState()
+
+# define layout for subsequent pages
+def page_layout(canvas, doc):
+    canvas.saveState()
+    logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
+    canvas.setFont('Times-Roman', 9)
+    canvas.drawString(inch * 3, 0.75 * inch,
+                      "Page: %d     Generated: %s     From file: %s" % (
+                          doc.page, TechniqueScoreSheet.timestamp, TechniqueScoreSheet.sourcefile))
+    canvas.restoreState()
+
+
+if __name__ == "__main__":
+  #setup the Kata Score Sheet PDF
+  technique_score_sheet=TechniqueScoreSheet()
+  TechniqueScoreSheet.set_title("Forms")
+  TechniqueScoreSheet.set_sourcefile("testing//no//file//name")
+
+
+  # create a test data frame with what we will get passed
+  columns = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
+             'BMI', 'Events', 'Weapons']
+  data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
+           '2 Events - Forms & Sparring ($75)', 'None'),
+          (194, 'jake', 'coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)')]
+  df = pd.DataFrame(data, columns=columns)
+
+
+  technique_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black")
+
+
+  technique_score_sheet.write_pdfpage()
 

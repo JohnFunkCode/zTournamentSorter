@@ -24,7 +24,7 @@ def pathDelimiter():
 def newDataFrameFromQuery(clean_df:pd.DataFrame, query_string: str):
     #query_string='Rank == "White" and Rank == "Yellow" and Age >= 4 and Age =< 6'
     newdf = clean_df[["Registrant_ID","First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI",
-    "Events", "Weapons"]].query(query_string).sort_values("Age").sort_values("BMI")
+    "Events", "Techniques", "Weapons"]].query(query_string).sort_values("Age").sort_values("BMI")
 
     ## update the hitcount every time we touch someone
     for index, row in newdf.iterrows():

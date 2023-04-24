@@ -35,7 +35,7 @@ class MenuBar:
         self.app_container.splash_screen.hide_view()
 
     def show_app_info(self):
-        messagebox.showinfo("About", "Version beta 1\nLast updated 11/5/2022")
+        messagebox.showinfo("About", "Version 1\nLast updated 11/23/2023")
 
 ### framework for some tests
     def test_one(self):

@@ -24,34 +24,39 @@ class DataValidationView(ttk.Frame):
         self.pandas_table_frame = ttk.Frame(self,borderwidth=2,relief='sunken')
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
                            showtoolbar=False, showstatusbar=False, enable_menus=False, width=1550, height=551)
-        self.pandas_table_frame.grid(row=1,column=0,rowspan=4, columnspan=3,**options)
+        self.pandas_table_frame.grid(row=1,column=0,rowspan=5, columnspan=3,**options)
         self.table.redraw()
 
-        self.previous_button = ttk.Button(self, text='Previous')
+        self.previous_button = ttk.Button(self, text='Previous Error')
         self.previous_button['command'] = self.handle_previous_button
-        self.previous_button.grid(row=1, column=3,sticky=tk.E, **options)
+        self.previous_button.grid(row=1, column=3,sticky=tk.W, **options)
 
-        self.previous_button = ttk.Button(self, text='Next')
+        self.previous_button = ttk.Button(self, text='Next Error')
         self.previous_button['command'] = self.handle_next_button
-        self.previous_button.grid( row=2, column=3, sticky=tk.E, **options)
+        self.previous_button.grid( row=2, column=3, sticky=tk.W, **options)
 
-        self.previous_button = ttk.Button(self, text='Re-Check')
+        self.delete_button = ttk.Button(self, text='Delete Row')
+        self.delete_button['command'] = self.handle_delete_button
+        self.delete_button.grid(row=3, column=3, sticky=tk.W, **options)
+
+        self.previous_button = ttk.Button(self, text='Re-Check Data')
         self.previous_button['command'] = self.handle_recheck_button
-        self.previous_button.grid(row=3, column=3, sticky=tk.E, **options)
-
-
-        # error log label
-        self.error_log_label = ttk.Label(self, text='Data Errors')
-        self.error_log_label.grid(row=5, column=0, sticky=tk.W, **options)
-
-        # error log textbox
-        self.error_log = tk.scrolledtext.ScrolledText(self,width=200,height=19,wrap="none")
-        self.error_log.grid(row=6, column=0, columnspan=3, **options)
+        self.previous_button.grid(row=4, column=3, sticky=tk.W, **options)
 
         # button 1
         self.process_data_button = ttk.Button(self, text='Process Data')
         self.process_data_button['command'] = self.process_data
-        self.process_data_button.grid(row=4, column=3,sticky=tk.E, **options)
+        self.process_data_button.grid(row=5, column=3,sticky=tk.W, **options)
+
+
+        # error log label
+        self.error_log_label = ttk.Label(self, text='Data Errors')
+        self.error_log_label.grid(row=6, column=0, sticky=tk.W, **options)
+
+        # error log textbox
+        self.error_log = tk.scrolledtext.ScrolledText(self,width=200,height=19,wrap="none")
+        self.error_log.grid(row=7, column=0, columnspan=3, **options)
+
 
     def show_view(self):
         self.grid()
@@ -65,7 +70,21 @@ class DataValidationView(ttk.Frame):
     def handle_next_button(self):
         self.controller.next_error()
 
+    def handle_delete_button(self):
+        # self.table.show()
+        # self.table.redraw()
+        # self.table.movetoSelection(0,0)
+        # self.table.redraw()
+
+        r=self.table.getSelectedRow()
+        self.table.deleteRow(ask=True)
+        # self.controller.recheck_data()
+        self.app_container.database = self.app_container.database= self.table.model.df
+        self.controller.recheck_data()
+
+
     def handle_recheck_button(self):
+        self.app_container.database= self.table.model.df
         self.controller.recheck_data()
 
 
@@ -112,9 +131,17 @@ class DataValidationView(ttk.Frame):
 
     def goto_row_column(self,row, column_title):
         column_number = self.app_container.database.columns.get_loc(column_title)
-        self.table.movetoSelection(row=row-1, idx=column_title,offset=7)
+        self.table.show()
+        self.table.redraw()
+        # self.table.setRowColors(rows=range(row-1,row),clr='red',cols=range(column_number-1,column_number))
+        self.table.drawSelectedRect(row=row-1, col=column_number, color='red')
+        self.table.movetoSelection(row=row-1, idx=column_title,offset=1) #was offet=7
         # self.table.currentrow=row
-        self.table.currentcol=column_number
+        # self.table.currentcol=column_number
         self.table.redraw()
         self.table.drawSelectedRect(row=row-1, col=column_number, color='red')
 
+        # self.table.show()
+        # self.redraw()
+        # self.table.movetoSelection()
+        # self.table.redraw()

@@ -118,7 +118,8 @@ class DataValidationController():
         self.input_error_list = input_errors.InputErrors()
         # self.data_validation_view.reset_color()
 
-        df=self.app_container.database
+        # df=self.data_validation_view.table.model
+        df = self.app_container.database
         clean_df,error_count= cleaninput.clean_all_input_errors(df, self.input_error_list)
         self.app_container.database =clean_df
         self.data_validation_view.update_table()
@@ -217,9 +218,12 @@ class DataValidationController():
         self.validate_data()
 
         logging.info('Start')
-        self.data_validation_view.table.redraw()
         self.data_validation_view.table.show()
-        self.data_validation_view.show_view()
+        self.data_validation_view.table.redraw()
+        self.data_validation_view.table.movetoSelection(0,0)
+        self.data_validation_view.table.redraw()
+
+
         logging.info('End')
 
         self.error_cursor=0

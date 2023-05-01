@@ -107,35 +107,34 @@ class SixteenCompetitorTree(SparringTree):
             offset = i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 4
             self._path.moveTo(13.3 * cm, (3.2 + offset) * cm)  # 13.3 centimeters to the right, (3.2 + offset) centimeters up
             self._path.lineTo(18.7 * cm, (3.2 + offset) * cm)
-            self._path.lineTo(20.1 * cm, (5.6 + offset) * cm)
-            self._path.lineTo(18.7 * cm, (8 + offset) * cm)
+            # self._path.lineTo(20.1 * cm, (5.6 + offset) * cm) # last minute change for Spring 2023 tournament
+            # self._path.lineTo(18.7 * cm, (8 + offset) * cm) # last minute change for Spring 2023 tournament
+            self._path.moveTo(18.7 * cm, (8 + offset) * cm)
             self._path.lineTo(13.3 * cm, (8 + offset) * cm)
             self.draw_boxes(14, 3.2 + offset)
             self.draw_boxes(14, 8 + offset)
 
-        # fourth bracket
-        self._path.moveTo(20.1 * cm, 5.6 * cm)  # 20.1 centimeters to the right, 5.6 centimeters up
-        self._path.lineTo(25.5 * cm, 5.6 * cm)
-        self._path.lineTo(27 * cm, 10.4 * cm)
-        self._path.lineTo(25.5 * cm, 15.2 * cm)
-        self._path.lineTo(20.1 * cm, 15.2 * cm)
-        self.draw_boxes(21, 5.6)
-        self.draw_boxes(21, 15.2)
-
-        # winner line
-        self._path.moveTo(20.1 * cm, 10.4 * cm)  # 20.1 centimeters to the right, 10.4 centimeters up
-        self._path.lineTo(27 * cm, 10.4 * cm)
-
-        #logo = ImageReader('../..//Z_LOGO_OneInch.jpg')
-        #self._c.drawImage(logo, 17 * cm, 18 * cm, mask='auto') # 10.16 is centered
-
-        #self._c.drawString(20.25 * cm, 3.6 * cm, "Third:")
-        self._path.moveTo( 21.3 * cm ,3.5 * cm)
-        self._path.lineTo( 26.8 * cm, 3.5 * cm)
-
-        #self._c.drawString(20 * cm, 2.1 * cm, "Fourth:")
-        self._path.moveTo( 21.3 * cm ,2 * cm)
-        self._path.lineTo( 26.8 * cm, 2 * cm)
+        # last minute change for Spring 2023 tournament
+        # # fourth bracket
+        # self._path.moveTo(20.1 * cm, 5.6 * cm)  # 20.1 centimeters to the right, 5.6 centimeters up
+        # self._path.lineTo(25.5 * cm, 5.6 * cm)
+        # self._path.lineTo(27 * cm, 10.4 * cm)
+        # self._path.lineTo(25.5 * cm, 15.2 * cm)
+        # self._path.lineTo(20.1 * cm, 15.2 * cm)
+        # self.draw_boxes(21, 5.6)
+        # self.draw_boxes(21, 15.2)
+        #
+        # # winner line
+        # self._path.moveTo(20.1 * cm, 10.4 * cm)  # 20.1 centimeters to the right, 10.4 centimeters up
+        # self._path.lineTo(27 * cm, 10.4 * cm)
+        #
+        # #self._c.drawString(20.25 * cm, 3.6 * cm, "Third:")
+        # self._path.moveTo( 21.3 * cm ,3.5 * cm)
+        # self._path.lineTo( 26.8 * cm, 3.5 * cm)
+        #
+        # #self._c.drawString(20 * cm, 2.1 * cm, "Fourth:")
+        # self._path.moveTo( 21.3 * cm ,2 * cm)
+        # self._path.lineTo( 26.8 * cm, 2 * cm)
 
         logo = ImageReader('Z_LOGO_HalfInch.jpg')
         self._c.drawImage(logo, 13.3 * cm, 19.5 * cm, mask='auto')

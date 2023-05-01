@@ -93,28 +93,30 @@ class EightCompetitorTree(SparringTree):
             offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 2)
             self._path.moveTo(7.2 * cm, (5 + offset) * cm)  # 7.2 cm to the right, 5 cm up
             self._path.lineTo(12.4 * cm, (5 + offset) * cm)
-            self._path.lineTo(15.2 * cm, (7.5 + offset) * cm)
-            self._path.lineTo(12.4 * cm, (9.8 + offset) * cm)
+            # self._path.lineTo(15.2 * cm, (7.5 + offset) * cm) # last minute change for Spring 2023 tournament
+            # self._path.lineTo(12.4 * cm, (9.8 + offset) * cm) # last minute change for Spring 2023 tournament
+            self._path.moveTo(12.4 * cm, (9.8 + offset) * cm)
             self._path.lineTo(7.2 * cm, (9.8 + offset) * cm)
             self.draw_boxes(7.9, 5 + offset)
             self.draw_boxes(7.9, 9.8 + offset)
 
-        # third bracket
-        self._path.moveTo(15.2 * cm, 7.5 * cm)  # 15.2 cm to the right, 7.5 cm up
-        self._path.lineTo(20.4 * cm, 7.5 * cm)
-        self._path.moveTo(15.2 * cm, 17.1 * cm)
-        self._path.lineTo(20.4 * cm, 17.1 * cm)
+        # last minute change for Spring 2023 tournament
+        # # third bracket
+        # self._path.moveTo(15.2 * cm, 7.5 * cm)  # 15.2 cm to the right, 7.5 cm up
+        # self._path.lineTo(20.4 * cm, 7.5 * cm)
+        # self._path.moveTo(15.2 * cm, 17.1 * cm)
+        # self._path.lineTo(20.4 * cm, 17.1 * cm)
+        #
+        # self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
+        # self.draw_boxes(16.0, 17.1)
 
-        self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
-        self.draw_boxes(16.0, 17.1)
-
-        #self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
-        self._path.moveTo( 15.3 * cm ,4.5 * cm)
-        self._path.lineTo( 21.4 * cm, 4.5 * cm)
-
-        #self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
-        self._path.moveTo( 15.3 * cm ,2.5 * cm)
-        self._path.lineTo( 21.4 * cm, 2.5 * cm)
+        # #self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
+        # self._path.moveTo( 15.3 * cm ,4.5 * cm)
+        # self._path.lineTo( 21.4 * cm, 4.5 * cm)
+        #
+        # #self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
+        # self._path.moveTo( 15.3 * cm ,2.5 * cm)
+        # self._path.lineTo( 21.4 * cm, 2.5 * cm)
 
         logo = ImageReader('Z_LOGO_OneInch.jpg')
         self._c.drawImage(logo, 10.16 * cm, 23.4 * cm, mask='auto')

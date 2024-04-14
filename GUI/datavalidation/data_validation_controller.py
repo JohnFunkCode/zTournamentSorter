@@ -193,7 +193,7 @@ class DataValidationController():
         logging.info(" Reading the data from:" + self.app_container.input_data_filename + "....")
 
 
-        self.app_container.database = pd.read_csv(working_file_name)
+        self.app_container.database = pd.read_csv(working_file_name, keep_default_na=False)
         self.data_validation_view.update_table()
         self.data_validation_view.table.show()
         self.data_validation_view.show_view()

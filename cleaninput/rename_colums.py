@@ -22,7 +22,7 @@ class RenameColumns:
 
     def __init__(self, filename):
         #super(RenameColumns, self).__init__()
-        self.raw_df = pd.read_csv(filename)
+        self.raw_df = pd.read_csv(filename,keep_default_na=False)
 
     def get_dataframe_copy(self):
         return self.raw_df

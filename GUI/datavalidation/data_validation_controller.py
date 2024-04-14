@@ -76,31 +76,35 @@ class DataValidationController():
 
         logging.info(" Reading the data from:" + self.app_container.input_data_filename + "....")
 
-        cleaninput.clean_unicode_from_file(self.app_container.input_data_filename)
+        try:
+            cleaninput.clean_unicode_from_file(self.app_container.input_data_filename)
 
-        # rename all the columns in the dataframe to usable names
-        r = RN.RenameColumns(self.app_container.input_data_filename)
-        r.rename_all_columns()
-        renamed_df = r.get_dataframe_copy()
-        self.app_container.database = renamed_df
+            # rename all the columns in the dataframe to usable names
+            r = RN.RenameColumns(self.app_container.input_data_filename)
+            r.rename_all_columns()
+            renamed_df = r.get_dataframe_copy()
+            self.app_container.database = renamed_df
 
-        self.validate_data()
-        # # self.input_error_list = input_errors.InputErrors()
-        # clean_df,error_count=cleaninput.clean_all_input_errors(renamed_df, self.app_container.errorLogFile, self.input_error_list)
-        # self.app_container.database =clean_df
-        # self.data_validation_view.update_table()
-        #
-        # logging.info(f'Input Errors:{self.input_error_list.error_list}')
-        # for i in range(len(self.input_error_list.error_list)):
-        #     if self.input_error_list.error_list[i][1]=='Age':
-        #         self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
-        #     if self.input_error_list.error_list[i][1]=='Height':
-        #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
-        #     if self.input_error_list.error_list[i][1]=='Weight':
-        #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
-        #     if self.input_error_list.error_list[i][1] == 'Rank':
-        #         self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
-        # self.input_error_list.error_list.sort()
+            self.validate_data()
+            # # self.input_error_list = input_errors.InputErrors()
+            # clean_df,error_count=cleaninput.clean_all_input_errors(renamed_df, self.app_container.errorLogFile, self.input_error_list)
+            # self.app_container.database =clean_df
+            # self.data_validation_view.update_table()
+            #
+            # logging.info(f'Input Errors:{self.input_error_list.error_list}')
+            # for i in range(len(self.input_error_list.error_list)):
+            #     if self.input_error_list.error_list[i][1]=='Age':
+            #         self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
+            #     if self.input_error_list.error_list[i][1]=='Height':
+            #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
+            #     if self.input_error_list.error_list[i][1]=='Weight':
+            #         self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
+            #     if self.input_error_list.error_list[i][1] == 'Rank':
+            #         self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
+            # self.input_error_list.error_list.sort()
+        except Exception as e:
+            logging.error(f'Error loading file:{self.app_container.input_data_filename} \n {e}')
+
 
         # self.app_container.errorLogFile.close()
         self.data_validation_view.table.show()

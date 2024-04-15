@@ -170,7 +170,9 @@ class EightCompetitorTree(SparringTree):
             #self._c.drawString(px + pdfmetrics.stringWidth(name,"Helvetica",12) + 5, py, weight_height)
             if dojo.startswith('CO- '):
                 dojo=dojo[4:]
-            dojo_weight_height = "{} {}\' {}\" {}lbs BMI={}".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'], competitor['BMI'])
+            # dojo_weight_height = "{} {}\' {}\" {}lbs BMI={}".format(dojo,competitor['Feet'], competitor['Inches'], competitor['Weight'], competitor['BMI'])
+            dojo_weight_height = f"{competitor['Feet']}\' {competitor['Inches']}\" {competitor['Weight']}lbs BMI={competitor['BMI']}"
+
             self._c.drawString(px + (0.0 * cm), py + (.45 * cm), dojo_weight_height)
             self._c.setFont("Helvetica", 12)
             #self._c.restoreState()

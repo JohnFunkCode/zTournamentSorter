@@ -75,7 +75,8 @@ class KataScoreSheet(object):
 
         counter=1
         for index, row in inputdf.iterrows():
-            outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            # outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
             outputdf.at[index, 'Form'] = ''
             outputdf.at[index,'Scores'] = ''
             outputdf.at[index,''] = ''

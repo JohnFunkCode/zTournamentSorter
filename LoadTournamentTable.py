@@ -555,9 +555,13 @@ class LoadTournamentTable:
                                                                     clean_df=clean_df)
     
         logging.info("Saving PDFs to disk")
+        logging.info("..Saving Division Report")
         self.divison_detail_report_pdf.write_pdfpage()
+        logging.info("..Kata Score Sheets")
         self.kata_score_sheet_pdf.write_pdfpage()
+        logging.info("..Saving Technique Score Sheets")
         self.technique_score_sheet_pdf.write_pdfpage()
+        logging.info("..Saving Sparring Trees")
         self.sparing_tree_pdf.close()
     
         #print hitcount warnings

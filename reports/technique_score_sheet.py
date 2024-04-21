@@ -24,14 +24,16 @@ from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
 import reports
+# import FileHandlingUtilities  #<--un-comment for stand alone testing
 
 
 class TechniqueScoreSheet(object):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
-        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))
+        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf')) #<--comment out for stand alone testing
+        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))   #<--un-comment for stand alone testing
 
         # self.doc = SimpleDocTemplate("TechniqueScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
-        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
@@ -49,6 +51,7 @@ class TechniqueScoreSheet(object):
         TechniqueScoreSheet.division_name= "not initialized"
         TechniqueScoreSheet.age= "not initialized"
         TechniqueScoreSheet.belts= "not initialized"
+        TechniqueScoreSheet.spitwarning="not initialized"
 
     @staticmethod
     def set_title(title):
@@ -63,19 +66,33 @@ class TechniqueScoreSheet(object):
         TechniqueScoreSheet.sourcefile = sourcefile
 
     def convert_inputdf_to_outputdf(self,inputdf):
-        columns = ['Compettitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
+        # columns = ['Compettitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
+        # columns = ['Compettitors Name', 'Presentation', 'Classical', 'Practical','Perform','Classical1','Practical1','Perform1', 'Total', 'Place']
+        columns = ['Compettitors Name']
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
         counter=1
         for index, row in inputdf.iterrows():
             # outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            # outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
+            # outputdf.at[index, 'Technique'] = ''
+            # outputdf.at[index,'Scores'] = ''
+            # outputdf.at[index,''] = ''
+            # outputdf.at[index,'Total'] = ''
+            # outputdf.at[index, 'Place'] = ''
+
             outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
-            outputdf.at[index, 'Technique'] = ''
-            outputdf.at[index,'Scores'] = ''
-            outputdf.at[index,''] = ''
-            outputdf.at[index,'Total'] = ''
-            outputdf.at[index, 'Place'] = ''
+            # outputdf.at[index, 'Presentation'] = ''
+            # outputdf.at[index, 'Classical'] = ''
+            # outputdf.at[index, 'Practical'] = ''
+            # outputdf.at[index, 'Perform'] = ''
+            # outputdf.at[index, 'Classical1'] = ''
+            # outputdf.at[index, 'Practical1'] = ''
+            # outputdf.at[index, 'Perform1'] = ''
+            # outputdf.at[index,'Total'] = ''
+            # outputdf.at[index, 'Place'] = ''
+
             counter = counter+1
 
         return outputdf
@@ -87,6 +104,10 @@ class TechniqueScoreSheet(object):
         TechniqueScoreSheet.division_name = division_name
         TechniqueScoreSheet.age = age
         TechniqueScoreSheet.belts = belts
+        if(split_warning_text is None):
+            TechniqueScoreSheet.split_warning_text = ""
+        else:
+            TechniqueScoreSheet.split_warning_text = split_warning_text
 
         elements = []
 
@@ -103,44 +124,44 @@ class TechniqueScoreSheet(object):
                                ('LEADING', (0, 0), (1, -1), 9)]))
 
         elements.append(t)
-        elements.append(Spacer(1, 0.1 * inch))
+        # elements.append(Spacer(1, 0.1 * inch))
 
         if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
             logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
 
-        if split_warning_text is None:
-            headerdata2 = [['RING', ring_number + '   ' + event_time],
-                           ['DIVISION', division_name],
-                           ['AGE', age],
-                           ['RANKS', belts],
-                           ['COMPETITORS',inputdf.shape[0]]]
-            t = Table(headerdata2)
+        # if split_warning_text is None:
+        headerdata2 = [['RING', ring_number + '   ' + event_time],
+                       ['DIVISION', division_name],
+                       ['AGE', age],
+                       ['RANKS', belts],
+                       ['COMPETITORS',inputdf.shape[0]]]
+        t = Table(headerdata2)
 
-            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
-            # - see reportlab users guide chapter 7, page 78 for details
-            t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
-                                   ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
-                                   ('FONTSIZE', (0, 0), (1, -1), 10),
-                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                                   ('LEADING', (0, 0), (1, -1), 7)]))
-        else:
-            headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
-                           ['DIVISION', division_name, '' ],
-                           ['AGE', age,''],
-                           ['RANKS', belts,split_warning_text],
-                           ['COMPETITORS',inputdf.shape[0]]]
-            t = Table(headerdata2)
-
-            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
-            # - see reportlab users guide chapter 7, page 78 for details
-            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
-                                   ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
-                                   ('FONTSIZE', (0, 0), (2, -1), 10),
-                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                                   ('ALIGN', (2, 0), (2, -1), 'LEFT'),
-                                   ('LEADING', (0, 0), (-1, -1), 7)]))
+        # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+        # - see reportlab users guide chapter 7, page 78 for details
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                               ('LEADING', (0, 0), (1, -1), 7)]))
+        # else:
+        #     headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
+        #                    ['DIVISION', division_name, '' ],
+        #                    ['AGE', age,''],
+        #                    ['RANKS', belts, split_warning_text],
+        #                    ['COMPETITORS',inputdf.shape[0]]]
+        #     t = Table(headerdata2)
+        #
+        #     # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+        #     # - see reportlab users guide chapter 7, page 78 for details
+        #     t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
+        #                            ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
+        #                            ('FONTSIZE', (0, 0), (2, -1), 10),
+        #                            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+        #                            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+        #                            ('ALIGN', (2, 0), (2, -1), 'LEFT'),
+        #                            ('LEADING', (0, 0), (-1, -1), 7)]))
 
 
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
@@ -150,8 +171,9 @@ class TechniqueScoreSheet(object):
                                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                                ('LEADING', (0, 0), (1, -1), 7)]))
 
+        t.hAlign = 'RIGHT'
         elements.append(t)
-        elements.append(Spacer(1, 0.1 * inch))
+        elements.append(Spacer(width=1, height=0.2 * inch))
 
         # Data Frame
         outputdf=self.convert_inputdf_to_outputdf(inputdf)
@@ -160,32 +182,36 @@ class TechniqueScoreSheet(object):
         data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)
+        t.hAlign = 'LEFT'
+
         if len(data_list) > constants.TOO_MANY_COMPETITORS +1:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
-                                   ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                                   ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                                   # ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
                                    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('SPAN', (2, 0), (3, 0)),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+                                   ('ALIGN', (0, 0), (-1, 0), 'LEFT')]))
+                                   # ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   # ('SPAN', (2, 0), (3, 0)),
+                                   # ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
         else:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
-                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
+                                   # ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
                                    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('SPAN',(2,0),(3,0)),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+                                   ('ALIGN',(0,0),(-1,0),'LEFT')]))
+                                   # ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   # ('SPAN',(2,0),(3,0)),
+                                   # ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
 
-
-        t._argW[0] = 3 *inch
-        t._argW[1] = 1.75 * inch
-        t._argW[2] = 0.625 * inch
-        t._argW[3] = 0.625 * inch
-        t._argW[4] = 1 * inch
-        t._argW[5] = 1 * inch
+        # set the width of the columns
+        t._argW[0] = 2.5 *inch
+        # t._argW[1] = 1.75 * inch
+        # t._argW[2] = 0.625 * inch
+        # t._argW[3] = 0.625 * inch
+        # t._argW[4] = 1 * inch
+        # t._argW[5] = 1 * inch
 #        t._argH[1] = .4375 * inch
 
 
@@ -281,16 +307,26 @@ class TechniqueScoreSheet(object):
 def first_page_layout(canvas, doc):
     canvas.saveState()
 
-    #####
-    # Logo
-    logo = ImageReader('Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
+    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'technique_score_sheet_template-600dpi.png'
+    background = ImageReader(backgroundImageFilename)
+    canvas.drawImage(background, 0 * inch, 0 * inch, mask='auto', width=TechniqueScoreSheet.PAGE_WIDTH, height=TechniqueScoreSheet.PAGE_HEIGHT)
+
+    # #####
+    # # Split Warning
+    canvas.setFont('Times-Bold', 10)
+    canvas.setFillColor(colors.red)
+    canvas.drawCentredString(TechniqueScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, TechniqueScoreSheet.split_warning_text)
 
 
+    # #####
+    # # Logo
+    # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    # canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
 
     #####
     # Footer
     canvas.setFont('Times-Roman', 9)
+    canvas.setFillColor(colors.black)
     canvas.drawCentredString(TechniqueScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
                                  doc.page, TechniqueScoreSheet.timestamp, TechniqueScoreSheet.sourcefile))
@@ -312,8 +348,8 @@ def later_page_layout(canvas, doc):
 # define layout for subsequent pages
 def page_layout(canvas, doc):
     canvas.saveState()
-    logo = ImageReader('Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
+    # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    # canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
     canvas.drawString(inch * 3, 0.75 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
@@ -323,24 +359,60 @@ def page_layout(canvas, doc):
 
 if __name__ == "__main__":
   #setup the Kata Score Sheet PDF
-  technique_score_sheet=TechniqueScoreSheet()
-  TechniqueScoreSheet.set_title("Forms")
-  TechniqueScoreSheet.set_sourcefile("testing//no//file//name")
+  technique_score_sheet=TechniqueScoreSheet("Techniques", "test", "testing")
+  # TechniqueScoreSheet.set_title("Techniques")
+  # TechniqueScoreSheet.set_sourcefile("testing//no//file//name")
 
 
   # create a test data frame with what we will get passed
-  columns = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
+  columns = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
              'BMI', 'Events', 'Weapons']
   data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
            '2 Events - Forms & Sparring ($75)', 'None'),
-          (194, 'jake', 'coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
+          # (195, 'Katie', 'Coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+          #  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Angela', 'Payne', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
            '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
-          (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+          (195, 'Emily', 'Nielsen', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+          '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Alec', 'Harbaugh', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'MJ', 'Ortiz', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Arav', 'Lukhey', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Jacob', 'Gibberson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Angelique', 'Hutchins', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Malakai', 'Ruybal', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Visha', 'Hari', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Margaret', 'Buttery', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Constanta', 'Diaz Martinez', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Akshith', 'Naveenkumar', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Kalpak', 'Shankaregowda', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Emerson', 'Colwell', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Jeffery Jr', 'Merriman', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Farah', 'Mohamed-Sadik', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Joshua', 'Betournay', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Anirudh', 'Maheshkumar', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+                  (195, 'Maria Jose', 'Acevedo Peck', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
            '2 Events - Forms & Sparring ($75)', 'Weapons ($35)')]
   df = pd.DataFrame(data, columns=columns)
 
 
-  technique_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black")
+  technique_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black","*** PLEASE NOTE - These are contestants A-M")
 
 
   technique_score_sheet.write_pdfpage()

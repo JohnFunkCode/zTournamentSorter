@@ -24,6 +24,7 @@ from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
 import reports
+# import FileHandlingUtilities  #<--un-comment for stand alone testing
 
 
 class KataScoreSheet(object):
@@ -34,10 +35,11 @@ class KataScoreSheet(object):
             output_folder_path_no_extension = name_only[0:len(name_only)-4]
             self.filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + 'KataScoreSheet.pdf'))
         else:
-            self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf'))
+            self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf')) #<--comment out for stand alone test files
+            # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf')) #<--un-comment for stand alone test files
 
         # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
-        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
@@ -55,6 +57,8 @@ class KataScoreSheet(object):
         KataScoreSheet.division_name= "not initialized"
         KataScoreSheet.age= "not initialized"
         KataScoreSheet.belts= "not initialized"
+        # KataScoreSheet.split_warning_text="not initialized"
+
 
     @staticmethod
     def set_title(title):
@@ -69,7 +73,9 @@ class KataScoreSheet(object):
         KataScoreSheet.sourcefile = sourcefile
 
     def convert_inputdf_to_outputdf(self,inputdf):
-        columns = ['Compettitors Name', 'Form', 'Scores', '', 'Total', 'Place']
+        # columns = ['Compettitors Name', 'Form', 'Scores', '', 'Total', 'Place']
+        columns = ['Compettitors Name']
+
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
@@ -77,11 +83,6 @@ class KataScoreSheet(object):
         for index, row in inputdf.iterrows():
             # outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
             outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
-            outputdf.at[index, 'Form'] = ''
-            outputdf.at[index,'Scores'] = ''
-            outputdf.at[index,''] = ''
-            outputdf.at[index,'Total'] = ''
-            outputdf.at[index, 'Place'] = ''
             counter = counter+1
 
         return outputdf
@@ -93,10 +94,15 @@ class KataScoreSheet(object):
         KataScoreSheet.division_name = division_name
         KataScoreSheet.age = age
         KataScoreSheet.belts = belts
+        if(split_warning_text is None):
+            KataScoreSheet.split_warning_text = ""
+        else:
+            KataScoreSheet.split_warning_text = split_warning_text
+
 
         elements = []
 
-        headerdata1 = [[KataScoreSheet.Title, 'Score Sheet']]
+        headerdata1 = [[KataScoreSheet.Title + ' Score Sheet']]
 
         t = Table(headerdata1)
 
@@ -109,46 +115,32 @@ class KataScoreSheet(object):
                                ('LEADING', (0, 0), (1, -1), 9)]))
 
         elements.append(t)
-        elements.append(Spacer(1, 0.1 * inch))
+        elements.append(Spacer(1, 0.2 * inch))
+
+
+        headerdata3 = [[split_warning_text]]
+        t = Table(headerdata3)
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.red),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (1, 0), 'CENTER'),
+                               ('LEADING', (0, 0), (1, -1), 9)]))
+        elements.append(t)
+        elements.append(Spacer(width=1, height= -0.5 * inch))
+
 
         if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
             logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
 
-        if split_warning_text is None:
-            headerdata2 = [['RING', ring_number + '   ' + event_time],
-                           ['DIVISION', division_name],
-                           ['AGE', age],
-                           ['RANKS', belts],
-                           ['COMPETITORS',inputdf.shape[0]]]
-            t = Table(headerdata2)
+        headerdata2 = [['RING', ring_number + '   ' + event_time],
+                       ['DIVISION', division_name],
+                       ['AGE', age],
+                       ['RANKS', belts],
+                       ['COMPETITORS',inputdf.shape[0]]]
+        t = Table(headerdata2)
 
-            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
-            # - see reportlab users guide chapter 7, page 78 for details
-            t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
-                                   ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
-                                   ('FONTSIZE', (0, 0), (1, -1), 10),
-                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                                   ('LEADING', (0, 0), (1, -1), 7)]))
-        else:
-            headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
-                           ['DIVISION', division_name, '' ],
-                           ['AGE', age,''],
-                           ['RANKS', belts,split_warning_text],
-                           ['COMPETITORS',inputdf.shape[0]]]
-            t = Table(headerdata2)
-
-            # remember table styles attributes specified as From (Column,Row), To (Column,Row)
-            # - see reportlab users guide chapter 7, page 78 for details
-            t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
-                                   ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
-                                   ('FONTSIZE', (0, 0), (2, -1), 10),
-                                   ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-                                   ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                                   ('ALIGN', (2, 0), (2, -1), 'LEFT'),
-                                   ('LEADING', (0, 0), (-1, -1), 7)]))
-
-
+        # remember table styles attributes specified as From (Column,Row), To (Column,Row)
+        # - see reportlab users guide chapter 7, page 78 for details
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
                                ('FONTSIZE', (0, 0), (1, -1), 10),
@@ -156,8 +148,15 @@ class KataScoreSheet(object):
                                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                                ('LEADING', (0, 0), (1, -1), 7)]))
 
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                               ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                               ('LEADING', (0, 0), (1, -1), 7)]))
+        t.hAlign = 'RIGHT'
         elements.append(t)
-        elements.append(Spacer(1, 0.1 * inch))
+        elements.append(Spacer(1, 0.3 * inch))
 
         # Data Frame
         outputdf=self.convert_inputdf_to_outputdf(inputdf)
@@ -166,35 +165,29 @@ class KataScoreSheet(object):
         data_list = [outputdf.columns[:, ].values.astype(str).tolist()] + outputdf.values.tolist()
 
         t = Table(data_list)
+        t.hAlign = 'LEFT'
+
         if len(data_list) > constants.TOO_MANY_COMPETITORS +1:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
-                                   ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                                   ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('SPAN', (2, 0), (3, 0)),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+                                   # ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                                   ('ALIGN', (0, 0), (-1, 0), 'LEFT')]))
+                                   # ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.red)]))
+                                   # ('SPAN', (2, 0), (3, 0)),
+                                   # ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
         else:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
-                                   ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                                   ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
-                                   ('ALIGN',(0,0),(-1,0),'CENTER'),
-                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('SPAN',(2,0),(3,0)),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+                                   # ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
+                                   # ('BACKGROUND',(0,0),(-1,0),colors.lightgrey),
+                                   ('ALIGN',(0,0),(-1,0),'LEFT')]))
+                                   # ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)]))
+                                   # ('SPAN',(2,0),(3,0)),
+                                   # ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
 
 
-        t._argW[0] = 3 *inch
-        t._argW[1] = 1.75 * inch
-        t._argW[2] = 0.625 * inch
-        t._argW[3] = 0.625 * inch
-        t._argW[4] = 1 * inch
-        t._argW[5] = 1 * inch
-#        t._argH[1] = .4375 * inch
-
-
+        t._argW[0] = 2.5 *inch
 
         elements.append(t)
         elements.append(Spacer(1, 0.2 * inch))
@@ -293,48 +286,20 @@ def first_page_layout(canvas, doc):
 
     #####
     # Logo
-    logo = ImageReader('Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
+    # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    # canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
 
-    # #####
-    # # Report Header
-    # canvas.setFont('Times-Bold',28)
-    # #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheet.Title)
-    # canvas.setFont('Times-Bold', 12)
-    # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
-    #
-    # #####
-    # # Ring and Divisional Details
-    # y=10.75
-    # canvas.setFont('Times-Bold', 12)
-    # canvas.drawString(5.95 *inch, y * inch, "RING")
-    # canvas.drawString(6.5 *inch, y * inch, KataScoreSheet.ring_number)
-    # canvas.drawString(7*inch, y * inch, KataScoreSheet.event_time)
-    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.55
-    # canvas.setFont('Times-Bold', 12)
-    # canvas.drawString(5.6 * inch, y * inch, "DIVISION")
-    # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.division_name)
-    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.35
-    # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.age)
-    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.15
-    # canvas.setFont('Times-Bold', 12)
-    # canvas.drawString(5.8 * inch, y * inch, "RANKS")
-    # canvas.setFont('Times-Bold', 10)
-    # canvas.drawString(6.5 * inch, y * inch, KataScoreSheet.belts)
-    # canvas.line(6.5 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-
+    #####
+    # Background Template Image
+    # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, KataScoreSheet.split_warning_text)
+    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'kata_score_sheet_template-600dpi.png'  #<--comment out for stand alone testing
+    # backgroundImageFilename='kata_score_sheet_template-600dpi.png'  #<--un-comment for stand alone testing
+    background = ImageReader(backgroundImageFilename)
+    canvas.drawImage(background, 0 * inch, 0 * inch, mask='auto', width=KataScoreSheet.PAGE_WIDTH, height=KataScoreSheet.PAGE_HEIGHT)
 
     #####
     # Footer
+    canvas.setFillColor(colors.black)
     canvas.setFont('Times-Roman', 9)
     canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
@@ -350,38 +315,6 @@ def later_page_layout(canvas, doc):
     #logo = ImageReader('Z_LOGO_HalfInch.jpg')
     #canvas.drawImage(logo, .25 * inch, 10.25 * inch, mask='auto')
 
-    #####
-    ## Report Header
-    #canvas.setFont('Times-Bold',28)
-    ##    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-    #canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.5 * inch, KataScoreSheet.Title)
-    #canvas.setFont('Times-Bold', 12)
-    #canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, "Score Sheet")
-
-    # #####
-    # # Ring and Divisional Details
-    # y=10.75
-    # canvas.setFont('Times-Bold', 12)
-    # canvas.drawString(6.45 *inch, y * inch, "RING")
-    # canvas.drawString(7 *inch, y * inch, KataScoreSheet.ring_number)
-    # canvas.drawString(7.5*inch, y * inch, KataScoreSheet.event_time)
-    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.55
-    # canvas.drawString(6.1 * inch, y * inch, "DIVISION")
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.division_name)
-    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.35
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.age)
-    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-    #
-    # y=10.15
-    # canvas.drawString(6.3 * inch, y * inch, "RANKS")
-    # canvas.drawString(7 * inch, y * inch, KataScoreSheet.belts)
-    # canvas.line(7 * inch, (y-0.02) * inch, 8.25 * inch, (y-0.02) * inch)
-
-
     # Footer
     canvas.setFont('Times-Roman', 9)
     canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 0.25 * inch,
@@ -393,8 +326,9 @@ def later_page_layout(canvas, doc):
 # define layout for subsequent pages
 def page_layout(canvas, doc):
     canvas.saveState()
-    logo = ImageReader('Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
+    # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    # canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
+
     canvas.setFont('Times-Roman', 9)
     canvas.drawString(inch * 3, 0.75 * inch,
                       "Page: %d     Generated: %s     From file: %s" % (
@@ -404,56 +338,58 @@ def page_layout(canvas, doc):
 
 if __name__ == "__main__":
   #setup the Kata Score Sheet PDF
-  kata_score_sheet=KataScoreSheet()
-  KataScoreSheet.set_title("Forms")
-  KataScoreSheet.set_sourcefile("testing//no//file//name")
-
-  # # create a test data frame
-  # index = ['a', 'b', 'c', 'd']
-  # columns = ['one', 'two', 'three', 'four']
-  # df = pd.DataFrame(np.random.randn(4, 4), index=index, columns=columns)
-  # data = [df.columns[:, ].values.astype(str).tolist()] + df.values.tolist()
+  kata_score_sheet=KataScoreSheet( title="Forms", sourcefile="test", output_folder_path="test files", isCustomDivision=False)
 
   # create a test data frame with what we will get passed
-  columns = ['index', 'First Name', 'Last Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
+  columns = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height', 'Weight',
              'BMI', 'Events', 'Weapons']
   data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
            '2 Events - Forms & Sparring ($75)', 'None'),
-          (194, 'jake', 'coleson', 'Male', 'CO- Cheyenne Mountain', 10, 'Yellow', 4, 0, '4', 60, 156,
+          # (195, 'Katie', 'Coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+          #  '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Angela', 'Payne', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
            '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
-          (195, 'katie', 'coleson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+          (195, 'Emily', 'Nielsen', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Alec', 'Harbaugh', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'MJ', 'Ortiz', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Arav', 'Lukhey', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Jacob', 'Gibberson', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Angelique', 'Hutchins', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Malakai', 'Ruybal', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Visha', 'Hari', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Margaret', 'Buttery', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Constanta', 'Diaz Martinez', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Akshith', 'Naveenkumar', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Kalpak', 'Shankaregowda', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Emerson', 'Colwell', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Jeffery Jr', 'Merriman', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Farah', 'Mohamed-Sadik', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Joshua', 'Betournay', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Anirudh', 'Maheshkumar', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
+           '2 Events - Forms & Sparring ($75)', 'Weapons ($35)'),
+          (195, 'Maria Jose', 'Acevedo Peck', 'Female', 'CO- Cheyenne Mountain', 12, 'Yellow', 4, 0, '4', 65.161,
            '2 Events - Forms & Sparring ($75)', 'Weapons ($35)')]
   df = pd.DataFrame(data, columns=columns)
 
-  # # create a test data frame with what we want to present
-  # columns=['Compettitors Name','Form','Scores','','Total','Place']
-  # data=[('1) Lucas May, CO-Parker\n','','','','',''),
-  #       ('2) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('3) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('4) Lucas May, CO-Parker\n', '', '', '', '', ''),
-  #       ('5) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('6) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('7) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('8) Lucas May, CO-Parker\n', '', '', '', '', ''),
-  #       ('9) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('11) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('12) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('13) Lucas May, CO-Parker\n', '', '', '', '', ''),
-  #       ('14) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('15) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('16) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('17) Lucas May, CO-Parker\n', '', '', '', '', ''),
-  #       ('18) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('19) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('20) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('21) Lucas May, CO-Parker\n', '', '', '', '', ''),
-  #       ('22) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('23) Jake Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('24) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', ''),
-  #       ('25) Kaitie Coleson, CO-Cheyenne Mountain\n', '', '', '', '', '')]
-  # df = pd.DataFrame(data, columns=columns)
 
-  kata_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black")
+  # kata_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black")
+  kata_score_sheet.put_dataframe_on_pdfpage(df,"1","22:22","Senior Mens Kata","35-Older","Black", "*** PLEASE NOTE - These are contestants A-M")
 
 
   kata_score_sheet.write_pdfpage()

@@ -557,7 +557,7 @@ class LoadTournamentTable:
         logging.info("Saving PDFs to disk")
         logging.info("..Saving Division Report")
         self.divison_detail_report_pdf.write_pdfpage()
-        logging.info("..Kata Score Sheets")
+        logging.info("..Saving Kata Score Sheets")
         self.kata_score_sheet_pdf.write_pdfpage()
         logging.info("..Saving Technique Score Sheets")
         self.technique_score_sheet_pdf.write_pdfpage()

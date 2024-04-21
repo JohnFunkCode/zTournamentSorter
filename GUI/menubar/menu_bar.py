@@ -17,7 +17,7 @@ class MenuBar:
         helpmenu.add_command(label="About...", command=self.show_app_info)
         menubar.add_cascade(label="Help", menu=helpmenu)
 
-        # placeholder for testing
+        # placeholder for test files
         helpmenu = tk.Menu(menubar, tearoff=0)
         helpmenu.add_command(label="Test One", command=self.test_one)
         helpmenu.add_command(label="Test Two", command=self.test_two)

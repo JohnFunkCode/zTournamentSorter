@@ -51,7 +51,6 @@ class TechniqueScoreSheet(object):
         TechniqueScoreSheet.division_name= "not initialized"
         TechniqueScoreSheet.age= "not initialized"
         TechniqueScoreSheet.belts= "not initialized"
-        TechniqueScoreSheet.spitwarning="not initialized"
 
     @staticmethod
     def set_title(title):
@@ -67,32 +66,13 @@ class TechniqueScoreSheet(object):
 
     def convert_inputdf_to_outputdf(self,inputdf):
         # columns = ['Compettitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
-        # columns = ['Compettitors Name', 'Presentation', 'Classical', 'Practical','Perform','Classical1','Practical1','Perform1', 'Total', 'Place']
         columns = ['Compettitors Name']
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
         counter=1
         for index, row in inputdf.iterrows():
-            # outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
-            # outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
-            # outputdf.at[index, 'Technique'] = ''
-            # outputdf.at[index,'Scores'] = ''
-            # outputdf.at[index,''] = ''
-            # outputdf.at[index,'Total'] = ''
-            # outputdf.at[index, 'Place'] = ''
-
             outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
-            # outputdf.at[index, 'Presentation'] = ''
-            # outputdf.at[index, 'Classical'] = ''
-            # outputdf.at[index, 'Practical'] = ''
-            # outputdf.at[index, 'Perform'] = ''
-            # outputdf.at[index, 'Classical1'] = ''
-            # outputdf.at[index, 'Practical1'] = ''
-            # outputdf.at[index, 'Perform1'] = ''
-            # outputdf.at[index,'Total'] = ''
-            # outputdf.at[index, 'Place'] = ''
-
             counter = counter+1
 
         return outputdf
@@ -112,9 +92,7 @@ class TechniqueScoreSheet(object):
         elements = []
 
         headerdata1 = [[TechniqueScoreSheet.Title, 'Score Sheet']]
-
         t = Table(headerdata1)
-
         # remember table styles attributes specified as From (Column,Row), To (Column,Row)
         # - see reportlab users guide chapter 7, page 78 for details
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
@@ -124,7 +102,18 @@ class TechniqueScoreSheet(object):
                                ('LEADING', (0, 0), (1, -1), 9)]))
 
         elements.append(t)
-        # elements.append(Spacer(1, 0.1 * inch))
+        elements.append(Spacer(1, 0.2 * inch))
+
+        headerdata3 = [[split_warning_text]]
+        t = Table(headerdata3)
+        t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
+                               ('TEXTCOLOR', (0, 0), (1, -1), colors.red),
+                               ('FONTSIZE', (0, 0), (1, -1), 10),
+                               ('ALIGN', (0, 0), (1, 0), 'CENTER'),
+                               ('LEADING', (0, 0), (1, -1), 9)]))
+        elements.append(t)
+        elements.append(Spacer(width=1, height= -0.5 * inch))
+
 
         if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
             logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
@@ -145,24 +134,6 @@ class TechniqueScoreSheet(object):
                                ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
                                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                                ('LEADING', (0, 0), (1, -1), 7)]))
-        # else:
-        #     headerdata2 = [['RING', ring_number + '   ' + event_time, ''],
-        #                    ['DIVISION', division_name, '' ],
-        #                    ['AGE', age,''],
-        #                    ['RANKS', belts, split_warning_text],
-        #                    ['COMPETITORS',inputdf.shape[0]]]
-        #     t = Table(headerdata2)
-        #
-        #     # remember table styles attributes specified as From (Column,Row), To (Column,Row)
-        #     # - see reportlab users guide chapter 7, page 78 for details
-        #     t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Times-Bold"),
-        #                            ('TEXTCOLOR', (2, 0), (-1, -1), colors.red),
-        #                            ('FONTSIZE', (0, 0), (2, -1), 10),
-        #                            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-        #                            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-        #                            ('ALIGN', (2, 0), (2, -1), 'LEFT'),
-        #                            ('LEADING', (0, 0), (-1, -1), 7)]))
-
 
         t.setStyle(TableStyle([('FONTNAME', (0, 0), (1, -1), "Times-Bold"),
                                ('TEXTCOLOR', (0, 0), (1, -1), colors.black),
@@ -173,7 +144,7 @@ class TechniqueScoreSheet(object):
 
         t.hAlign = 'RIGHT'
         elements.append(t)
-        elements.append(Spacer(width=1, height=0.2 * inch))
+        elements.append(Spacer(width=1, height=0.3 * inch))
 
         # Data Frame
         outputdf=self.convert_inputdf_to_outputdf(inputdf)
@@ -207,14 +178,6 @@ class TechniqueScoreSheet(object):
 
         # set the width of the columns
         t._argW[0] = 2.5 *inch
-        # t._argW[1] = 1.75 * inch
-        # t._argW[2] = 0.625 * inch
-        # t._argW[3] = 0.625 * inch
-        # t._argW[4] = 1 * inch
-        # t._argW[5] = 1 * inch
-#        t._argH[1] = .4375 * inch
-
-
 
         elements.append(t)
         elements.append(Spacer(1, 0.2 * inch))
@@ -223,7 +186,6 @@ class TechniqueScoreSheet(object):
         #    # write the document to disk
         #    doc.build(elements)
 
-        ####tbd - figure out how to add a page break, and also add headers and footers
         self.docElements.extend(elements)
         return elements;
 
@@ -307,16 +269,12 @@ class TechniqueScoreSheet(object):
 def first_page_layout(canvas, doc):
     canvas.saveState()
 
-    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'technique_score_sheet_template-600dpi.png'
+    #####
+    # Background Template Image
+    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'technique_score_sheet_template-600dpi.png'  #<--comment out for stand alone testing
+    # backgroundImageFilename='technique_score_sheet_template-600dpi.png'  #<--un-comment for stand alone testing
     background = ImageReader(backgroundImageFilename)
     canvas.drawImage(background, 0 * inch, 0 * inch, mask='auto', width=TechniqueScoreSheet.PAGE_WIDTH, height=TechniqueScoreSheet.PAGE_HEIGHT)
-
-    # #####
-    # # Split Warning
-    canvas.setFont('Times-Bold', 10)
-    canvas.setFillColor(colors.red)
-    canvas.drawCentredString(TechniqueScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, TechniqueScoreSheet.split_warning_text)
-
 
     # #####
     # # Logo
@@ -359,9 +317,7 @@ def page_layout(canvas, doc):
 
 if __name__ == "__main__":
   #setup the Kata Score Sheet PDF
-  technique_score_sheet=TechniqueScoreSheet("Techniques", "test", "testing")
-  # TechniqueScoreSheet.set_title("Techniques")
-  # TechniqueScoreSheet.set_sourcefile("testing//no//file//name")
+  technique_score_sheet=TechniqueScoreSheet("Techniques", "test", "test files")
 
 
   # create a test data frame with what we will get passed

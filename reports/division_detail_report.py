@@ -214,7 +214,7 @@ class DivisionDetailReport(object):
     # writeSingleDivisionDetailReport
     #  This method provides a re-usable method to write output to the Divsion Detail Report PDF
 
-    def writeSingleDivisionDetailReport(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, clean_df: pandas.DataFrame):
+    def writeSingleDivisionDetailReport(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, ring_info: list, ranks:list, clean_df: pandas.DataFrame):
         if(maximum_age==constants.AGELESS):
             age_label= '{0}+'.format(minimum_age)
         else:
@@ -255,25 +255,43 @@ class DivisionDetailReport(object):
         wmk=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
              "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
 
-        if len(rings)>1:
+        for info in ring_info:
+            # ring = info.get('ring')
+            # starting_letter = info.get('startingLetter')
+            # ending_letter = info.get('endingLetter')
+            # Extract the first letter of the 'Last_Name' column
+            ring=info[0]
+            starting_letter=info[1]
+            ending_letter=info[2]
+            wmk['First_Letter'] = wmk['Last_Name'].str[0]
 
-            # filter to only keep contestants who's last name fall into the first alphabetic split
-            first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-
-            # filter to only keep contestants who's last name fall into the second alphabetic split
-            second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-
-            self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time,
-                                                               division_name, age_label,
-                                                               rank_label +"(" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                               "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
-
-            self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
-                                                               division_name, age_label,
-                                                               rank_label +"(" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                               "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        else:
-            self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label, rank_label)
+            # Apply the conditions on the 'First_Letter' column
+            df_filtered = wmk[(wmk['First_Letter'] >= starting_letter) & (wmk['First_Letter'] <= ending_letter) | (wmk['First_Letter'] >= starting_letter.lower()) & (wmk['First_Letter'] <= ending_letter.lower())]
+            if len(ring_info) > 1:  # more than 1 ring means we split
+                self.put_dataframe_on_pdfpage(df_filtered, str(ring), event_time, division_name, age_label,
+                                              f'{rank_label} ({starting_letter}-{ending_letter})',
+                                              f'*** PLEASE NOTE - These are contestants {starting_letter}-{ending_letter}')
+            else:
+                self.put_dataframe_on_pdfpage(df_filtered, str(ring), event_time, division_name, age_label, rank_label)
+        # if len(rings)>1:
+        #
+        #     # filter to only keep contestants who's last name fall into the first alphabetic split
+        #     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+        #
+        #     # filter to only keep contestants who's last name fall into the second alphabetic split
+        #     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+        #
+        #     self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time,
+        #                                                        division_name, age_label,
+        #                                                        rank_label +"(" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+        #                                                        "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+        #
+        #     self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
+        #                                                        division_name, age_label,
+        #                                                        rank_label +"(" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+        #                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+        # else:
+        #     self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label, rank_label)
 
 
 # define layout for first page

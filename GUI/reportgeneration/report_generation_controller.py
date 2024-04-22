@@ -1,5 +1,6 @@
 import logging
 import time
+import traceback
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
@@ -40,23 +41,29 @@ class ReportGenerationController():
 
         import threading
         import LoadTournamentTable
-        ltt = LoadTournamentTable.LoadTournamentTable()
-        worker_thread=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database,self.app_container.tournament_output_folder_path])
+        try:
+            ltt = LoadTournamentTable.LoadTournamentTable()
+            worker_thread=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database,self.app_container.tournament_output_folder_path])
 
-        # x=threading.Thread(target=self.dowork)
-        logging.info("go")
-        worker_thread.start()
-        # self.app_container.after(500,lambda:x.start())
-        #
-        # x.start()
-        # self.dowork()
-        # self.report_generation_view.show_final_reports()
-        # pass
-        # time.sleep(5)
-        show_reports_thread = threading.Thread(target=self.report_generation_view.show_final_reports_when_work_done, args=[worker_thread])
-        show_reports_thread.start()
+            # x=threading.Thread(target=self.dowork)
+            logging.info("go")
+            worker_thread.start()
+            # self.app_container.after(500,lambda:x.start())
+            #
+            # x.start()
+            # self.dowork()
+            # self.report_generation_view.show_final_reports()
+            # pass
+            # time.sleep(5)
+            show_reports_thread = threading.Thread(target=self.report_generation_view.show_final_reports_when_work_done, args=[worker_thread])
+            show_reports_thread.start()
+        except Exception as e:
+            logging.error(f'Fatal error processing the data:\n {e}')
+            exc = sys.exception()
+            logging.error(repr(traceback.format_tb(exc.__traceback__)))
 
-    def dowork(self):
+
+def dowork(self):
         for i in range(0,10):
             self.generate_reportline(i)
             # foo= lambda i:self.generate_reportline(i)
@@ -75,14 +82,14 @@ class ReportGenerationController():
         self.report_generation_view.show_final_reports()
 
 
-    def generate_reportline(self,i):
-        # self.app_container.after(100,lambda:self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r'))
-        # self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r')
-        logging.info(f'processing {i}')
-        # time.sleep(1)
+def generate_reportline(self,i):
+    # self.app_container.after(100,lambda:self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r'))
+    # self.report_generation_view.processing_log_textbox.insert(tk.INSERT, f'processing {i}\n\r')
+    logging.info(f'processing {i}')
+    # time.sleep(1)
 
-    def process_data(self):
-        showinfo(title='Info', message="Start processing data")
+def process_data(self):
+    showinfo(title='Info', message="Start processing data")
 
-    def test_one(self):
-        pass
+def test_one(self):
+    pass

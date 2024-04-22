@@ -209,7 +209,7 @@ class KataScoreSheet(object):
     #  This method writes a single kata score sheet based on parameters provided
     #
     def writeSingleKataScoreSheet(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label: str, minimum_age: int,
-                                  maximum_age: int, rings: list, ranks: list,clean_df: pandas.DataFrame):
+                                  maximum_age: int, ring_info: list, ranks: list,clean_df: pandas.DataFrame):
         if (maximum_age == constants.AGELESS):
             age_label = '{0}+'.format(minimum_age)
         else:
@@ -259,25 +259,43 @@ class KataScoreSheet(object):
             # logging.info(f'{id}:{name} has a row count of {newhc}')
             clean_df.at[index, 'hitcount'] = newhc
 
-        if len(rings) > 1:  # more than 1 ring means we split
-            # filter to only keep contestants who's last name fall into the first alphabetic split
-            first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+        for info in ring_info:
+            # ring = info.get('ring')
+            # starting_letter = info.get('startingLetter')
+            # ending_letter = info.get('endingLetter')
+            ring=info[0]
+            starting_letter=info[1]
+            ending_letter=info[2]
+            # Extract the first letter of the 'Last_Name' column
+            wmk['First_Letter'] = wmk['Last_Name'].str[0]
 
-            # filter to only keep contestants who's last name fall into the second alphabetic split
-            second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+            # Apply the conditions on the 'First_Letter' column
+            df_filtered = wmk[(wmk['First_Letter'] >= starting_letter) & (wmk['First_Letter'] <= ending_letter) | (wmk['First_Letter'] >= starting_letter.lower()) & (wmk['First_Letter'] <= ending_letter.lower())]
+            if len(ring_info) > 1:  # more than 1 ring means we split
+                self.put_dataframe_on_pdfpage(df_filtered, str(ring), event_time, division_name, age_label, f'{rank_label} ({starting_letter}-{ending_letter})', f'*** PLEASE NOTE - These are contestants {starting_letter}-{ending_letter}')
+            else:
+                self.put_dataframe_on_pdfpage(df_filtered, str(ring), event_time, division_name, age_label, rank_label)
 
-            self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time, division_name,
-                                                      age_label,
-                                                      rank_label + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
-                                                      "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
 
-            self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
-                                                      division_name, age_label,
-                                                      rank_label + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
-                                                      "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
-        else:
-            self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label,
-                                                      rank_label)
+        # if len(rings) > 1:  # more than 1 ring means we split
+        #     # filter to only keep contestants who's last name fall into the first alphabetic split
+        #     first_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+        #
+        #     # filter to only keep contestants who's last name fall into the second alphabetic split
+        #     second_alphabetic_split = wmk[wmk['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+        #
+        #     self.put_dataframe_on_pdfpage(first_alphabetic_split, str(rings[0]), event_time, division_name,
+        #                                               age_label,
+        #                                               rank_label + " (" + constants.FIRST_ALPHABETIC_SPLIT_LABEL + ")",
+        #                                               "*** PLEASE NOTE - These are contestants " + constants.FIRST_ALPHABETIC_SPLIT_LABEL)
+        #
+        #     self.put_dataframe_on_pdfpage(second_alphabetic_split, str(rings[1]), event_time,
+        #                                               division_name, age_label,
+        #                                               rank_label + "  (" + constants.SECOND_ALPHABETIC_SPLIT_LABEL + ")",
+        #                                               "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
+        # else:
+        #     self.put_dataframe_on_pdfpage(wmk, str(rings[0]), event_time, division_name, age_label,
+        #                                               rank_label)
 
 
 # define layout for first page

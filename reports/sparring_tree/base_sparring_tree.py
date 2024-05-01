@@ -74,7 +74,7 @@ class SparringTree():
         return x_coordinate, y_coordinate
 
 
-    def add_page_with_competitors_on_tree(self, ring: int, event_time: str, event_title: str, ranks, split_label:str, competitors: Competitors) -> object:
+    def add_page_with_competitors_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks, split_label:str, competitors: Competitors) -> object:
         ''' adds a compleate page with a tree and the competitors '''
 
         if competitors.get_number_of_competitors() > 20:
@@ -84,7 +84,7 @@ class SparringTree():
         self.draw_static_template()
 
         # lay down the header info
-        self.draw_header_info_on_tree(ring, event_time, event_title, ranks, split_label, competitors.get_number_of_competitors())
+        self.draw_header_info_on_tree(ring, event_time, event_title, age, ranks, split_label, competitors.get_number_of_competitors())
 
         # arrange the competitors for sparring
         ordered_competitors=competitors.arrange_competitors_for_sparring()

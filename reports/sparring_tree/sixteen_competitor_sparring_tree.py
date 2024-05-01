@@ -136,24 +136,40 @@ class SixteenCompetitorTree(SparringTree):
         # self._path.moveTo( 21.3 * cm ,2 * cm)
         # self._path.lineTo( 26.8 * cm, 2 * cm)
 
-        logo = ImageReader('Z_LOGO_HalfInch.jpg')
-        self._c.drawImage(logo, 13.3 * cm, 19.5 * cm, mask='auto')
+        # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+        # self._c.drawImage(logo, 13.3 * cm, 19.5 * cm, mask='auto')
+        logo = ImageReader('Z Ultimate Logo Rectangle-686x1000.png')
+        self._c.drawImage(logo, 16.5 * cm, 18 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
-    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, split_label: str, number_of_competitors: int):
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
-        self._c.drawString(20 * cm, 20.5 * cm, "Time:")
-        self._c.drawString(21.5 * cm, 20.5 * cm, event_time)
-        self._c.drawString(20 * cm, 19.75 * cm, "Event:")
+        # self._c.drawString(20 * cm, 20.5 * cm, "Time:")
+        # self._c.drawString(21.5 * cm, 20.5 * cm, event_time)
+        # self._c.drawString(20 * cm, 19.75 * cm, "Event:")
+        # self._c.drawString(21.5 * cm, 19.75 * cm, event_title)
+        # self._c.drawString(20 * cm, 19 * cm, "Rank:")
+        # self._c.drawString(21.5 * cm, 19 * cm, ranks)
+        # self._c.drawString(20 * cm, 18.25 * cm, "Ring#:")
+        # self._c.drawString(21.5 * cm, 18.25 * cm, str(ring))
+        # if split_label != '':
+        #     self._c.setFillColorRGB(255,0,0)
+        #     self._c.drawString(22 * cm, 18.25 * cm, 'Contestants '+ split_label)
+        #     self._c.setFillColorRGB(0, 0, 0)
+        # self._c.drawString(20 * cm, 17.5 *cm, "Competitors:")
+        # self._c.drawString(22.5 *cm, 17.5 *cm, "{}".format(number_of_competitors))
+        self._c.drawString(19.5 * cm, 20.5 * cm, "Ring:")
+        self._c.drawString(21.5 * cm, 20.5 * cm, f'{ring}   {event_time}')
+        self._c.drawString(19.5 * cm, 19.75 * cm, "Division:")
         self._c.drawString(21.5 * cm, 19.75 * cm, event_title)
-        self._c.drawString(20 * cm, 19 * cm, "Rank:")
-        self._c.drawString(21.5 * cm, 19 * cm, ranks)
-        self._c.drawString(20 * cm, 18.25 * cm, "Ring#:")
-        self._c.drawString(21.5 * cm, 18.25 * cm, str(ring))
+        self._c.drawString(19.5 * cm, 19 * cm, "Age:")
+        self._c.drawString(21.5 * cm, 19 * cm, age)
         if split_label != '':
             self._c.setFillColorRGB(255,0,0)
-            self._c.drawString(22 * cm, 18.25 * cm, 'Contestants '+ split_label)
+            self._c.drawString(22.5 * cm, 19 * cm, 'Contestants '+ split_label)
             self._c.setFillColorRGB(0, 0, 0)
-        self._c.drawString(20 * cm, 17.5 *cm, "Competitors:")
+        self._c.drawString(19.5 * cm, 18.25 * cm, "Ranks:")
+        self._c.drawString(21.5 * cm, 18.25 * cm, ranks)
+        self._c.drawString(19.5 * cm, 17.5 *cm, "Competitors:")
         self._c.drawString(22.5 *cm, 17.5 *cm, "{}".format(number_of_competitors))
 
         # write the footer as well

@@ -101,8 +101,8 @@ class LoadTournamentTable:
     
         logging.info("Generating the output results...")
 
-        try:      #<--- un-comment for final distribution
-        # if True:    #<--- un-comment for testing
+        # try:      #<--- un-comment for final distribution
+        if True:    #<--- un-comment for testing
             ### Special Handling for files with less than 30 competitors- Added for Fall 2022 Tournament
             if clean_df.shape[0] < 30:
                 ###############################################################################
@@ -576,10 +576,10 @@ class LoadTournamentTable:
                     if hc < 1 :
                         # logging.info("  " + name + ": " + str(hc))
                         logging.warning(f'\u001b[31m   Name:{name} Events:{events} <---was put in {hc} events\u001b[0m')
-        except Exception as e:            #<--- un-comment for final distribution
-            logging.error(f'Fatal error processing the data:\n {e}')
-            exc = sys.exception()
-            logging.error(repr(traceback.format_tb(exc.__traceback__)))
+        # except Exception as e:            #<--- un-comment for final distribution
+        #     logging.error(f'Fatal error processing the data:\n {e}')
+        #     exc = sys.exception()
+        #     logging.error(repr(traceback.format_tb(exc.__traceback__)))
 
         logging.info("Done!")
 

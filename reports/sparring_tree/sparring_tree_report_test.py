@@ -44,7 +44,8 @@ class TestSparringTreeReport(unittest.TestCase):
 
         sparring_tree_report = SparringTreeReportPDF()
 
-        sparring_tree_report.write_event_to_sparring_report_using_pattern_1([1, 2, 3, 4, 5], "9:00am", "Kids Kata", the_competitors)
+        # sparring_tree_report.write_event_to_sparring_report_using_pattern_1([1, 2, 3, 4, 5], "9:00am", "Kids Kata", the_competitors)
+        sparring_tree_report.add_page_with_competitors_on_tree([1, 2, 3, 4, 5], "9:00am", "Kids Kata", "10-12", ['White','Yellow','Orange','Purple'], the_competitors)
         sparring_tree_report.close()
 
 

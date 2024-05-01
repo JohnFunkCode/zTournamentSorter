@@ -137,6 +137,7 @@ class KataScoreSheet(object):
                        ['AGE', age],
                        ['RANKS', belts],
                        ['COMPETITORS',inputdf.shape[0]]]
+        # print(headerdata1,headerdata2) #tbd - this is where to insert code to for a summary report.
         t = Table(headerdata2)
 
         # remember table styles attributes specified as From (Column,Row), To (Column,Row)

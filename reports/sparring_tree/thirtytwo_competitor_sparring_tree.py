@@ -144,31 +144,53 @@ class ThirtyTwoCompetitorTree(SparringTree):
         # self._path.moveTo( 15.3 * cm ,1.2 * cm)
         # self._path.lineTo( 21.4 * cm, 1.2 * cm)
 
-        logo = ImageReader('Z_LOGO_OneInch.jpg')
-        self._c.drawImage(logo, 12 * cm, 31.7 * cm, mask='auto') # 10.16 is centered
+        # logo = ImageReader('Z_LOGO_OneInch.jpg')
+        # self._c.drawImage(logo, 12 * cm, 31.7 * cm, mask='auto') # 10.16 is centered
+        logo = ImageReader('Z Ultimate Logo Rectangle-686x1000.png')
+        self._c.drawImage(logo, 11 * cm, 32 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
-    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, ranks: str, split_label: str, number_of_competitors: int):
+    def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
-        self._c.drawString(14.7 * cm, 35 * cm, "Time:")
-        self._c.drawString(16 * cm, 35 * cm, event_time)
-        self._c.drawString(14.7 * cm, 34.25 * cm, "Event:")
+        # self._c.drawString(14.7 * cm, 35 * cm, "Time:")
+        # self._c.drawString(16 * cm, 35 * cm, event_time)
+        # self._c.drawString(14.7 * cm, 34.25 * cm, "Event:")
+        # self._c.drawString(16 * cm, 34.25 * cm, event_title)
+        # self._c.drawString(14.7 * cm, 33.5 * cm, "Rank:")
+        # self._c.drawString(16 * cm, 33.5 * cm, ranks)
+        # self._c.drawString(14.7 * cm, 32.75 * cm, "Ring#:")
+        # self._c.drawString(16 * cm, 32.75 * cm, str(ring))
+        # if split_label != '':
+        #     self._c.setFillColorRGB(255,0,0)
+        #     self._c.drawString(17 * cm, 32.75 * cm, 'Contestants '+ split_label)
+        #     self._c.setFillColorRGB(0, 0, 0)
+        # self._c.drawString(14.7 * cm, 32 *cm, "Competitors:")
+        #
+        # if number_of_competitors > constants.TOO_MANY_COMPETITORS:
+        #     self._c.setFillColorRGB(255, 0, 0)
+        #     self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+        #     self._c.setFillColorRGB(0, 0, 0)
+        # else:
+        #     self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+        self._c.drawString(14.2 * cm, 35 * cm, "Ring:")
+        self._c.drawString(16 * cm, 35 * cm, f'{ring}   {event_time}')
+        self._c.drawString(14.2 * cm, 34.25 * cm, "Division:")
         self._c.drawString(16 * cm, 34.25 * cm, event_title)
-        self._c.drawString(14.7 * cm, 33.5 * cm, "Rank:")
-        self._c.drawString(16 * cm, 33.5 * cm, ranks)
-        self._c.drawString(14.7 * cm, 32.75 * cm, "Ring#:")
-        self._c.drawString(16 * cm, 32.75 * cm, str(ring))
+        self._c.drawString(14.2 * cm, 33.5 * cm, "Age:")
+        self._c.drawString(16 * cm, 33.5 * cm, age)
+        self._c.drawString(14.2 * cm, 32.75 * cm, "Ranks:")
+        self._c.drawString(16 * cm, 32.75 * cm, ranks)
         if split_label != '':
             self._c.setFillColorRGB(255,0,0)
             self._c.drawString(17 * cm, 32.75 * cm, 'Contestants '+ split_label)
             self._c.setFillColorRGB(0, 0, 0)
-        self._c.drawString(14.7 * cm, 32 *cm, "Competitors:")
+        self._c.drawString(14.2 * cm, 32 *cm, "Competitors:")
 
         if number_of_competitors > constants.TOO_MANY_COMPETITORS:
             self._c.setFillColorRGB(255, 0, 0)
-            self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+            self._c.drawString(17 *cm, 32 *cm, "{}".format(number_of_competitors))
             self._c.setFillColorRGB(0, 0, 0)
         else:
-            self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+            self._c.drawString(17 *cm, 32 *cm, "{}".format(number_of_competitors))
 
 
         #write the footer as well

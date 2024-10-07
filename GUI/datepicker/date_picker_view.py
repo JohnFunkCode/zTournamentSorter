@@ -23,7 +23,8 @@ class DatePickerView( tk.Toplevel):
                                                     mindate=datetime(2020, 1, 1),
                                                     maxdate=datetime(2030, 1, 1),
                                                     showweeknumbers=False,
-                                                    showothermonthdays=False
+                                                    showothermonthdays=False,
+                                                    foreground='red',
                                                     )
         self.the_calendar.bind("<<CalendarSelected>>", self.update_selected_date_button)
         self.the_calendar.grid()

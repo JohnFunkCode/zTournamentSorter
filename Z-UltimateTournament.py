@@ -15,7 +15,8 @@ class zAppController(tk.Tk):
 
         self.title('zUltimate App')
         # self.geometry('1920x1080')
-        self.geometry('1721x972')
+        # self.geometry('1721x972')
+        self.geometry('1440x900')
         self.resizable(True, True)
         self.iconbitmap("zultimate-logo_103x130-1.ico")
         self.config(bg="Grey")  # self.config(bg="Light Grey")

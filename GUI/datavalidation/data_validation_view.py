@@ -23,7 +23,7 @@ class DataValidationView(ttk.Frame):
         # pandas table
         self.pandas_table_frame = ttk.Frame(self,borderwidth=2,relief='sunken')
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
-                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1550, height=551)
+                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=551)  # width=1550, height=551
         self.pandas_table_frame.grid(row=1,column=0,rowspan=5, columnspan=3,**options)
         self.table.redraw()
 
@@ -54,7 +54,7 @@ class DataValidationView(ttk.Frame):
         self.error_log_label.grid(row=6, column=0, sticky=tk.W, **options)
 
         # error log textbox
-        self.error_log = tk.scrolledtext.ScrolledText(self,width=200,height=19,wrap="none")
+        self.error_log = tk.scrolledtext.ScrolledText(self,width=181,height=18,wrap="none")
         self.error_log.grid(row=7, column=0, columnspan=3, **options)
 
 

@@ -24,6 +24,8 @@ import reports.sparring_tree.sparring_tree_report
 import reports.ExcelFileOutput
 import reports.FileHandlingUtilities
 import domain_model.constants as constants
+import domain_model.name_partitioner
+
 
 
 class LoadTournamentTable:

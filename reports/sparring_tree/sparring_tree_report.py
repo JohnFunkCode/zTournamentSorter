@@ -120,36 +120,79 @@ class SparringTreeReportPDF():
             # logging.info(f'{id}:{name} has a row count of {newhc}')
             clean_df.at[index, 'hitcount'] = newhc
 
-        if len(rings) > 1:  # more than 1 ring means we split
-            # filter to only keep contestants who's last name fall into the first alphabetic split
-            first_alphabetic_split = division_competitors[division_competitors['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
-            t=first_alphabetic_split.get_number_of_competitors()
+        number_of_rings = len(rings)
+        if( number_of_rings >1 ):  #means we want to use autosplit
+            import domain_model.name_partitioner
+            np = domain_model.name_partitioner.NamePartionioner()
+            partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=20)
+            print(partition_boundaries)
+            new_ring_info = []
+            ring_number = rings[0][0]
+            for partition in partition_boundaries:
+                new_ring_info.append([ring_number, partition[0], partition[1]])
+                ring_number = ring_number + 1
+            print(new_ring_info)
+            if(len(new_ring_info) < len(rings)):
+                logging.warning(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
+            if(len(new_ring_info) > len(rings)):
+                logging.warning(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
+            if (len(new_ring_info) == len(rings)):
+                logging.info(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
-            # filter to only keep contestants who's last name fall into the second alphabetic split
-            second_alphabetic_split = division_competitors[division_competitors['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
-            t=first_alphabetic_split.get_number_of_competitors()
+            rings=new_ring_info
 
-            # Create a tree for first split
-            tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
-                                        first_alphabetic_split.get_number_of_competitors(), self._source_filename)
-            # draw the competitors onto the tree
-            tree.add_page_with_competitors_on_tree(rings[0], event_time, division_name, age_label,rank_label, split_label=constants.FIRST_ALPHABETIC_SPLIT_LABEL,
-                                                   competitors=first_alphabetic_split)
+        for info in rings:
+            starting_letter=info[1]
+            ending_letter=info[2]
+            # Extract the first letter of the 'Last_Name' column
+            division_competitors['First_Letter'] = division_competitors['Last_Name'].str[0]
 
+            # Apply the conditions on the 'First_Letter' column
+            filtered_competitors = division_competitors[(division_competitors['First_Letter'] >= starting_letter) & (division_competitors['First_Letter'] <= ending_letter) | (division_competitors['First_Letter'] >= starting_letter.lower()) & (division_competitors['First_Letter'] <= ending_letter.lower())]
 
-            # Create a tree for second split
-            tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
-                                        second_alphabetic_split.get_number_of_competitors(), self._source_filename)
-            # draw the competitors onto the tree
-            tree.add_page_with_competitors_on_tree(rings[1], event_time, division_name, age_label, rank_label, split_label=constants.SECOND_ALPHABETIC_SPLIT_LABEL,
-                                                   competitors=second_alphabetic_split)
-        else:
+            if number_of_rings > 1:  # more than 1 ring means we split
+                split_lable = f'({starting_letter}-{ending_letter})'
+            else:
+                split_lable = ''
+
             # Create a tree
             tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
-                                        division_competitors.get_number_of_competitors(), self._source_filename)
+                                        filtered_competitors.get_number_of_competitors(), self._source_filename)
                # draw the competitors onto the tree
-            tree.add_page_with_competitors_on_tree(rings[0], event_time, division_name, age_label, rank_label, '',
-                                                   division_competitors)
+            tree.add_page_with_competitors_on_tree(rings[0][0], event_time, division_name, age_label, rank_label, split_lable,
+                                                   filtered_competitors)
+
+
+        # if len(rings) > 1:  # more than 1 ring means we split
+        #     # filter to only keep contestants who's last name fall into the first alphabetic split
+        #     first_alphabetic_split = division_competitors[division_competitors['Last_Name'].str.contains(constants.FIRST_ALPHABETIC_SPLIT_REGEX)]
+        #     t=first_alphabetic_split.get_number_of_competitors()
+        #
+        #     # filter to only keep contestants who's last name fall into the second alphabetic split
+        #     second_alphabetic_split = division_competitors[division_competitors['Last_Name'].str.contains(constants.SECOND_ALPHABETIC_SPLIT_REGEX)]
+        #     t=first_alphabetic_split.get_number_of_competitors()
+        #
+        #     # Create a tree for first split
+        #     tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
+        #                                 first_alphabetic_split.get_number_of_competitors(), self._source_filename)
+        #     # draw the competitors onto the tree
+        #     tree.add_page_with_competitors_on_tree(rings[0], event_time, division_name, age_label,rank_label, split_label=constants.FIRST_ALPHABETIC_SPLIT_LABEL,
+        #                                            competitors=first_alphabetic_split)
+        #
+        #
+        #     # Create a tree for second split
+        #     tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
+        #                                 second_alphabetic_split.get_number_of_competitors(), self._source_filename)
+        #     # draw the competitors onto the tree
+        #     tree.add_page_with_competitors_on_tree(rings[1], event_time, division_name, age_label, rank_label, split_label=constants.SECOND_ALPHABETIC_SPLIT_LABEL,
+        #                                            competitors=second_alphabetic_split)
+        # else:
+        #     # Create a tree
+        #     tree = create_sparring_tree(self._letter_canvas, self._legal_canvas,
+        #                                 division_competitors.get_number_of_competitors(), self._source_filename)
+        #        # draw the competitors onto the tree
+        #     tree.add_page_with_competitors_on_tree(rings[0], event_time, division_name, age_label, rank_label, '',
+        #                                            division_competitors)
 
 
     # def write_event_to_sparring_report_using_pattern_1(self, rings: list, event_time: str, event_title,

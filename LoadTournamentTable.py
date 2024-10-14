@@ -43,8 +43,8 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, ring_info=ring_info, ranks=ranks, clean_df=clean_df)
-        self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, ring_info=ring_info,ranks=ranks, clean_df=clean_df)
+        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
+        self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
     #
     # def self.writeSingleKataScoreSheetandDivisionReport(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
     #     self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Forms", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=rings,ranks=ranks,clean_df=clean_df)
@@ -55,25 +55,25 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the sparring tree in one line
     #  This prevents a lot of duplication
     def writeSingleSparringTreeandDivisionReport(self, event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, ring_info: list, ranks: list, clean_df : pd.DataFrame ):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Sparring", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, ring_info=ring_info,ranks=ranks,clean_df=clean_df)
-        rings = [info[0] for info in ring_info]   #extracts the first element (ring number) from each item in the ring_info list and store them in a new list called rings
-        self.sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=rings,ranks=ranks, clean_df=clean_df)
+        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Sparring", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=ring_info,ranks=ranks,clean_df=clean_df)
+        # rings = [info[0] for info in ring_info]   #extracts the first element (ring number) from each item in the ring_info list and store them in a new list called rings
+        self.sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info,ranks=ranks, clean_df=clean_df)
 
     ###############################################################################
     # self.writeSingleKataScoreSheetandDivisionReport
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, ring_info=ring_info,ranks=ranks, clean_df=clean_df)
-        self.kata_score_sheet_pdf.writeSingleKataScoreSheet(               event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, ring_info=ring_info,ranks=ranks, clean_df=clean_df)
+        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info,ranks=ranks, clean_df=clean_df)
+        self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, division_type="Weapons", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
 
     ###############################################################################
     # writeSingleKataScoreSheetandDivisionReport
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeSingleTechniqueScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, ring_info=ring_info, ranks=ranks, clean_df=clean_df)
-        self.technique_score_sheet_pdf.writeSingleTechniqueScoreSheet(event_time=event_time, division_name=division_name,division_type="Techniques", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age,  ring_info=ring_info,ranks=ranks, clean_df=clean_df)
+        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
+        self.technique_score_sheet_pdf.writeSingleTechniqueScoreSheet(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
 
 
 
@@ -180,7 +180,7 @@ class LoadTournamentTable:
 
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="White",                      minimum_age=4, maximum_age=6, ring_info=[[1,'A','Z']],   ranks=[constants.WHITE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Yellow",                     minimum_age=4, maximum_age=6, ring_info=[[2,'A','L'],[3,'M','Z']], ranks=[constants.YELLOW_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                     minimum_age=4, maximum_age=6, ring_info=[[4,'A','D'],[5,'E','Z']], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                     minimum_age=4, maximum_age=6, ring_info=[[4,'A','L'],[5,'M','Z']], ranks=[constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4, maximum_age=6, ring_info=[[6,'A','Z']],   ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4, maximum_age=6, ring_info=[[7,'A','Z']],   ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 

@@ -120,7 +120,7 @@ class EightCompetitorTree(SparringTree):
 
         # logo = ImageReader('Z_LOGO_OneInch.jpg')
         # self._c.drawImage(logo, 10.16 * cm, 23.4 * cm, mask='auto')
-        logo = ImageReader('Z Ultimate Logo Rectangle-686x1000.png')
+        logo = ImageReader('Z Ultimate Logo Rectangle-1Inch-300DPI.png')
         self._c.drawImage(logo, 1 * cm, 24 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
 

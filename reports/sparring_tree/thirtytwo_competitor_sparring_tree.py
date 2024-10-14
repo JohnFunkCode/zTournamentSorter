@@ -146,7 +146,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
 
         # logo = ImageReader('Z_LOGO_OneInch.jpg')
         # self._c.drawImage(logo, 12 * cm, 31.7 * cm, mask='auto') # 10.16 is centered
-        logo = ImageReader('Z Ultimate Logo Rectangle-686x1000.png')
+        logo = ImageReader('Z Ultimate Logo Rectangle-1Inch-300DPI.png')
         self._c.drawImage(logo, 11 * cm, 32 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):

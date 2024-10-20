@@ -1,5 +1,6 @@
 import logging
 import tkinter as tk
+from tkinter import font
 
 import GUI.splashscreen.splash_screen
 import GUI.menubar.menu_bar
@@ -15,11 +16,17 @@ class zAppController(tk.Tk):
 
         self.title('zUltimate App')
         # self.geometry('1920x1080')
-        # self.geometry('1721x972')
-        self.geometry('1440x900')
+        # self.geometry('1721x972') original for Tournament Laptop
+        # self.geometry('1440x900') best for macbook air default resolution
+        self.geometry('1580x972')
+
+
         self.resizable(True, True)
         self.iconbitmap("zultimate-logo_103x130-1.ico")
         self.config(bg="Grey")  # self.config(bg="Light Grey")
+
+        new_font = font.nametofont("TkDefaultFont")
+        new_font.config(family="Arial", size=14, weight="normal")
 
         # a few globals from the old driver code
         self.input_data_filename = ''  # the name of the input file - used in a lot of reports

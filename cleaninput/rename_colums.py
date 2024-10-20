@@ -105,8 +105,12 @@ class RenameColumns:
         self.replace_column_name_containing(".*Rank.*", "Rank")
 #        self.replace_column_name_containing(".*Division.*Based.*Age.*", "Division")
         self.replace_column_name_containing(".*Division.*", "Division")
-        self.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
-        self.replace_column_name_containing(".*Technique.*", "Techniques")
+
+        # October 2024 - we replaced events and techniques columns with a single column called Events
+        # self.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
+        # self.replace_column_name_containing(".*Technique.*", "Techniques")
+        self.replace_column_name_containing(".*category.*", "Events")
+
         self.replace_column_name_containing(".*Weapons.*", "Weapons")
 #        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
         self.replace_column_name_containing(".*Tickets.*", "Spectator_Tickets")
@@ -116,7 +120,7 @@ class RenameColumns:
 #good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
 
     def re_order_columns(self):
-        self.re_ordered_df=self.raw_df[['Registrant_ID','First_Name','Last_Name','Gender','Age','Weight','Height','Rank','Division','Dojo','Out_of_State_Dojo','Events','Techniques','Weapons']]
+        self.re_ordered_df=self.raw_df[['Registrant_ID','First_Name','Last_Name','Gender','Age','Weight','Height','Rank','Division','Dojo','Out_of_State_Dojo','Events','Weapons']]
         self.raw_df=self.re_ordered_df
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sat Nov  5 20:36:56 2016
@@ -11,6 +11,7 @@ import datetime
 import time
 import pathlib
 
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.styles import getSampleStyleSheet
@@ -40,6 +41,9 @@ class DivisionDetailReport(object):
         DivisionDetailReport.PAGE_HEIGHT = 11 * inch
         DivisionDetailReport.PAGE_WIDTH = 8.5 * inch
         DivisionDetailReport.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+
+        # self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Ranks', 'Competitors'])
+        self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Competitors'])
 
     @staticmethod
     def set_title(title):
@@ -177,6 +181,16 @@ class DivisionDetailReport(object):
         if ('Height' in column_list):
             df_for_printing = df_for_printing.drop(columns="Height")
 
+        # remove the Techniques if it exists
+        column_list = df_for_printing.columns.values.tolist()
+        if ('Techniques' in column_list):
+            df_for_printing = df_for_printing.drop(columns="Techniques")
+
+        # remove the First_Letter column if it exists
+        column_list = df_for_printing.columns.values.tolist()
+        if('First_Letter' in column_list):
+            df_for_printing = df_for_printing.drop(columns="First_Letter")
+
         data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)
@@ -239,8 +253,8 @@ class DivisionDetailReport(object):
         assert division_type == 'Weapons' or division_type=='Sparring' or division_type=='Forms' or division_type=='Techniques', "Error: Invalid division_type"
         if division_type == 'Weapons':
             division_type_query='Weapons.str.contains("Weapons")'
-        elif division_type == 'Techniques':
-            division_type_query='Techniques.str.contains("Technique")'
+        # elif division_type == 'Techniques':
+        #     division_type_query='Techniques.str.contains("Technique")'
         else:
             division_type_query=f'Events.str.contains("{division_type}")'
 
@@ -252,22 +266,29 @@ class DivisionDetailReport(object):
             combined_query=f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         #division_competitors = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
-        division_competitors=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
-             "Weight", "BMI", "Events", "Techniques", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        division_competitors=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height","Weight", "BMI", "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
 
         #automatic split logic
         number_of_rings = len(rings)
+        highest_ring_number_specified = rings[-1][0]
+
         if( number_of_rings >1 ):  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=20)
-            print(partition_boundaries)
+            # print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]
             for partition in partition_boundaries:
-                new_ring_info.append([ring_number, partition[0], partition[1]])
+                # in case we have more partitions than rings, we need to handle it gracefully
+                if (ring_number > highest_ring_number_specified):
+                    ring_number_to_display = '*TBA'
+                else:
+                    ring_number_to_display = str(ring_number)
+                new_ring_info.append([ring_number_to_display, partition[0], partition[1]])
                 ring_number = ring_number + 1
-            print(new_ring_info)
+
+            # print(new_ring_info)
             if(len(new_ring_info) < len(rings)):
                 logging.warning(f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
             if(len(new_ring_info) > len(rings)):
@@ -276,6 +297,10 @@ class DivisionDetailReport(object):
                 logging.info(f'Overriding ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
             rings=new_ring_info
+
+        ###########
+        ## build the data for the summary of the entire division
+        self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age, rings, ranks, division_competitors)
 
 
         for info in rings:
@@ -291,11 +316,20 @@ class DivisionDetailReport(object):
             # Apply the conditions on the 'First_Letter' column
             filtered_competitors = division_competitors[(division_competitors['First_Letter'] >= starting_letter) & (division_competitors['First_Letter'] <= ending_letter) | (division_competitors['First_Letter'] >= starting_letter.lower()) & (division_competitors['First_Letter'] <= ending_letter.lower())]
             if len(rings) > 1:  # more than 1 ring means we split
+
                 self.put_dataframe_on_pdfpage(filtered_competitors, str(ring), event_time, division_name, age_label,
                                               f'{rank_label} ({starting_letter}-{ending_letter})',
                                               f'*** PLEASE NOTE - These are contestants {starting_letter}-{ending_letter}')
             else:
                 self.put_dataframe_on_pdfpage(filtered_competitors, str(ring), event_time, division_name, age_label, rank_label)
+            ###########
+            ## build the data for the summary of the ring
+            # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
+            #                         maximum_age, str(ring), ranks, filtered_competitors)
+            self.build_summary_info('', '', '', '', '', '',
+                                    '', str(ring), ranks, filtered_competitors)
+
+
         # if len(rings)>1:
         #
         #     # filter to only keep contestants who's last name fall into the first alphabetic split
@@ -315,6 +349,14 @@ class DivisionDetailReport(object):
         #                                                        "*** PLEASE NOTE - These are contestants " + constants.SECOND_ALPHABETIC_SPLIT_LABEL)
         # else:
         #     self.put_dataframe_on_pdfpage(division_competitors, str(rings[0]), event_time, division_name, age_label, rank_label)
+
+
+    def build_summary_info(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, division_competitors: pandas.DataFrame):
+        # logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks} {len(division_competitors)}')
+        # logging.info(f'{division_competitors}')
+        # new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank_Label':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Rings':rings, 'Ranks':ranks, 'Competitors':len(division_competitors)}
+        new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank_Label':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Rings':rings,  'Competitors':len(division_competitors)}
+        self.summary_info.loc[len(self.summary_info)] = new_row
 
 
 # define layout for first page

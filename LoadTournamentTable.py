@@ -18,6 +18,7 @@ from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
 from reports.division_detail_report import DivisionDetailReport
+from reports.tournament_summary_report import TournamentSummaryReport
 from reports.kata_score_sheet import KataScoreSheet
 from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
@@ -37,6 +38,7 @@ class LoadTournamentTable:
         self.kata_score_sheet_pdf = None
         self.technique_score_sheet_pdf = None
         self.sparing_tree_pdf = None #reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
+        self.TournamentSummaryPDF = None
 
     ###############################################################################
     # writeSingleKataScoreSheetandDivisionReport
@@ -44,6 +46,7 @@ class LoadTournamentTable:
     #  This prevents a lot of duplication
     def writeSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
         self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
+        # self.TournamentSummaryPDF.add_division_details(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, division_competitors=clean_df)
         self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
     #
     # def self.writeSingleKataScoreSheetandDivisionReport(event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, rings: list, ranks: list,clean_df: pd.DataFrame):
@@ -126,6 +129,9 @@ class LoadTournamentTable:
                 self.sparing_tree_pdf.close()
                 return
 
+            ###############################################################################
+            # Setup a few things for the Division Detail PDF report
+            self.TournamentSummaryPDF = TournamentSummaryReport("Tournament Summary",filename,output_folder_path)
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
@@ -171,11 +177,11 @@ class LoadTournamentTable:
             #
             reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="GirlsSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=9, maximum_age=11,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, ring_info=[[13,'A','Z']],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Purple",                    minimum_age=9, maximum_age=11, ring_info=[[14,'A','Z']],  ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, ring_info=[[15,'A','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=9, maximum_age=11, ring_info=[[16,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="10:30am",division_name="Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, ring_info=[[17,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=9, maximum_age=11, ring_info=[[13,'A','Z']],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Girl's Sparring",gender="Female", rank_label="Purple",                    minimum_age=9, maximum_age=11, ring_info=[[14,'A','Z']],  ranks=[constants.PURPLE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Girl's Sparring",gender="Female", rank_label="Blue, Blue/Stripe",         minimum_age=9, maximum_age=11, ring_info=[[15,'A','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=9, maximum_age=11, ring_info=[[16,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:00am",division_name="Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=9, maximum_age=11, ring_info=[[17,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
 
             ### 9:45 Events
@@ -200,7 +206,7 @@ class LoadTournamentTable:
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="White, Yellow",             minimum_age=7, maximum_age=8, ring_info=[[ 8,'A','Z']],              ranks=[constants.WHITE_BELT,constants.YELLOW_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Orange",                    minimum_age=7, maximum_age=8, ring_info=[[ 9,'A','Z']],              ranks=[constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Purple",                    minimum_age=7, maximum_age=8, ring_info=[[10,'A','Z']],              ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=7, ring_info=[[11,'A','L'],[12,'M','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",         minimum_age=7, maximum_age=8, ring_info=[[11,'A','L'],[12,'M','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Youth Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=7, maximum_age=8, ring_info=[[13,'A','Z']],              ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
             ###############################################################################
@@ -216,10 +222,9 @@ class LoadTournamentTable:
             ###############################################################################
             # Kids Techniques 9-11 year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=9,  maximum_age=11, ring_info=[[1,'A','Z']],              ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=9,  maximum_age=11, ring_info=[[2,'A','L'],[3,'M','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=9,  maximum_age=11, ring_info=[[3,'A','Z']],              ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=9,  maximum_age=11, ring_info=[[4,'A','Z']],              ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','Z']],              ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4,  maximum_age=6, ring_info=[[2,'A','L'],[3,'M','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4,  maximum_age=6, ring_info=[[4,'A','Z']],              ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
 
             ###############################################################################
@@ -426,7 +431,7 @@ class LoadTournamentTable:
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=15,  maximum_age=17, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=15,  maximum_age=17, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=15,  maximum_age=17, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=15,  maximum_age=17, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Jr. Black & Black",                  minimum_age=15,  maximum_age=17, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
             ###############################################################################
@@ -505,7 +510,7 @@ class LoadTournamentTable:
             reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenGirlSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=12, maximum_age=14,clean_df=clean_df)
 
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=12, ring_info=[[2,'A','L'],[3,'M',"Z"]], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, ring_info=[[2,'A','L'],[3,'M',"Z"]], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, ring_info=[[4,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, ring_info=[[5,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
@@ -527,7 +532,7 @@ class LoadTournamentTable:
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=18,  maximum_age=39, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=18,  maximum_age=39, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=18,  maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=18,  maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Black",                  minimum_age=18,  maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
             ###############################################################################
@@ -658,6 +663,13 @@ class LoadTournamentTable:
             self.technique_score_sheet_pdf.write_pdfpage()
             logging.info("..Saving Sparring Trees")
             self.sparing_tree_pdf.close()
+
+            logging.info("Division Summary Report")
+            pd.set_option('display.max_rows', None)
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.width', None)
+            logging.info(self.divison_detail_report_pdf.summary_info)
+            pd.reset_option('all')
 
             #print hitcount warnings
             if clean_df.shape[0] > 30:

@@ -28,7 +28,7 @@ class ReportGenerationView(ttk.Frame):
         self.processing_log_label.grid(row=0, column=0, sticky=tk.W, **options)
 
         # processing log textbox
-        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=201,height=48,wrap="none") # was width=212,height=43
+        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=201,height=43,wrap="none") # was width=212,height=43
         self.processing_log_textbox.grid(row=1, column=0, columnspan=3, **options)
 
         # button 1

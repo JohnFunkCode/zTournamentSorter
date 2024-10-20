@@ -120,7 +120,10 @@ class SparringTreeReportPDF():
             # logging.info(f'{id}:{name} has a row count of {newhc}')
             clean_df.at[index, 'hitcount'] = newhc
 
+        #automatic split logic
         number_of_rings = len(rings)
+        highest_ring_number_specified = rings[-1][0]
+
         if( number_of_rings >1 ):  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
@@ -129,7 +132,12 @@ class SparringTreeReportPDF():
             new_ring_info = []
             ring_number = rings[0][0]
             for partition in partition_boundaries:
-                new_ring_info.append([ring_number, partition[0], partition[1]])
+                # in case we have more partitions than rings, we need to handle it gracefully
+                if (ring_number > highest_ring_number_specified):
+                    ring_number_to_display = '*TBA'
+                else:
+                    ring_number_to_display = str(ring_number)
+                new_ring_info.append([ring_number_to_display, partition[0], partition[1]])
                 ring_number = ring_number + 1
             print(new_ring_info)
             if(len(new_ring_info) < len(rings)):

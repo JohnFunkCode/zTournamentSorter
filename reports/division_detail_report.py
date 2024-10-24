@@ -24,11 +24,12 @@ import reports
 
 
 class DivisionDetailReport(object):
-    def __init__(self, title:str, sourcefile:str,output_folder_path:str):
-        filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
+    def __init__(self, title: str, sourcefile: str, output_folder_path: str):
+        filename_with_path = str(pathlib.Path(
+            output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
 
         # self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
-        self.doc = SimpleDocTemplate(filename_with_path, pagesize=landscape(letter),topMargin=0)
+        self.doc = SimpleDocTemplate(filename_with_path, pagesize=landscape(letter), topMargin=0)
         self.docElements = []
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
@@ -40,10 +41,12 @@ class DivisionDetailReport(object):
         DivisionDetailReport.Title = title
         DivisionDetailReport.PAGE_HEIGHT = 11 * inch
         DivisionDetailReport.PAGE_WIDTH = 8.5 * inch
-        DivisionDetailReport.styles = getSampleStyleSheet()   #sample style sheet doesn't seem to be used
+        DivisionDetailReport.styles = getSampleStyleSheet()  #sample style sheet doesn't seem to be used
 
         # self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Ranks', 'Competitors'])
-        self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Competitors'])
+        self.summary_info = pd.DataFrame(
+            columns=['Event_Time', 'Division_Name', 'Division_Type', 'Gender', 'Rank_Label', 'Age', 'Rings',
+                     'Competitors'])
 
     @staticmethod
     def set_title(title):
@@ -75,7 +78,7 @@ class DivisionDetailReport(object):
         #    elements.append(p)
         #    elements.append(Spacer(1,0.2*inch))
 
-        headerdata1 = [['Division Detail Report','']]
+        headerdata1 = [['Division Detail Report', '']]
 
         t = Table(headerdata1)
 
@@ -89,14 +92,18 @@ class DivisionDetailReport(object):
         elements.append(Spacer(1, 0.1 * inch))
 
         if df.shape[0] > constants.TOO_MANY_COMPETITORS:
-            logging.warning("\u001b[31m***{} {} Ring {} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,df.shape[0]))
+            logging.warning("\u001b[31m***{} {} Ring {} has too many competitors. It has {}\u001b[0m".format(event_time,
+                                                                                                             division_name,
+                                                                                                             ring_number,
+                                                                                                             df.shape[
+                                                                                                                 0]))
 
         if split_warning_text is None:
             headerdata2 = [['RING', ring_number + '   ' + event_time],
                            ['DIVISION', division_name],
                            ['AGE', age],
                            ['RANKS', belts],
-                           ['COMPETITORS',df.shape[0]]]
+                           ['COMPETITORS', df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -112,7 +119,7 @@ class DivisionDetailReport(object):
                            ['DIVISION', division_name, ''],
                            ['AGE', age, ''],
                            ['RANKS', belts, split_warning_text],
-                           ['COMPETITORS',df.shape[0]]]
+                           ['COMPETITORS', df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -139,7 +146,6 @@ class DivisionDetailReport(object):
         #                        ('ALIGN', (1, 0), (1, -1), 'LEFT'),
         #                        ('LEADING', (0, 0), (1, -1), 7)]))
 
-
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
@@ -158,18 +164,18 @@ class DivisionDetailReport(object):
         #  Convert data fram to a list format
 
         #insert number into the dataframe
-        number_list=[*range(1,df.shape[0]+1)]
-        df.insert(1,'#',number_list)
+        number_list = [*range(1, df.shape[0] + 1)]
+        df.insert(1, '#', number_list)
 
         #remove the Registrant_ID Column if it exists
         column_list = df.columns.values.tolist()
         if ('Registrant_ID' in column_list):
-            df_for_printing=df.drop(columns="Registrant_ID")
+            df_for_printing = df.drop(columns="Registrant_ID")
 
         #remove the Events Column if it exists
         column_list = df_for_printing.columns.values.tolist()
         if ('Events' in column_list):
-            df_for_printing=df_for_printing.drop(columns="Events")
+            df_for_printing = df_for_printing.drop(columns="Events")
 
         # remove the Weapons Column if it exists
         column_list = df_for_printing.columns.values.tolist()
@@ -188,13 +194,13 @@ class DivisionDetailReport(object):
 
         # remove the First_Letter column if it exists
         column_list = df_for_printing.columns.values.tolist()
-        if('First_Letter' in column_list):
+        if ('First_Letter' in column_list):
             df_for_printing = df_for_printing.drop(columns="First_Letter")
 
         data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)
-        if len(data_list) > constants.TOO_MANY_COMPETITORS +1 :
+        if len(data_list) > constants.TOO_MANY_COMPETITORS + 1:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
@@ -216,66 +222,70 @@ class DivisionDetailReport(object):
 
         ####tbd - fiture out how to add a page break, and also add headers and footers
         self.docElements.extend(elements)
- #       self.doc.build(self.docElements)
+        #       self.doc.build(self.docElements)
 
         return elements;
 
     def write_pdfpage(self):
         self.doc.build(self.docElements, onFirstPage=page_layout, onLaterPages=page_layout)
 
-
     ###############################################################################
     # writeSingleDivisionDetailReport
     #  This method provides a re-usable method to write output to the Divsion Detail Report PDF
 
-    def writeSingleDivisionDetailReport(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, clean_df: pandas.DataFrame):
-        if(maximum_age==constants.AGELESS):
-            age_label= '{0}+'.format(minimum_age)
+    def writeSingleDivisionDetailReport(self, event_time: str, division_name: str, division_type: str, gender: str,
+                                        rank_label: str, minimum_age: int, maximum_age: int, rings: list, ranks: list,
+                                        clean_df: pandas.DataFrame):
+        if (maximum_age == constants.AGELESS):
+            age_label = '{0}+'.format(minimum_age)
         else:
-            age_label= '{0} - {1}'.format(minimum_age,maximum_age)
+            age_label = '{0} - {1}'.format(minimum_age, maximum_age)
 
         # Hack for 3 year olds
-        if minimum_age==4:
-            minimum_age=2
+        if minimum_age == 4:
+            minimum_age = 2
 
         logging.info("Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label)
 
         self.set_title(division_name)
 
-        age_query= 'Age >={0} and Age <={1}'.format(minimum_age,maximum_age)
+        age_query = 'Age >={0} and Age <={1}'.format(minimum_age, maximum_age)
 
-        rank_query=''
+        rank_query = ''
         for r in range(0, len(ranks)):
-            rank_query=rank_query + 'Rank =="' + ranks[r] + '"'
-            if r<len(ranks)-1:  #Add ' and ' to everything but the last one
-                rank_query=rank_query + ' or '
+            rank_query = rank_query + 'Rank =="' + ranks[r] + '"'
+            if r < len(ranks) - 1:  #Add ' and ' to everything but the last one
+                rank_query = rank_query + ' or '
 
-        assert division_type == 'Weapons' or division_type=='Sparring' or division_type=='Forms' or division_type=='Techniques', "Error: Invalid division_type"
+        assert division_type == 'Weapons' or division_type == 'Sparring' or division_type == 'Forms' or division_type == 'Techniques', "Error: Invalid division_type"
         if division_type == 'Weapons':
-            division_type_query='Weapons.str.contains("Weapons")'
+            division_type_query = 'Weapons.str.contains("Weapons")'
         # elif division_type == 'Techniques':
         #     division_type_query='Techniques.str.contains("Technique")'
         else:
-            division_type_query=f'Events.str.contains("{division_type}")'
-
+            division_type_query = f'Events.str.contains("{division_type}")'
 
         if gender != '*':
-            gender_query= 'Gender == "'+ gender +'"'
-            combined_query=f'({division_type_query}) and ({age_query}) and ({rank_query}) and ({gender_query})'
+            gender_query = 'Gender == "' + gender + '"'
+            combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query}) and ({gender_query})'
         else:
-            combined_query=f'({division_type_query}) and ({age_query}) and ({rank_query})'
+            combined_query = f'({division_type_query}) and ({age_query}) and ({rank_query})'
 
         #division_competitors = clean_df.query(combined_query).sort_values("Age").sort_values("BMI")
-        division_competitors=clean_df[["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height","Weight", "BMI", "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
+        division_competitors = clean_df[
+            ["Registrant_ID", "First_Name", "Last_Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height",
+             "Weight", "BMI", "Events", "Weapons"]].query(combined_query).sort_values("Age").sort_values("BMI")
 
         #automatic split logic
         number_of_rings = len(rings)
         highest_ring_number_specified = rings[-1][0]
 
-        if( number_of_rings >1 ):  #means we want to use autosplit
+        if (number_of_rings > 1):  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
-            partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=20)
+            partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors,
+                                                                       min_number_of_partitions=number_of_rings,
+                                                                       max_entries_per_partition=20)
             # print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]
@@ -289,46 +299,53 @@ class DivisionDetailReport(object):
                 ring_number = ring_number + 1
 
             # print(new_ring_info)
-            if(len(new_ring_info) < len(rings)):
-                logging.warning(f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
-            if(len(new_ring_info) > len(rings)):
-                logging.warning(f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
+            if (len(new_ring_info) < len(rings)):
+                logging.warning(
+                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
+            if (len(new_ring_info) > len(rings)):
+                logging.warning(
+                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
             if (len(new_ring_info) == len(rings)):
-                logging.info(f'Overriding ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
+                logging.info(
+                    f'Overriding ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
-            rings=new_ring_info
+            rings = new_ring_info
 
         ###########
         ## build the data for the summary of the entire division
-        self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age, rings, ranks, division_competitors)
-
+        self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age,
+                                rings, ranks, division_competitors)
 
         for info in rings:
             # ring = info.get('ring')
             # starting_letter = info.get('startingLetter')
             # ending_letter = info.get('endingLetter')
             # Extract the first letter of the 'Last_Name' column
-            ring=info[0]
-            starting_letter=info[1]
-            ending_letter=info[2]
+            ring = info[0]
+            starting_letter = info[1]
+            ending_letter = info[2]
             division_competitors['First_Letter'] = division_competitors['Last_Name'].str[0]
 
             # Apply the conditions on the 'First_Letter' column
-            filtered_competitors = division_competitors[(division_competitors['First_Letter'] >= starting_letter) & (division_competitors['First_Letter'] <= ending_letter) | (division_competitors['First_Letter'] >= starting_letter.lower()) & (division_competitors['First_Letter'] <= ending_letter.lower())]
+            filtered_competitors = division_competitors[(division_competitors['First_Letter'] >= starting_letter) & (
+                        division_competitors['First_Letter'] <= ending_letter) | (division_competitors[
+                                                                                      'First_Letter'] >= starting_letter.lower()) & (
+                                                                    division_competitors[
+                                                                        'First_Letter'] <= ending_letter.lower())]
             if len(rings) > 1:  # more than 1 ring means we split
 
                 self.put_dataframe_on_pdfpage(filtered_competitors, str(ring), event_time, division_name, age_label,
                                               f'{rank_label} ({starting_letter}-{ending_letter})',
                                               f'*** PLEASE NOTE - These are contestants {starting_letter}-{ending_letter}')
             else:
-                self.put_dataframe_on_pdfpage(filtered_competitors, str(ring), event_time, division_name, age_label, rank_label)
+                self.put_dataframe_on_pdfpage(filtered_competitors, str(ring), event_time, division_name, age_label,
+                                              rank_label)
             ###########
             ## build the data for the summary of the ring
             # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
             #                         maximum_age, str(ring), ranks, filtered_competitors)
             self.build_summary_info('', '', '', '', '', '',
                                     '', str(ring), ranks, filtered_competitors)
-
 
         # if len(rings)>1:
         #
@@ -350,12 +367,26 @@ class DivisionDetailReport(object):
         # else:
         #     self.put_dataframe_on_pdfpage(division_competitors, str(rings[0]), event_time, division_name, age_label, rank_label)
 
-
-    def build_summary_info(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, division_competitors: pandas.DataFrame):
+    def build_summary_info(self, event_time: str, division_name: str, division_type: str, gender: str, rank_label: str,
+                           minimum_age: int, maximum_age: int, rings: list, ranks: list,
+                           division_competitors: pandas.DataFrame):
         # logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks} {len(division_competitors)}')
         # logging.info(f'{division_competitors}')
         # new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank_Label':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Rings':rings, 'Ranks':ranks, 'Competitors':len(division_competitors)}
-        new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank_Label':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Rings':rings,  'Competitors':len(division_competitors)}
+
+        #Special case for 3 year olds
+        if type(minimum_age) == int:
+            if minimum_age <= 4:
+                minimum_age = 4
+
+        if type(minimum_age) == int:
+            display_age = f'{minimum_age}-{maximum_age}'
+        else:
+            display_age = ''
+
+        new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,
+                   'Gender': gender, 'Rank_Label': rank_label, 'Age': display_age, 'Rings': rings,
+                   'Competitors': len(division_competitors)}
         self.summary_info.loc[len(self.summary_info)] = new_row
 
 
@@ -366,8 +397,10 @@ def first_page_layout(canvas, doc):
     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
     canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 8 * inch, DivisionDetailReport.Title)
     canvas.setFont('Times-Roman', 9)
-    canvas.canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % DivisionDetailReport.pageinfo)
+    canvas.canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch,
+                                    "First Page / %s" % DivisionDetailReport.pageinfo)
     canvas.restoreState()
+
 
 # define layout for subsequent pages
 def later_page_layout(canvas, doc):
@@ -376,9 +409,10 @@ def later_page_layout(canvas, doc):
     #canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
     canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch,
-                      "Page: %d   Generated: %s   From file: %s" % (
+                             "Page: %d   Generated: %s   From file: %s" % (
                                  doc.page, DivisionDetailReport.timestamp, DivisionDetailReport.sourcefile))
     canvas.restoreState()
+
 
 # define layout for subsequent pages
 def page_layout(canvas, doc):
@@ -387,7 +421,7 @@ def page_layout(canvas, doc):
     canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
     canvas.drawCentredString(DivisionDetailReport.PAGE_WIDTH / 2.0, 0.25 * inch,
-                      "Page: %d   Generated: %s   From file: %s" % (
+                             "Page: %d   Generated: %s   From file: %s" % (
                                  doc.page, DivisionDetailReport.timestamp, DivisionDetailReport.sourcefile))
     canvas.restoreState()
 

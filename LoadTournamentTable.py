@@ -38,7 +38,7 @@ class LoadTournamentTable:
         self.kata_score_sheet_pdf = None
         self.technique_score_sheet_pdf = None
         self.sparing_tree_pdf = None #reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
-        self.TournamentSummaryPDF = None
+        self.tournament_summary_report_pdf = None
 
     ###############################################################################
     # writeSingleKataScoreSheetandDivisionReport
@@ -131,7 +131,7 @@ class LoadTournamentTable:
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
-            self.TournamentSummaryPDF = TournamentSummaryReport("Tournament Summary",filename,output_folder_path)
+            self.tournament_summary_report_pdf = TournamentSummaryReport("Tournament Summary",filename,output_folder_path)
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
@@ -655,8 +655,14 @@ class LoadTournamentTable:
 
 
             logging.info("Saving PDFs to disk")
+
+            logging.info("..Saving Tournament Summary Report")
+            self.tournament_summary_report_pdf.add_summary_info_to_page(self.divison_detail_report_pdf.summary_info)
+            self.tournament_summary_report_pdf.write_pdfpage()
+
             logging.info("..Saving Division Report")
             self.divison_detail_report_pdf.write_pdfpage()
+
             logging.info("..Saving Kata Score Sheets")
             self.kata_score_sheet_pdf.write_pdfpage()
             logging.info("..Saving Technique Score Sheets")
@@ -664,12 +670,11 @@ class LoadTournamentTable:
             logging.info("..Saving Sparring Trees")
             self.sparing_tree_pdf.close()
 
-            logging.info("Division Summary Report")
-            pd.set_option('display.max_rows', None)
-            pd.set_option('display.max_columns', None)
-            pd.set_option('display.width', None)
-            logging.info(self.divison_detail_report_pdf.summary_info)
-            pd.reset_option('all')
+            # logging.info("Division Summary Report")
+            # pd.set_option('display.max_rows', None)
+            # pd.set_option('display.max_columns', None)
+            # pd.set_option('display.width', None)
+            # logging.info(self.divison_detail_report_pdf.summary_info)
 
             #print hitcount warnings
             if clean_df.shape[0] > 30:

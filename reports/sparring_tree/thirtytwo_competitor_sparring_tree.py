@@ -71,7 +71,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
         self.draw_box(left + .3, top)
         self.draw_box(left + .6, top)
 
-    def draw_static_template(self):  # TBD - paused here!!!!
+    def draw_static_template(self):
         """ Draws the static template portion of the tree"""
 
         # first bracket
@@ -150,6 +150,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
         self._c.drawImage(logo, 11 * cm, 32 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):
+        self._legal_pages = self._legal_pages + 1
         ''' draw the header text onto the tree '''
         # self._c.drawString(14.7 * cm, 35 * cm, "Time:")
         # self._c.drawString(16 * cm, 35 * cm, event_time)

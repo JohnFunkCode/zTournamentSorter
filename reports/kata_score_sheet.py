@@ -73,16 +73,16 @@ class KataScoreSheet(object):
         KataScoreSheet.sourcefile = sourcefile
 
     def convert_inputdf_to_outputdf(self,inputdf):
-        # columns = ['Compettitors Name', 'Form', 'Scores', '', 'Total', 'Place']
-        columns = ['Compettitors Name']
+        # columns = ['Competitors Name', 'Form', 'Scores', '', 'Total', 'Place']
+        columns = ['Competitors Name']
 
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
         counter=1
         for index, row in inputdf.iterrows():
-            # outputdf.at[index, 'Compettitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
-            outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
+            # outputdf.at[index, 'Competitors Name'] = str(counter) +") " + inputdf.at[index, 'First_Name'] + " " + inputdf.at[index, 'Last_Name'] + " " + inputdf.at[index, 'Dojo'] + "\n"
+            outputdf.at[index, 'Competitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
             counter = counter+1
 
         return outputdf

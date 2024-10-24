@@ -306,9 +306,9 @@ class TestEightCompetitorTree(unittest.TestCase):
 
     def test_draw_competitors_on_tree(self):
         ''' tests that we each compettitor gets assigned physical coordinates '''
-        #create compettitors from our test data
+        #create competitors from our test data
         #get the first and second column test coordinates from the tree
-        #run the algorythm to map compettitors into the tree
+        #run the algorythm to map competitors into the tree
         # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
@@ -333,9 +333,9 @@ class TestEightCompetitorTree(unittest.TestCase):
 
     def test_add_page_with_competitors_on_tree(self):
         ''' tests that we each compettitor gets assigned physical coordinates '''
-        #create compettitors from our test data
+        #create competitors from our test data
         #get the first and second column test coordinates from the tree
-        #run the algorythm to map compettitors into the tree
+        #run the algorythm to map competitors into the tree
         # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 

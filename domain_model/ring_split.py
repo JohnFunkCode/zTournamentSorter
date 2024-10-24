@@ -1,4 +1,4 @@
-''' this module contains code for an ring_split.  It is used to hold the subset of compettitors when a ring has to be split '''
+''' this module contains code for an ring_split.  It is used to hold the subset of Competitors when a ring has to be split '''
 import logging
 
 class RingSplit():

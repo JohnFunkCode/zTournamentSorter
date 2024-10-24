@@ -11,7 +11,7 @@ class InputErrors():
 
 
 if __name__ == '__main__':
-    '''test getting the number of compettitors '''
+    '''test getting the number of Competitors '''
     ie=InputErrors()
     ie.append(1,"Age")
     ie.append(33,"Height")

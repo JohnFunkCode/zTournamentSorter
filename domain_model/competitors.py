@@ -81,7 +81,7 @@ class Competitors(pd.DataFrame):
 
 
 if __name__ == '__main__':
-    '''test getting the number of compettitors '''
+    '''test getting the number of Competitors '''
     cols = ['Registrant_ID', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
             'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
     data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,

@@ -65,14 +65,14 @@ class TechniqueScoreSheet(object):
         TechniqueScoreSheet.sourcefile = sourcefile
 
     def convert_inputdf_to_outputdf(self,inputdf):
-        # columns = ['Compettitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
-        columns = ['Compettitors Name']
+        # columns = ['competitors Name', 'Technique', 'Scores', '', 'Total', 'Place']
+        columns = ['Competitors Name']
         data=[]
         outputdf = pd.DataFrame(data, columns=columns)
 
         counter=1
         for index, row in inputdf.iterrows():
-            outputdf.at[index, 'Compettitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
+            outputdf.at[index, 'Competitors Name'] = f"{counter}) {inputdf.at[index, 'First_Name']} {inputdf.at[index, 'Last_Name']} \n"
             counter = counter+1
 
         return outputdf

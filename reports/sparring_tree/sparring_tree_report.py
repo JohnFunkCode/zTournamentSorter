@@ -56,6 +56,7 @@ class SparringTreeReportPDF():
         # self._legal_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LEGAL_FILE_NAME)
         self._letter_canvas = canvas.Canvas(self._letter_filename_with_path)
         self._legal_canvas = canvas.Canvas(self._legal_filename_with_path)
+        self._legal_pages = 0
         # self._source_filename = "not initialized"
         self._source_filename = sourcefile
 
@@ -66,7 +67,9 @@ class SparringTreeReportPDF():
     def close(self):
         ''' close things out by saving the canvas'''
         self._letter_canvas.save()
-        self._legal_canvas.save()
+
+        if self._legal_pages > 0:
+            self._legal_canvas.save()
 
     def set_source_file(self, the_source_filename :str):
         ''' setup the source filename so it's available to print in the footer of each tree'''
@@ -454,7 +457,7 @@ class SparringTreeReportPDF():
     #     tree.add_page_with_competitors_on_tree(rings[6], event_time, event_title, "Black", split_label='',
     #                                            competitors=division_competitors)
 
-        # we could replace the tree creation code in a module that uses a factory pattern to create the appropriate sized tree, lay down the template, draws the compettitors on it and closes the tree.
+        # we could replace the tree creation code in a module that uses a factory pattern to create the appropriate sized tree, lay down the template, draws the competitors on it and closes the tree.
         # the only question is where should that factory live?
 
 

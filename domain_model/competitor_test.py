@@ -22,7 +22,7 @@ class TestCompetitors(unittest.TestCase):
         return
 
     def test_competttitors_has_correct_number_of_entries(self):
-        '''test getting the number of compettitors '''
+        '''test getting the number of Competitors '''
         cols = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
                 'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
         data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 3, '4 ft. 3 in.', 52, 154,
@@ -36,7 +36,7 @@ class TestCompetitors(unittest.TestCase):
         self.assertEqual(3, s)
 
     def test_sort_competitors_by_bmi_and_dojo(self):
-        '''test getting the number of compettitors '''
+        '''test getting the number of Competitors '''
         cols = ['index', 'First_Name', 'Last_Name', 'Gender', 'Dojo', 'Age', 'Rank', 'Feet', 'Inches', 'Height',
                 'Weight', 'BMI', 'Events', 'Weapons', 'hitcount']
         data = [(255, 'Lucas', 'May', 'Male', 'CO- Parker', 10, 'Yellow', 4, 0, '4', 60, 156,

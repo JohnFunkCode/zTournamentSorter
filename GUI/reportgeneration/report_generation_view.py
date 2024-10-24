@@ -1,4 +1,5 @@
 import logging
+import os
 import pathlib
 import time
 import tkinter as tk
@@ -28,7 +29,7 @@ class ReportGenerationView(ttk.Frame):
         self.processing_log_label.grid(row=0, column=0, sticky=tk.W, **options)
 
         # processing log textbox
-        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=201,height=43,wrap="none") # was width=212,height=43
+        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self,width=201,height=40,wrap="none") # was width=212,height=43
         self.processing_log_textbox.grid(row=1, column=0, columnspan=3, **options)
 
         # button 1
@@ -92,14 +93,27 @@ class ReportGenerationView(ttk.Frame):
         sparring_tree_letter_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'SparringTreeReport-Letter.pdf'))
         self.sparring_tree_letter_size_label.bind('<Button-1>', lambda x: webbrowser.open(sparring_tree_letter_filename_with_path))
 
-
         # Sparring Tree - legal report label
         if self.app_container.is_custom_division == False:
-            self.sparring_tree_legal_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - legal size.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
-            self.sparring_tree_legal_size_label.grid(row=5, column=0, sticky=tk.W, **options)
-            # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
             sparring_tree_legal_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'SparringTreeReport-Legal.pdf'))
-            self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open(sparring_tree_legal_filename_with_path))
+            if os.path.exists(sparring_tree_legal_filename_with_path):
+                self.sparring_tree_legal_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - legal size.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
+                self.sparring_tree_legal_size_label.grid(row=5, column=0, sticky=tk.W, **options)
+                self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open(sparring_tree_legal_filename_with_path))
+            else:
+                self.sparring_tree_legal_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - legal size.pdf',font=('Helveticabold', 15), foreground="gray", cursor="hand2")
+                self.sparring_tree_legal_size_label.grid(row=5, column=0, sticky=tk.W, **options)
+
+
+            # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
+
+        # Tournament Summary report label
+        if self.app_container.is_custom_division == False:
+            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  tournament summary report.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
+            self.tournament_summary_report_label.grid(row=6, column=0, sticky=tk.W, **options)
+            # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
+            tournament_summary_report_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'TournamentSummaryReport.pdf'))
+            self.tournament_summary_report_label.bind('<Button-1>', lambda x: webbrowser.open(tournament_summary_report_filename_with_path))
 
         self.final_output_labelframe.grid()
 

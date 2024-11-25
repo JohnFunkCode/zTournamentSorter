@@ -11,9 +11,13 @@ class Competitors(pd.DataFrame):
     def _constructor(self):
         return Competitors
 
-    # def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
-    #     '''setup instance variables'''
-    #     super().__init__(data, index, columns, dtype, copy)
+    def __init__(self, data=None, index=None, columns=None, dtype=None, copy=False):
+        '''setup instance variables'''
+        super().__init__(data, index, columns, dtype, copy)
+
+    def __repr__(self):
+        '''return the string representation of the DataFrame'''
+        return super().__repr__()
 
     def get_number_of_competitors(self) -> int:
         '''convenience  method to get the number of competitors'''
@@ -29,6 +33,7 @@ class Competitors(pd.DataFrame):
         result_list = []
 
         comps = self
+
         comps = comps.sort_by_body_mass_index_and_dojo()
 
         while comps.shape[0] > 1:
@@ -40,38 +45,40 @@ class Competitors(pd.DataFrame):
 
             # dojo2 = ''
             for i in range(1, len(comps)):
+                # scan the list for a competitor from a different dojo
                 if comps.iloc[i].Dojo != dojo1:
-                    # logging.info(i,"Different Dojo")
+                    # logging.info(i,"Found a Different Dojo")
                     name2 = comps.iloc[i]['First_Name']
                     reg_id_2 = comps.iloc[i]['Registrant_ID']
                     dojo2 = comps.iloc[i]['Dojo']
                     break
-                # else:
-                # logging.info(i,"Same Dojo")
 
+            # if we fell out of the loop without find a competitor from a different dojo, just take the next competitor in the list
             if reg_id_2 == '':
+                #logging.info("No Competitor from a different Dojo - we'll use the next person in the list")
                 name2 = comps.iloc[1]['First_Name']
                 reg_id_2 = comps.iloc[1]['Registrant_ID']
                 dojo2 = comps.iloc[1]['Dojo']
+                i=1  #don't forget to set the index back to the first competitor
 
-            #logging.info(name1, dojo1, '|', name2, dojo2)
+            # add the two competitors to the result list
             result_list.append(comps.iloc[0])
             result_list.append(comps.iloc[i])
 
-            # remove the two names from the data frame
-#            df1 = comps[comps['First_Name'] != name1]    #*** TBD Bug Do not rely on first name alone, that can be a duplicate.  Better to match on first_name, last name, and BMI - comps.query("First_Name!=@name2 or Last_Name != 'Chatterley'")
-#            comps = df1[df1['First_Name'] != name2]
+            # remove the two competitors names from main list
             df1 = comps[comps['Registrant_ID'] != reg_id_1]
             comps = df1[df1['Registrant_ID'] != reg_id_2]
 
-        # if there is an odd number process the last one now0
-        if (comps.shape[0] % 2) != 0:
-#            name1 = comps.iloc[0]['First_Name']
+        #  done with the while loop - if we still have someone in the list add them to the result list
+        # if (comps.shape[0] % 2) != 0:
+        if comps.shape[0] > 0:
+            name1 = comps.iloc[0]['First_Name']
             reg_id_1 = comps.iloc[0]['Registrant_ID']
             dojo1 = comps.iloc[0]['Dojo']
             # logging.info(name1, dojo1)
             result_list.append(comps.iloc[0])
 
+        # create a DataFrame object with the result_list
         # logging.info(result_list)
         column_names = comps.columns.values.tolist()
         # logging.info(column_names)

@@ -160,7 +160,7 @@ class LoadTournamentTable:
 
             self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="White",                     minimum_age=4, maximum_age=6, ring_info=[[1,'A','Z']],            ranks=[constants.WHITE_BELT], clean_df=clean_df)
             self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Yellow",                    minimum_age=4, maximum_age=6, ring_info=[[2,'A','L'],[3,'M','Z']],ranks=[constants.YELLOW_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, ring_info=[[4,'A','Z']],            ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Orange",                    minimum_age=4, maximum_age=6, ring_info=[[4,'A','L'],[5,'M','Z']],ranks=[constants.ORANGE_BELT], clean_df=clean_df)
             self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=4, maximum_age=6, ring_info=[[6,'A','Z']],            ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleKataScoreSheetandDivisionReport(event_time="9:00am",division_name="Kids Kata",gender="*",rank_label="Green, Green/Stripe, Brown",minimum_age=4, maximum_age=6, ring_info=[[7,'A','Z']],            ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
@@ -193,7 +193,7 @@ class LoadTournamentTable:
 
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="White",                      minimum_age=4, maximum_age=6, ring_info=[[1,'A','Z']],             ranks=[constants.WHITE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Yellow",                     minimum_age=4, maximum_age=6, ring_info=[[2,'A','L'],[3,'M','Z']], ranks=[constants.YELLOW_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                     minimum_age=4, maximum_age=6, ring_info=[[4,'A','Z']],             ranks=[constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Orange",                     minimum_age=4, maximum_age=6, ring_info=[[4,'A','Z'],[5,'M','Z']],             ranks=[constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4, maximum_age=6, ring_info=[[6,'A','Z']],             ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="9:45am",division_name="Kids Sparring",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4, maximum_age=6, ring_info=[[7,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
 
@@ -213,14 +213,14 @@ class LoadTournamentTable:
             # Boys & Girls Techniques 9-11 year olds
             #
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=9,  maximum_age=11, ring_info=[[14,'A','L'],[14,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=9,  maximum_age=11, ring_info=[[15,'A','L'],[16,'M','Z']],     ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=9,  maximum_age=11, ring_info=[[15,'A','L'],[16,'M','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=9,  maximum_age=11, ring_info=[[17,'A','L'],[17,'M','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=9,  maximum_age=11, ring_info=[[18,'A','Z']],                  ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="9:45am",division_name="Boys & Girls Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=9,  maximum_age=11, ring_info=[[18,'A','Z']],              ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ### 10:30 Events
 
             ###############################################################################
-            # Kids Techniques 9-11 year olds
+            # Kids Techniques 4-6 year olds
             #
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','L'],[1,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4,  maximum_age=6, ring_info=[[3,'A','Z']],             ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
@@ -330,7 +330,7 @@ class LoadTournamentTable:
             # Weapons Division 1 - 4-8 year olds
             #
             reports.ExcelFileOutput.writeWeaponsDivision1ToExcelViaQuery(output_folder_path=output_folder_path, filename="WeaponsDivision1.xlsx", division_type='Weapons', gender="*", minimum_age=4, maximum_age=8, clean_df=clean_df)
-            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 1",gender="*", rank_label="White to Jr. Back", minimum_age=4, maximum_age=8, ring_info=[['*TBA','A','Z']],
+            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 1",gender="*", rank_label="White to Jr. Back", minimum_age=4, maximum_age=8, ring_info=[[12,'A','Z']],
                                                        ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,
                                                               constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,
                                                               constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,
@@ -343,7 +343,7 @@ class LoadTournamentTable:
             # Weapons Division 2 - 9-11 year olds White - Blue W/Green Stripe
             #
             reports.ExcelFileOutput.writeWeaponsDivision2ToExcelViaQuery(output_folder_path=output_folder_path, filename="WeaponsDivision2.xlsx", division_type='Weapons', gender="*", minimum_age=9, maximum_age=11, clean_df=clean_df)
-            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 2",gender="*", rank_label="White to Blue w/Green Stripe", minimum_age=9, maximum_age=11, ring_info=[['*TBA','A','Z']],
+            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 2",gender="*", rank_label="White - Blue w/Green Stripe", minimum_age=9, maximum_age=11, ring_info=[[20,'A','Z']],
                                                                         ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
                                                                                constants.ORANGE_BELT,constants.PURPLE_BELT,
                                                                                constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
@@ -354,7 +354,7 @@ class LoadTournamentTable:
             #  WeaponsDivision3  - 9-11 year olds Green - Jr. Black
             #
             reports.ExcelFileOutput.writeWeaponsDivision3ToExcelViaQuery(output_folder_path=output_folder_path, filename="WeaponsDivision3.xlsx", division_type='Weapons', gender="*", minimum_age=9, maximum_age=11, clean_df=clean_df)
-            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 3",gender="*", rank_label="Green - Jr. Black", minimum_age=9, maximum_age=11, ring_info=[['*TBA','A','Z']],
+            self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="12:00noon",division_name="Weapons Division 3",gender="*", rank_label="Green - Jr. Black", minimum_age=9, maximum_age=11, ring_info=[[22,'A','Z']],
                                                                         ranks=[constants.GREEN_BELT,
                                                                                constants.GREEN_STRIPE_BELT,
                                                                                constants.THIRD_DEGREE_BROWN_BELT,
@@ -367,156 +367,161 @@ class LoadTournamentTable:
 
 
             ### 1:30 Events
-
             ###############################################################################
-            #  Teen Boy's Sparring - 12-14 year olds
+            # Teen Girl's Sparring - 12-14 year olds
             #
-            reports.ExcelFileOutput.writePattern2ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenBoysSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=12, maximum_age=14,clean_df=clean_df)
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenGirlSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=12, maximum_age=14,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="White, Yellow, Orange", minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Purple",                minimum_age=12, maximum_age=14, ring_info=[[2,'A','Z']], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",     minimum_age=12, maximum_age=14, ring_info=[[3,'A','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",   minimum_age=12, maximum_age=14, ring_info=[[4,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Brown",                 minimum_age=12, maximum_age=14, ring_info=[[5,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, ring_info=[[6,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, ring_info=[[2,'A','L'],[3,'M',"Z"]], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, ring_info=[[4,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, ring_info=[[5,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
 
             ###############################################################################
             #  Young Adult Men's Sparring - 15-17 year olds
             #
+            #@formatter:off
             reports.ExcelFileOutput.writePattern2ToExcelViaQuery(output_folder_path=output_folder_path, filename="YoungAdultMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=15, maximum_age=17,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, ring_info=[[ 7,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, ring_info=[[ 8,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, ring_info=[[ 9,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Brown",                     minimum_age=15, maximum_age=17, ring_info=[[10,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, ring_info=[[11,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, ring_info=[[ 6,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, ring_info=[[ 7,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, ring_info=[[ 8,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Brown",                     minimum_age=15, maximum_age=17, ring_info=[[ 9,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Young Adult Men's Sparring",gender="Male", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, ring_info=[[10 ,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
             ###############################################################################
-            #  Women's Sparring - 18-39 year olds
+            # Men And Women's Kata - 18-39 year olds
             #
-            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="WomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=18, maximum_age=39,clean_df=clean_df)
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern6ToExcelViaQuery(output_folder_path=output_folder_path, filename="MenAndWomensKata.xlsx", division_type='Forms', gender="*",minimum_age=18, maximum_age=39,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, ring_info=[[14,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="1:30pm",division_name="Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=18, maximum_age=39, ring_info=[[15,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="White, Yellow, Orange",        minimum_age=18, maximum_age=39, ring_info=[[11,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT, constants.ORANGE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Purple, Blue, Blue w/Stripe",  minimum_age=18, maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.PURPLE_BELT, constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Green, Green w/Stripe, Brown", minimum_age=18, maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="1:30pm",division_name="Men's & Women's Kata",gender="*", rank_label="Black",                        minimum_age=18, maximum_age=39, ring_info=[[14,'A','L']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ###############################################################################
             # Senior Techniques 40+ year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[16,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[17,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Black",                      minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[15,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[16,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[17,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="1:30am",division_name="Senior Techniques",gender="*", rank_label="Black",                      minimum_age=40,  maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ### 2:15 Events
+            ###############################################################################
+            #  Teen Boy's Sparring - 12-14 year olds
+            #
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern2ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenBoysSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=12, maximum_age=14,clean_df=clean_df)
+
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="White, Yellow, Orange", minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Purple",                minimum_age=12, maximum_age=14, ring_info=[[2,'A','Z']], ranks=[constants.PURPLE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Blue, Blue/Stripe",     minimum_age=12, maximum_age=14, ring_info=[[3,'A','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Green, Green/Stripe",   minimum_age=12, maximum_age=14, ring_info=[[4,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Brown",                 minimum_age=12, maximum_age=14, ring_info=[[5,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Teen Boy's Sparring",gender="Male", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, ring_info=[[6,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
+            ###############################################################################
+            # Young Adult Kata - 15-17 year olds
+            #
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="YoungAdultKata.xlsx", division_type='Forms', gender="*",minimum_age=15, maximum_age=17,clean_df=clean_df)
+
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, ring_info=[[7,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, ring_info=[[8,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, ring_info=[[9,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Brown",                     minimum_age=15, maximum_age=17, ring_info=[[10,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Young Adult Kata",gender="*",rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, ring_info=[[11,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+
+
+            ###############################################################################
+            # Men & Women Techniques 18-39 year olds
+            #
+            #@formatter:off
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Men & Women Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=18,  maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Men & Women Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=18,  maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Men & Women Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=18,  maximum_age=39, ring_info=[[14,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Men & Women Techniques",gender="*", rank_label="Black",                      minimum_age=18,  maximum_age=39, ring_info=[[15,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+
+
+            ###############################################################################
+            # Senior Women's Sparring - 40+ year olds
+            #
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="SeniorWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=40, maximum_age=constants.AGELESS,clean_df=clean_df)
+
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[16,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[17,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+
+
+            ### 3:00 Events
 
             ###############################################################################
             # Teen Kata - 12-14 year olds
             #
             reports.ExcelFileOutput.writePattern6ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenKata.xlsx", division_type='Forms', gender="*",minimum_age=12, maximum_age=14,clean_df=clean_df)
 
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']],             ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, ring_info=[[2,'A','Z']],             ranks=[constants.ORANGE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Purple",                minimum_age=12, maximum_age=14, ring_info=[[3,'A','Z']],             ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=12, maximum_age=14, ring_info=[[4,'A','L'],[5,'M','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=12, maximum_age=14, ring_info=[[6,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, ring_info=[[8,'A','Z']],             ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="2:15pm",division_name="Teen Kata",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, ring_info=[[9,'A','Z']],             ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="White, Yellow",         minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']],             ranks=[constants.WHITE_BELT,constants.YELLOW_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Orange",                minimum_age=12, maximum_age=14, ring_info=[[2,'A','Z']],             ranks=[constants.ORANGE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Purple",                minimum_age=12, maximum_age=14, ring_info=[[3,'A','Z']],             ranks=[constants.PURPLE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=12, maximum_age=14, ring_info=[[4,'A','L'],[5,'M','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=12, maximum_age=14, ring_info=[[6,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Brown",                 minimum_age=12, maximum_age=14, ring_info=[[8,'A','Z']],             ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Teen Kata",gender="*", rank_label="Jr. Black",             minimum_age=12, maximum_age=14, ring_info=[[9,'A','Z']],             ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ###############################################################################
             # Young Adult Techniques 15-17 year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=15,  maximum_age=17, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=15,  maximum_age=17, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=15,  maximum_age=17, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="2:15",division_name="Young Adult Techniques",gender="*", rank_label="Jr. Black & Black",                  minimum_age=15,  maximum_age=17, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=15,  maximum_age=17, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=15,  maximum_age=17, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=15,  maximum_age=17, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Techniques",gender="*", rank_label="Jr. Black & Black",          minimum_age=15,  maximum_age=17, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ###############################################################################
-            #  Men's Sparring - 18-39 year olds
+            #  Women's Sparring - 18-39 year olds
             #
-            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="MensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=18, maximum_age=39,clean_df=clean_df)
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="WomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=18, maximum_age=39,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, ring_info=[[14,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, ring_info=[[15,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, ring_info=[[16,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=18, maximum_age=39, ring_info=[[17,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, ring_info=[[14,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, ring_info=[[15,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, ring_info=[[16,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=18, maximum_age=39, ring_info=[[17,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
             ###############################################################################
             # Senior Men's Sparring - 40+ year olds
             #
+            #@formatter:off
             reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="SeniorMensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=40, maximum_age=constants.AGELESS,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[20,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="2:15pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[21,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
-
-
-            ### 3:00 Events
-
-            ###############################################################################
-            # Teen Techniques 12-14 year olds
-            #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00",division_name="Teen Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=12,  maximum_age=14, ring_info=[[1,'A','Z']],             ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00",division_name="Teen Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=12,  maximum_age=14, ring_info=[[2,'A','L'],[2,'M','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00",division_name="Teen Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=12,  maximum_age=14, ring_info=[[3,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:00",division_name="Teen Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=12,  maximum_age=14, ring_info=[[4,'A','Z']],             ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
-            ###############################################################################
-            # Young Adult Kata - 15-17 year olds
-            #
-            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="YoungAdultKata.xlsx", division_type='Forms', gender="*",minimum_age=15, maximum_age=17,clean_df=clean_df)
-
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Kata",gender="*",rank_label="White,Yellow,Orange",       minimum_age=15, maximum_age=17, ring_info=[[5,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Kata",gender="*",rank_label="Purple, Blue, Blue/Stripe", minimum_age=15, maximum_age=17, ring_info=[[6,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Kata",gender="*",rank_label="Green, Green/Stripe",       minimum_age=15, maximum_age=17, ring_info=[[7,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Kata",gender="*",rank_label="Brown",                     minimum_age=15, maximum_age=17, ring_info=[[8,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Young Adult Kata",gender="*",rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, ring_info=[[9,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
-
-            ###############################################################################
-            # Men And Women's Kata - 18-39 year olds
-            #
-            reports.ExcelFileOutput.writePattern6ToExcelViaQuery(output_folder_path=output_folder_path, filename="MenAndWomensKata.xlsx", division_type='Forms', gender="*",minimum_age=18, maximum_age=39,clean_df=clean_df)
-
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="White, Yellow, Orange", minimum_age=18, maximum_age=39, ring_info=[[10,'A','Z']],              ranks=[constants.WHITE_BELT,constants.YELLOW_BELT, constants.ORANGE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="Purple",                minimum_age=18, maximum_age=39, ring_info=[[12,'A','Z']],              ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=18, maximum_age=39, ring_info=[[13,'A','Z']],              ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=18, maximum_age=39, ring_info=[[14,'A','Z']],              ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="Brown",                 minimum_age=18, maximum_age=39, ring_info=[[15,'A','Z']],              ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:00pm",division_name="Men's & Women's Kata",gender="*", rank_label="Black",                 minimum_age=18, maximum_age=39, ring_info=[[16,'A','L'],[17,'M','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
-
-            ###############################################################################
-            # Senior Women's Sparring - 40+ year olds
-            #
-            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="SeniorWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=40, maximum_age=constants.AGELESS,clean_df=clean_df)
-
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[20,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Women's Sparring",gender="Female", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[21,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[20,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:00pm",division_name="Sr. Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[21,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
 
             ### 3:45 Events
 
-            ###############################################################################
-            # Teen Girl's Sparring - 12-14 year olds
-            #
-            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="TeenGirlSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=12, maximum_age=14,clean_df=clean_df)
 
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=12, maximum_age=14, ring_info=[[1,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Purple, Blue, Blue/Stripe", minimum_age=12, maximum_age=14, ring_info=[[2,'A','L'],[3,'M',"Z"]], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=12, maximum_age=14, ring_info=[[4,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
-            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Teen Girl's Sparring",gender="Female", rank_label="Jr. Black",                 minimum_age=12, maximum_age=14, ring_info=[[5,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
+            ###############################################################################
+            # Teen Techniques 12-14 year olds
+            #
+            #@formatter:off
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Teen Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=12,  maximum_age=14, ring_info=[[1,'A','Z']],             ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Teen Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=12,  maximum_age=14, ring_info=[[2,'A','L'],[3,'M','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Teen Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=12,  maximum_age=14, ring_info=[[4,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Teen Techniques",gender="*", rank_label="Jr. Black",                  minimum_age=12,  maximum_age=14, ring_info=[[5,'A','Z']],             ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
 
             ###############################################################################
             #  Young Adult Women's Sparring - 15-17 year olds
             #
+            #@formatter:off
             reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="YoungAdultWomensSparring.xlsx", division_type='Sparring', gender="Female",minimum_age=15, maximum_age=17,clean_df=clean_df)
 
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="White, Yellow, Orange",     minimum_age=15, maximum_age=17, ring_info=[[6,'A','Z']],  ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
@@ -524,42 +529,41 @@ class LoadTournamentTable:
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Green, Green/Stripe, Brown",minimum_age=15, maximum_age=17, ring_info=[[8,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
             self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Young Adult Women's Sparring",gender="Female", rank_label="Jr. Black & Black",         minimum_age=15, maximum_age=17, ring_info=[[9,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
-
             ###############################################################################
-            # Men & Women Techniques 18-39 year olds
+            #  Men's Sparring - 18-39 year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=18,  maximum_age=39, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=18,  maximum_age=39, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=18,  maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="3:45",division_name="Men & Women Techniques",gender="*", rank_label="Black",                  minimum_age=18,  maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+            #@formatter:off
+            reports.ExcelFileOutput.writePattern1ToExcelViaQuery(output_folder_path=output_folder_path, filename="MensSparring.xlsx", division_type='Sparring', gender="Male",minimum_age=18, maximum_age=39,clean_df=clean_df)
 
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Men's Sparring",gender="Male", rank_label="White, Yellow, Orange",     minimum_age=18, maximum_age=39, ring_info=[[10,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Men's Sparring",gender="Male", rank_label="Purple, Blue, Blue/Stripe", minimum_age=18, maximum_age=39, ring_info=[[11,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Men's Sparring",gender="Male", rank_label="Green, Green/Stripe, Brown",minimum_age=18, maximum_age=39, ring_info=[[12,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT],clean_df=clean_df)
+            self.writeSingleSparringTreeandDivisionReport(event_time="3:45pm",division_name="Men's Sparring",gender="Male", rank_label="Black",                     minimum_age=18, maximum_age=39, ring_info=[[13,'A','Z']], ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],clean_df=clean_df)
 
             ###############################################################################
             # Senior Kata - 40+ year olds
             #
+            #@formatter:off
             reports.ExcelFileOutput.writePattern6ToExcelViaQuery(output_folder_path=output_folder_path, filename="SeniorKata.xlsx", division_type='Forms', gender="*",minimum_age=40, maximum_age=constants.AGELESS,clean_df=clean_df)
 
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow, Orange", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[14,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple",                minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[16,'A','Z']], ranks=[constants.PURPLE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Blue, Blue w/Stripe",   minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[17,'A','Z']], ranks=[constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[18,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Brown",                 minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[19,'A','Z']], ranks=[constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
-            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                 minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[20,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
-
-            # Done to here re-aligning events for Nov 2024 Tournament
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="White, Yellow, Orange",        minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[14,'A','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Purple, Blue, Blue w/Stripe",  minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[15,'A','Z']], ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Green, Green w/Stripe, Brown", minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[16,'A','Z']], ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
+            self.writeSingleKataScoreSheetandDivisionReport(event_time="3:45pm",division_name="Senior Kata",gender="*", rank_label="Black",                        minimum_age=40, maximum_age=constants.AGELESS, ring_info=[[17,'A','Z']], ranks=[constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
             ### 4:15 Events
 
             ###############################################################################
             #  WeaponsDivision4 12-17 White-Blue Stripe year olds
             #
+            #@formatter:off
             reports.ExcelFileOutput.writeWeaponsDivision4ToExcelViaQuery(output_folder_path=output_folder_path, filename="WeaponsDivision4.xlsx", division_type='Weapons', gender="*", minimum_age=12, maximum_age=17, clean_df=clean_df)
             self.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(event_time="4:15pm",
                                                                         division_name="Weapons Division 4",
                                                                         gender="*",
                                                                         rank_label="White - Blue w/Green Stripe",
                                                                         minimum_age=12, maximum_age=17,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[3,'A','Z']],
                                                                         ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
                                                                                constants.ORANGE_BELT,constants.PURPLE_BELT,
                                                                                constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
@@ -575,7 +579,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="White - Blue w/Green Stripe",
                                                                         minimum_age=18, maximum_age=constants.AGELESS,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[4,'A','Z']],
                                                                         ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,
                                                                                constants.ORANGE_BELT,constants.PURPLE_BELT,
                                                                                constants.BLUE_BELT,constants.BLUE_STRIPE_BELT],
@@ -590,7 +594,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="Green, Green w/Brown Stripe",
                                                                         minimum_age=12,maximum_age=constants.AGELESS,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[11,'A','Z']],
                                                                         ranks=[constants.GREEN_BELT,
                                                                                constants.GREEN_STRIPE_BELT],
                                                                         clean_df=clean_df)
@@ -604,7 +608,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="Brown",
                                                                         minimum_age=12,maximum_age=17,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[12,'A','Z']],
                                                                         ranks=[constants.THIRD_DEGREE_BROWN_BELT,
                                                                                constants.SECOND_DEGREE_BROWN_BELT,
                                                                                constants.FIRST_DEGREE_BROWN_BELT],
@@ -619,7 +623,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="Brown",
                                                                         minimum_age=18,maximum_age=constants.AGELESS,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[22,'A','Z']],
                                                                         ranks=[constants.FIRST_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.THIRD_DEGREE_BROWN_BELT],
                                                                         clean_df=clean_df)
 
@@ -632,7 +636,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="Jr. Black & Black",
                                                                         minimum_age=12,maximum_age=17,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[2,'A','Z']],
                                                                         ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],
                                                                         clean_df=clean_df)
 
@@ -645,7 +649,7 @@ class LoadTournamentTable:
                                                                         gender="*",
                                                                         rank_label="Black",
                                                                         minimum_age=18,maximum_age=constants.AGELESS,
-                                                                        ring_info=[['*TBA','A','Z']],
+                                                                        ring_info=[[1,'A','Z']],
                                                                         ranks=[constants.JUNIOR_BLACK_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT,constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT],
                                                                         clean_df=clean_df)
 

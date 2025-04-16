@@ -10,7 +10,7 @@ from reportlab.lib.utils import ImageReader
 from domain_model.competitors import Competitors
 from reports.sparring_tree.base_sparring_tree import SparringTree
 
-class EightCompetitorTree(SparringTree):
+class NewEightCompetitorTree(SparringTree):
     """ Creates an 8 compettitor sparring tree"""
 
     # setup a couple of constants for this tree
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     new_path = Path(__file__).resolve().parents[2]
     os.chdir(new_path)
 
-    tree = EightCompetitorTree(c, "test_file.csv")
+    tree = NewEightCompetitorTree(c, "test_file.csv")
     tree.draw_static_template()
     tree.close()
     c.save()

@@ -243,7 +243,6 @@ class DataValidationController():
     def process_data(self):
         # Save the database to file
         save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
-        save_file_name = os.path.basename(save_file_name)
         save_file_name=filedialog.asksaveasfilename(filetypes=[("csv","*.csv")],initialfile=save_file_name,title='Save Data as...')
         if(save_file_name != ''):
             logging.info(f"Saving processed file to {save_file_name}")

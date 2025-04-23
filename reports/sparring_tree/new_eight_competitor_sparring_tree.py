@@ -5,16 +5,27 @@ import datetime
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import cm
+from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
 
 from domain_model.competitors import Competitors
 from reports.sparring_tree.base_sparring_tree import SparringTree
 
+# tbd - refactor this to a utility module
+def pathDelimiter():
+    path = os.getcwd()
+    if "\\" in path:
+        delimiter = "\\"  # Windows
+    else:
+        delimiter = "/"  # Unix
+    return delimiter
+
+
 class NewEightCompetitorTree(SparringTree):
     """ Creates an 8 compettitor sparring tree"""
 
     # setup a couple of constants for this tree
-    _OFFSET_BETWEEN_BRANCHES_ON_TREE = 4.8
+    _OFFSET_BETWEEN_BRANCHES_ON_TREE = 5 # 5 cm
     _SPACE_BELOW_TEXT = 0.1
 
     _c = None
@@ -76,52 +87,48 @@ class NewEightCompetitorTree(SparringTree):
         self.draw_box(left + 1.6, top)
 
     def draw_static_template(self):
-        """ Draws the static template portion of the tree"""
-        # First bracket
+        # Draw the logo from the specified file
+        logo = ImageReader('Z Ultimate Logo Rectangle-1Inch-300DPI.png')
+        self._c.drawImage(logo, 1 * cm, 26.125 * cm, 1.25 * cm, 1.75 * cm, mask='auto')
+
+        # Draw the static template portion of the tree - Note this template must be less than 3.5 inches tall (currently set for a 2482 x 931 300 dpi image)
+        backgroundImageFilename='reports'+pathDelimiter()+'sparring_tree'+pathDelimiter()+'sparring_tree_template-300dpi.png'  #<--comment out for stand-alone testing
+        #backgroundImageFilename='sparring_tree_template-300dpi.png'  #<--un-comment for stand-alone testing
+        backgroundImage = ImageReader(backgroundImageFilename)
+        width,height=letter
+        yposition = height - 3.1 * inch
+        self._c.drawImage(backgroundImage, 0, yposition, 8.27 * inch, 3.10 * inch, mask='auto')
+        # self._c.drawImage(backgroundImage, 0, yposition, width=None, height=None, preserveAspectRatio=True, mask='auto')
+
+
+        # """ Draws the static template portion of the tree"""
+        # # First bracket
         for i in range(4):
             offset = i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE
-            self._path.moveTo(.8 * cm, (3.8 + offset) * cm)  # .8 cm to the right, 3.8 cm up
-            self._path.lineTo(6 * cm, (3.8 + offset) * cm)
-            self._path.lineTo(7.2 * cm, (5 + offset) * cm)
-            self._path.lineTo(6 * cm, (6 + offset) * cm)
-            self._path.lineTo(.8 * cm, (6 + offset) * cm)
-            self.draw_boxes(1.5, 3.8 + offset)
-            self.draw_boxes(1.5, 6 + offset)
+            self._path.moveTo(.8 * cm, (1.5 + offset) * cm)  # .8 cm to the right, 1.5 cm up
+            self._path.lineTo(6 * cm, (1.5 + offset) * cm)
+
+            self._path.lineTo(7.2 * cm, (2.5 + offset) * cm)
+            self._path.lineTo(6 * cm, (3.5 + offset) * cm)
+            self._path.lineTo(.8 * cm, (3.5 + offset) * cm)
+
+            self.draw_boxes(1.5, 1.5 + offset )
+            self.draw_boxes(1.5, 3.5 + offset )
 
         # Second bracket
+        round_indicator = ['D', 'C']
         for i in range(2):
             offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 2)
-            self._path.moveTo(7.2 * cm, (5 + offset) * cm)  # 7.2 cm to the right, 5 cm up
-            self._path.lineTo(12.4 * cm, (5 + offset) * cm)
-            # self._path.lineTo(15.2 * cm, (7.5 + offset) * cm) # last minute change for Spring 2023 tournament
-            # self._path.lineTo(12.4 * cm, (9.8 + offset) * cm) # last minute change for Spring 2023 tournament
-            self._path.moveTo(12.4 * cm, (9.8 + offset) * cm)
-            self._path.lineTo(7.2 * cm, (9.8 + offset) * cm)
-            self.draw_boxes(7.9, 5 + offset)
-            self.draw_boxes(7.9, 9.8 + offset)
+            self._path.moveTo(7.2 * cm, (2.5 + offset) * cm)  # 7.2 cm to the right, 2.5 cm up
+            self._path.lineTo(12.4 * cm, (2.5 + offset) * cm)
+            self._c.drawString(8 * cm, (2.1 + offset) * cm, f"Advance to round {round_indicator[i]}")
+            self._path.moveTo(12.4 * cm, (7.5 + offset) * cm)
+            self._path.lineTo(7.2 * cm, (7.5 + offset) * cm)
+            self._c.drawString(8 * cm, (7.1 + offset) * cm, f"Advance to round {round_indicator[i]}")
+            # no need for boxes n second bracket
+            # self.draw_boxes(7.9, 2.5 + offset)
+            # self.draw_boxes(7.9, 7.5 + offset)
 
-        # last minute change for Spring 2023 tournament
-        # # third bracket
-        # self._path.moveTo(15.2 * cm, 7.5 * cm)  # 15.2 cm to the right, 7.5 cm up
-        # self._path.lineTo(20.4 * cm, 7.5 * cm)
-        # self._path.moveTo(15.2 * cm, 17.1 * cm)
-        # self._path.lineTo(20.4 * cm, 17.1 * cm)
-        #
-        # self.draw_boxes(16.0, 7.5)  # 16 cm to the right and 7.4 cm up
-        # self.draw_boxes(16.0, 17.1)
-
-        # #self._c.drawString(14.25 * cm, 4.6 * cm, "Third:")
-        # self._path.moveTo( 15.3 * cm ,4.5 * cm)
-        # self._path.lineTo( 21.4 * cm, 4.5 * cm)
-        #
-        # #self._c.drawString(14 * cm, 2.6 * cm, "Fourth:")
-        # self._path.moveTo( 15.3 * cm ,2.5 * cm)
-        # self._path.lineTo( 21.4 * cm, 2.5 * cm)
-
-        # logo = ImageReader('Z_LOGO_OneInch.jpg')
-        # self._c.drawImage(logo, 10.16 * cm, 23.4 * cm, mask='auto')
-        logo = ImageReader('Z Ultimate Logo Rectangle-1Inch-300DPI.png')
-        self._c.drawImage(logo, 1 * cm, 24 * cm, 2.5 * cm, 3.5 * cm, mask='auto')
 
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):

@@ -1,4 +1,5 @@
 """ this module contains code to create an 8 person sparring tree"""
+import os
 import logging
 import datetime
 
@@ -47,12 +48,11 @@ class NewEightCompetitorTree(SparringTree):
 
 
     def initialize_text_coordinates(self):
-        '''initialize the text coordinates, two columns of x,y coordinate of where names gets drawn'''
 
         # calculate first column text coordinates top of the page to the bottom
         self._first_column_text_coordinates = []
-        initial_first_column_text_coords = [[.9, 20.4 + self._SPACE_BELOW_TEXT],
-                                            [.9, 18.2 + self._SPACE_BELOW_TEXT]]
+        initial_first_column_text_coords = [[.8, 18 + self._SPACE_BELOW_TEXT],
+                                            [.8, 16 + self._SPACE_BELOW_TEXT]]
         for i in range(4):
             offset = self.truncate(i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE, 1)
             self._first_column_text_coordinates.append([initial_first_column_text_coords[0][0],
@@ -63,12 +63,11 @@ class NewEightCompetitorTree(SparringTree):
                                                                       1)])
 
         self._second_column_text_coordinates = []
-        initial_second_column_text_coords = [7.2, 19.4 + self._SPACE_BELOW_TEXT]
+        initial_second_column_text_coords = [7.2, 17 + self._SPACE_BELOW_TEXT]
         for i in range(4):
             offset = self.truncate(i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE, 1)
             self._second_column_text_coordinates.append(
                 [initial_second_column_text_coords[0], self.truncate(initial_second_column_text_coords[1] - offset, 1)])
-        i = 0
 
     def draw_box(self, left, top):
         ''' draw a single checkbox at the coordinates provided '''
@@ -89,15 +88,16 @@ class NewEightCompetitorTree(SparringTree):
     def draw_static_template(self):
         # Draw the logo from the specified file
         logo = ImageReader('Z Ultimate Logo Rectangle-1Inch-300DPI.png')
-        self._c.drawImage(logo, 1 * cm, 26.125 * cm, 1.25 * cm, 1.75 * cm, mask='auto')
+        self._c.drawImage(logo, 1 * cm, 25.4 * cm, 1.875 * cm, 2.625 * cm, mask='auto')
 
         # Draw the static template portion of the tree - Note this template must be less than 3.5 inches tall (currently set for a 2482 x 931 300 dpi image)
         backgroundImageFilename='reports'+pathDelimiter()+'sparring_tree'+pathDelimiter()+'sparring_tree_template-300dpi.png'  #<--comment out for stand-alone testing
         #backgroundImageFilename='sparring_tree_template-300dpi.png'  #<--un-comment for stand-alone testing
         backgroundImage = ImageReader(backgroundImageFilename)
-        width,height=letter
-        yposition = height - 3.1 * inch
-        self._c.drawImage(backgroundImage, 0, yposition, 8.27 * inch, 3.10 * inch, mask='auto')
+        image_width, image_height = backgroundImage.getSize()
+        page_width,page_height=letter
+        yposition = page_height - ((image_height / 300) * inch)
+        self._c.drawImage(backgroundImage, 0, yposition, (image_width / 300) * inch, (image_height / 300 ) * inch, mask='auto')
         # self._c.drawImage(backgroundImage, 0, yposition, width=None, height=None, preserveAspectRatio=True, mask='auto')
 
 
@@ -105,26 +105,26 @@ class NewEightCompetitorTree(SparringTree):
         # # First bracket
         for i in range(4):
             offset = i * self._OFFSET_BETWEEN_BRANCHES_ON_TREE
-            self._path.moveTo(.8 * cm, (1.5 + offset) * cm)  # .8 cm to the right, 1.5 cm up
-            self._path.lineTo(6 * cm, (1.5 + offset) * cm)
+            self._path.moveTo(.8 * cm, (1.0 + offset) * cm)  # .8 cm to the right, 1.5 cm up
+            self._path.lineTo(6 * cm, (1.0 + offset) * cm)
 
-            self._path.lineTo(7.2 * cm, (2.5 + offset) * cm)
-            self._path.lineTo(6 * cm, (3.5 + offset) * cm)
-            self._path.lineTo(.8 * cm, (3.5 + offset) * cm)
+            self._path.lineTo(7.2 * cm, (2.0 + offset) * cm)
+            self._path.lineTo(6 * cm, (3.0 + offset) * cm)
+            self._path.lineTo(.8 * cm, (3.0 + offset) * cm)
 
-            self.draw_boxes(1.5, 1.5 + offset )
-            self.draw_boxes(1.5, 3.5 + offset )
+            self.draw_boxes(1.5, 1 + offset )
+            self.draw_boxes(1.5, 3 + offset )
 
         # Second bracket
         round_indicator = ['D', 'C']
         for i in range(2):
             offset = i * (self._OFFSET_BETWEEN_BRANCHES_ON_TREE * 2)
-            self._path.moveTo(7.2 * cm, (2.5 + offset) * cm)  # 7.2 cm to the right, 2.5 cm up
-            self._path.lineTo(12.4 * cm, (2.5 + offset) * cm)
-            self._c.drawString(8 * cm, (2.1 + offset) * cm, f"Advance to round {round_indicator[i]}")
-            self._path.moveTo(12.4 * cm, (7.5 + offset) * cm)
-            self._path.lineTo(7.2 * cm, (7.5 + offset) * cm)
-            self._c.drawString(8 * cm, (7.1 + offset) * cm, f"Advance to round {round_indicator[i]}")
+            self._path.moveTo(7.2 * cm, (2.0 + offset) * cm)  # 7.2 cm to the right, 2.5 cm up
+            self._path.lineTo(12.4 * cm, (2.0 + offset) * cm)
+            self._c.drawString(8 * cm, (1.6 + offset) * cm, f"Advance to round {round_indicator[i]}")
+            self._path.moveTo(12.4 * cm, (7.0 + offset) * cm)
+            self._path.lineTo(7.2 * cm, (7.0 + offset) * cm)
+            self._c.drawString(8 * cm, (6.6 + offset) * cm, f"Advance to round {round_indicator[i]}")
             # no need for boxes n second bracket
             # self.draw_boxes(7.9, 2.5 + offset)
             # self.draw_boxes(7.9, 7.5 + offset)
@@ -133,35 +133,31 @@ class NewEightCompetitorTree(SparringTree):
 
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):
         ''' draw the header text onto the tree '''
-        # self._c.drawString(13 * cm, 26.5 * cm, "Time:")
-        # self._c.drawString(14.3 * cm, 26.5 * cm, event_time)
-        # self._c.drawString(13 * cm, 25.75 * cm, "Event:")
-        # self._c.drawString(14.3 * cm, 25.75 * cm, event_title)
-        # self._c.drawString(13 * cm, 25 * cm, "Rank:")
-        # self._c.drawString(14.3 * cm, 25 * cm, ranks)
-        # self._c.drawString(13 * cm, 24.25 * cm, "Ring#:")
-        # self._c.drawString(14.3 * cm, 24.25 * cm, str(ring))
-        # if split_label != '':
-        #     self._c.setFillColorRGB(255,0,0)
-        #     self._c.drawString(15 * cm, 24.25 * cm, 'Contestants '+ split_label)
-        #     self._c.setFillColorRGB(0, 0, 0)
-        # self._c.drawString(13 * cm, 23.5 *cm, "Competitors:")
-        # self._c.drawString(15.5 *cm, 23.5 *cm, "{}".format(number_of_competitors))
-        self._c.drawString(12.5 * cm, 26.5 * cm, "Ring:")
-        self._c.drawString(14.3 * cm, 26.5 * cm, f'{ring}   {event_time}')
-        self._c.drawString(12.5 * cm, 25.75 * cm, "Division:")
-        self._c.drawString(14.3 * cm, 25.75 * cm, event_title)
-        self._c.drawString(12.5 * cm, 25 * cm, "Age:")
-        self._c.drawString(14.3 * cm, 25 * cm, age)
+        # Define the starting position and the total height for the header
+        top_y = 27.5 * cm  # Starting y-coordinate
+        height = .9 * inch  # Total height for the header (3/4 inch)
+        line_spacing = height / 5  # Divide the height evenly for 5 fields
+
+        # Draw each field with adjusted vertical spacing
+        self._c.drawString(12.5 * cm, top_y, "Ring:")
+        self._c.drawString(14.3 * cm, top_y, f'{ring}   {event_time}')
+
+        self._c.drawString(12.5 * cm, top_y - line_spacing, "Division:")
+        self._c.drawString(14.3 * cm, top_y - line_spacing, event_title)
+
+        self._c.drawString(12.5 * cm, top_y - 2 * line_spacing, "Age:")
+        self._c.drawString(14.3 * cm, top_y - 2 * line_spacing, age)
+
         if split_label != '':
-            self._c.setFillColorRGB(255,0,0)
-            self._c.drawString(15.5 * cm, 25 * cm, 'Contestants '+ split_label)
+            self._c.setFillColorRGB(255, 0, 0)
+            self._c.drawString(15.5 * cm, top_y - 2 * line_spacing, 'Contestants ' + split_label)
             self._c.setFillColorRGB(0, 0, 0)
 
-        self._c.drawString(12.5 * cm, 24.25 * cm, "Ranks:")
-        self._c.drawString(14.3 * cm, 24.25 * cm, ranks)
-        self._c.drawString(12.5 * cm, 23.5 *cm, "Competitors:")
-        self._c.drawString(15.5 *cm, 23.5 *cm, "{}".format(number_of_competitors))
+        self._c.drawString(12.5 * cm, top_y - 3 * line_spacing, "Ranks:")
+        self._c.drawString(14.3 * cm, top_y - 3 * line_spacing, ranks)
+
+        self._c.drawString(12.5 * cm, top_y - 4 * line_spacing, "Competitors:")
+        self._c.drawString(15.5 * cm, top_y - 4 * line_spacing, "{}".format(number_of_competitors))
 
         #write the footer as well
         self._c.saveState()

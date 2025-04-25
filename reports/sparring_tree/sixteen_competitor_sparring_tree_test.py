@@ -233,6 +233,12 @@ class TestSixteenCompetitorTree(unittest.TestCase):
         # get the first and second column test coordinates from the tree
         # run the algorythm to map competitors into the tree
         # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
+
+        # set the cwd to the project root
+        # path = os.getcwd()
+        new_path = Path(__file__).resolve().parents[2]
+        os.chdir(new_path)
+
         the_competitors = Competitors(TEST_DATA,
                                       columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 

@@ -12,7 +12,7 @@ from reportlab.pdfgen import canvas
 import reports
 from domain_model.competitors import Competitors
 from reports.sparring_tree.new_eight_competitor_sparring_tree import NewEightCompetitorTree
-from reports.sparring_tree.sixteen_competitor_sparring_tree import SixteenCompetitorTree
+from reports.sparring_tree.new_sixteen_competitor_sparring_tree import NewSixteenCompetitorTree
 from reports.sparring_tree.thirtytwo_competitor_sparring_tree import ThirtyTwoCompetitorTree
 from reports.sparring_tree.base_sparring_tree import SparringTree
 
@@ -32,7 +32,7 @@ def create_sparring_tree( letter_canvas: canvas, legal_canvas: canvas, number_of
     if number_of_competitors <= 8:
         the_tree = NewEightCompetitorTree(letter_canvas, the_source_filename)
     elif number_of_competitors <= 16:
-        the_tree = SixteenCompetitorTree(letter_canvas, the_source_filename)
+        the_tree = NewSixteenCompetitorTree(letter_canvas, the_source_filename)
     elif number_of_competitors <= 32:
         the_tree = ThirtyTwoCompetitorTree(legal_canvas, the_source_filename)
     return the_tree

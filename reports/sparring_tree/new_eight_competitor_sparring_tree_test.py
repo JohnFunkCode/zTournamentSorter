@@ -39,6 +39,13 @@ TEST_DATA = [(1, 'Katie', 'Coleson', 'Female', 'CO- Parker', 12, 'White', 4, 0, 
 class TestNewNewEightCompetitorTree(unittest.TestCase):
     ''' class to test the EightCompettitorTree code'''
 
+    @classmethod
+    def setUpClass(cls):
+        '''Set the cwd to the project root before any tests run'''
+        new_path = Path(__file__).resolve().parents[2]
+        os.chdir(new_path)
+
+
     def setUp(self):
         ''' create a directory for all the test reports'''
         try:
@@ -48,11 +55,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
         return
 
     def test_creating_a_file(self):
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
-
         ''' simple test to make sure we can create a file with the template code in it'''
         test_file_name = "reports//sparring_tree//testoutput//8PersonTree_Create_File.pdf"
         test_canvas = canvas.Canvas(test_file_name)
@@ -68,10 +70,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_creating_a_file_with_two_tree(self):
         ''' tests that we can create a PDF with multiple sparring trees in it'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         test_file_name = "reports//sparring_tree//testoutput//8PersonTree_Two_Trees.pdf"
         test_canvas = canvas.Canvas(test_file_name)
@@ -92,10 +90,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_initialize_text_coordinates(self):
         ''' test to make sure the text coordinates are initialized '''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         test_file_name = "reports//sparring_tree//testoutput//8PersonTree_Init_Text_Coords.pdf"
         test_canvas = canvas.Canvas(test_file_name)
@@ -114,10 +108,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_8_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup an 8 person tree
         test_file_name = "reports//sparring_tree//testoutput//8PersonTree.pdf"
@@ -145,10 +135,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_7_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup an 7 person tree
         test_file_name = "reports//sparring_tree//testoutput//7PersonTree.pdf"
@@ -175,10 +161,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_6_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup 6 person tree
         test_file_name = "reports//sparring_tree//testoutput//6PersonTree.pdf"
@@ -205,10 +187,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_5_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup 5 person tree
         test_file_name = "reports//sparring_tree//testoutput//5PersonTree.pdf"
@@ -235,10 +213,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_4_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup 4 person tree
         test_file_name = "reports//sparring_tree//testoutput//4PersonTree.pdf"
@@ -265,10 +239,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_3_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup 3 person tree
         test_file_name = "reports//sparring_tree//testoutput//3PersonTree_full_page.pdf"
@@ -296,11 +266,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
     def test_draw_2_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
 
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
-
         # setup 2 person tree
         test_file_name = "reports//sparring_tree//testoutput//2PersonTree_full_page.pdf"
         test_canvas = canvas.Canvas(test_file_name)
@@ -326,10 +291,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
 
     def test_draw_1_names_on_tree(self):
         ''' tests to make sure the names in an 8 person tree get put in the right place'''
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         # setup 1 person tree
         test_file_name = "reports//sparring_tree//testoutput//1PersonTree_full_page.pdf"
@@ -361,11 +322,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
         #run the algorythm to map competitors into the tree
         # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
 
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
-
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 
         # setup an 8 person tree
@@ -393,12 +349,6 @@ class TestNewNewEightCompetitorTree(unittest.TestCase):
         #get the first and second column test coordinates from the tree
         #run the algorythm to map competitors into the tree
         # description of how to add a new column to an existing dataframe https://www.geeksforgeeks.org/adding-new-column-to-existing-dataframe-in-pandas/
-
-
-        # set the cwd to the project root
-        # path = os.getcwd()
-        new_path = Path(__file__).resolve().parents[2]
-        os.chdir(new_path)
 
         the_competitors = Competitors(TEST_DATA, columns=TEST_DATA_COLUMNS)  # create a list of competitors from the test data above
 

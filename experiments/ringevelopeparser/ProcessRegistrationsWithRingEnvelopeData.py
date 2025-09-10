@@ -7,7 +7,7 @@ import pandas as pd
 # from pandas.core.interchange.dataframe_protocol import DataFrame
 
 from LoadTournamentTable import LoadTournamentTable
-from ring_envelope_parser import RingCollection
+from experiments.ringevelopeparser.ring_envelope_parser import RingCollection
 
 from cleaninput import cleaninput as CI
 from cleaninput import rename_colums as RN
@@ -38,6 +38,8 @@ def classify_division( division_name: str):
         assert False, "Error: Invalid division_name"
 
 def process_registrations_with_ring_envelope_data(ring_definition_file_name: str, registration_file_name:str, clean_df: pd.DataFrame, output_folder_path: str):
+    clean_df['hitcount'] = 0  # setup a new column for hit rate.
+
     # load ring definition data from the ring_envelope file
     ring_defition_collection = RingCollection.from_csv(ring_definition_file_name)
 
@@ -185,6 +187,6 @@ if __name__ == "__main__":
     if error_count > 0:
         sys.exit("Exiting - The input must be fixed manually")
 
-    clean_df['hitcount'] = 0  # setup a new column for hit rate.
+    # clean_df['hitcount'] = 0  # setup a new column for hit rate.
 
     process_registrations_with_ring_envelope_data(ring_definition_file_name, registration_file_name, clean_df, output_folder_path)

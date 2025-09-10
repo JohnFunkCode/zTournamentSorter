@@ -29,6 +29,7 @@ class zAppController(tk.Tk):
         new_font.config(family="Arial", size=14, weight="normal")
 
         # a few globals from the old driver code
+        self.ring_envelope_database_filename = ''  # the name of the ring envelope database file
         self.input_data_filename = ''  # the name of the input file - used in a lot of reports
         self.tournament_output_folder_path = '' # the path to all the ouput
         self.database = pd.DataFrame()

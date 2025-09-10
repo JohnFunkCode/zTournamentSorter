@@ -1,3 +1,4 @@
+import sys
 import logging
 import time
 import traceback
@@ -39,13 +40,18 @@ class ReportGenerationController():
         logger.addHandler(lh)
         # logger.addHandler(ListboxHandler(self.data_validation_view.error_log))
 
+        # make sure the ring envelope database is loaded
+        if self.app_container.ring_envelope_database_filename == '':
+            tk.messagebox.showinfo(title='File Warning', message="You must load the ring envelope database before generating reports (use file->Load Ring Envelope Database)" )
+            return
+
         import threading
         import LoadTournamentTable
+        import experiments.ringevelopeparser.ProcessRegistrationsWithRingEnvelopeData as ProcessRegistrationsWithRingEnvelopeData
         try:
             ltt = LoadTournamentTable.LoadTournamentTable()
-            worker_thread=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database,self.app_container.tournament_output_folder_path])
-
-            # x=threading.Thread(target=self.dowork)
+            # worker_thread=threading.Thread(target=ltt.process_tournament_table, args=[self.app_container.input_data_filename,self.app_container.database,self.app_container.tournament_output_folder_path])
+            worker_thread = threading.Thread(target=ProcessRegistrationsWithRingEnvelopeData.process_registrations_with_ring_envelope_data, args=[self.app_container.ring_envelope_database_filename,self.app_container.input_data_filename, self.app_container.database,self.app_container.tournament_output_folder_path])
             logging.info("go")
             worker_thread.start()
             # self.app_container.after(500,lambda:x.start())

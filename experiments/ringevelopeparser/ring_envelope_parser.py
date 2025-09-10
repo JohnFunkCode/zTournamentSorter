@@ -93,6 +93,7 @@ class RingCollection:
 
     @classmethod
     def from_csv(cls, path: str) -> "RingCollection":
+        logging.info(f"Reading Ring Envelope Database CSV file: {path}")
         assignments: List[RingAssignment] = []
         with open(path, newline="") as f:
             reader = csv.DictReader(f)
@@ -139,6 +140,7 @@ class RingCollection:
                     ranks=ranks,
                     letter_range=letter_range
                 ))
+        logging.info(f"Done Reading The Ring Envelope Database CSV file: {path}")
         return cls(assignments)
 
     def get_event(self,

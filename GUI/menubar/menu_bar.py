@@ -7,8 +7,9 @@ class MenuBar:
         self.app_container = app_container
         menubar = tk.Menu()
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open Full Tournament", command=self.open_tournament_file)
-        filemenu.add_command(label="Open Custom Division", command=self.open_division_file)
+        filemenu.add_command(label="Load Ring Envelope Database", command=self.open_ring_envelope_database)
+        filemenu.add_command(label="Load Full Tournament", command=self.open_tournament_file)
+        filemenu.add_command(label="Load Custom Division", command=self.open_division_file)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=app_container.quit)
         menubar.add_cascade(label="File", menu=filemenu)
@@ -25,6 +26,10 @@ class MenuBar:
         menubar.add_cascade(label="Test", menu=helpmenu)
 
         app_container.config(menu=menubar)
+
+    def open_ring_envelope_database(self):
+        self.app_container.data_validation_controller.load_ring_envelope_database()
+        # self.app_container.splash_screen.hide_view()
 
     def open_tournament_file(self):
         self.app_container.data_validation_controller.load_tournament_file()

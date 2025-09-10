@@ -279,8 +279,11 @@ class DivisionDetailReport(object):
         #automatic split logic
         number_of_rings = len(rings)
         highest_ring_number_specified = rings[-1][0]
+        if type(highest_ring_number_specified) is str:
+            highest_ring_number_specified = rings[0][0] #We may want to throw an error here, but S. Liz wants it to print *TBD
 
-        if (number_of_rings > 1):  #means we want to use autosplit
+        # if (number_of_rings > 1):  #means we want to use autosplit
+        if rings[0][1].upper()  == 'AUTO':  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors,
@@ -289,6 +292,8 @@ class DivisionDetailReport(object):
             # print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]
+
+
             for partition in partition_boundaries:
                 # in case we have more partitions than rings, we need to handle it gracefully
                 if (ring_number > highest_ring_number_specified):
@@ -301,13 +306,13 @@ class DivisionDetailReport(object):
             # print(new_ring_info)
             if (len(new_ring_info) < len(rings)):
                 logging.warning(
-                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
+                    f'Using automatic ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
             if (len(new_ring_info) > len(rings)):
                 logging.warning(
-                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
+                    f'Using automatic ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
             if (len(new_ring_info) == len(rings)):
                 logging.info(
-                    f'Overriding ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
+                    f'Using automatic ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
             rings = new_ring_info
 

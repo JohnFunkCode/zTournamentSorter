@@ -88,7 +88,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
     logging.info("   Looking for invalid weight")
     #Convert weight to digits with regex and generate an error if not valid
     import re
-    compiledRegex=re.compile('\d+')
+    compiledRegex=re.compile(r'\d+')
     for index, row in cleanDataFrame.iterrows():
         rawWeightString=str(row['Weight'])
         if pd.isnull(rawWeightString):
@@ -104,7 +104,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             else:
                 cleanWeightString=matchList.group()
     #        cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
-            cleanDataFrame.at[index,'Weight']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
+            cleanDataFrame.at[index,'Weight']=int(cleanWeightString) #cast it as an int to match the type stored in the dataframe
 
             #print cleanWeightString
             cleanWeight=int(cleanWeightString)

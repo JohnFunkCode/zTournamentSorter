@@ -107,12 +107,12 @@ class ReportGenerationView(ttk.Frame):
 
             # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
 
-        # Tournament Summary report label
+        # Working Guide Report label
         if self.app_container.is_custom_division == False:
-            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  tournament summary report.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
+            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  Working Guide Report.pdf',font=('Helveticabold', 15), foreground="blue", cursor="hand2")
             self.tournament_summary_report_label.grid(row=6, column=0, sticky=tk.W, **options)
             # self.sparring_tree_legal_size_label.bind('<Button-1>', lambda x: webbrowser.open("file://F:/Documents/Code/zTournamentSorter/SparringTreeReport-Letter.pdf"))
-            tournament_summary_report_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'TournamentSummaryReport.pdf'))
+            tournament_summary_report_filename_with_path='file://' + str(pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'WorkingGuideReport.pdf'))
             self.tournament_summary_report_label.bind('<Button-1>', lambda x: webbrowser.open(tournament_summary_report_filename_with_path))
 
         self.final_output_labelframe.grid()

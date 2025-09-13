@@ -22,80 +22,49 @@ import reports
 import reports.FileHandlingUtilities
 
 
-class TournamentSummaryReport():
+class WorkingGuideReport():
 
     def __init__(self, title:str, data_file_name: str, output_folder_path:str):
-        self.filename_with_path = f'{pathlib.Path(output_folder_path)}{reports.FileHandlingUtilities.pathDelimiter()}{"TournamentSummaryReport.pdf"}'
-        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'TournamentSummaryReport.pdf')) #<--un-comment for stand alone test files
+        self.filename_with_path = f'{pathlib.Path(output_folder_path)}{reports.FileHandlingUtilities.pathDelimiter()}{"WorkingGuideReport.pdf"}'
+        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'WorkingGuideReport.pdf')) #<--un-comment for stand alone test files
 
-        # self.doc = SimpleDocTemplate("TournamentSummaryReport.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        # self.doc = SimpleDocTemplate("WorkingGuideReport.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
         self.docElements = []
         
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        TournamentSummaryReport.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        # TournamentSummaryReport.sourcefile = "not initialized"
-        TournamentSummaryReport.sourcefile = data_file_name
-        TournamentSummaryReport.pageinfo = "not initialized"
-        # TournamentSummaryReport.Title = "not initialized"
-        TournamentSummaryReport.Title = title
-        TournamentSummaryReport.PAGE_HEIGHT = 11 * inch
-        TournamentSummaryReport.PAGE_WIDTH = 8.5 * inch
-        TournamentSummaryReport.ring_number= "not initialized"
-        TournamentSummaryReport.event_time= "not initialized"
-        TournamentSummaryReport.division_name= "not initialized"
-        TournamentSummaryReport.age= "not initialized"
-        TournamentSummaryReport.belts= "not initialized"
-        # TournamentSummaryReport.split_warning_text="not initialized"
+        WorkingGuideReport.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        # WorkingGuideReport.sourcefile = "not initialized"
+        WorkingGuideReport.sourcefile = data_file_name
+        WorkingGuideReport.pageinfo = "not initialized"
+        # WorkingGuideReport.Title = "not initialized"
+        WorkingGuideReport.Title = title
+        WorkingGuideReport.PAGE_HEIGHT = 11 * inch
+        WorkingGuideReport.PAGE_WIDTH = 8.5 * inch
+        WorkingGuideReport.ring_number= "not initialized"
+        WorkingGuideReport.event_time= "not initialized"
+        WorkingGuideReport.division_name= "not initialized"
+        WorkingGuideReport.age= "not initialized"
+        WorkingGuideReport.belts= "not initialized"
+        # WorkingGuideReport.split_warning_text="not initialized"
 
     @staticmethod
     def set_title(title):
-        TournamentSummaryReport.Title = title
+        WorkingGuideReport.Title = title
 
     @staticmethod
     def set_pageInfo(pageinfo):
-        TournamentSummaryReport.pageinfo = pageinfo
+        WorkingGuideReport.pageinfo = pageinfo
 
     @staticmethod
     def set_sourcefile(sourcefile):
-        TournamentSummaryReport.sourcefile = sourcefile
+        WorkingGuideReport.sourcefile = sourcefile
 
     def add_division_details(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, division_competitors: pandas.DataFrame):
         logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks}')
         logging.info( f'{division_competitors}')
 
-    # def add_summary_info_to_page(self, summary_info: pd.DataFrame):
-    #     # logging.info( f'summary_info:{summary_info}')
-    #     elements = []
-    #     # data_list = [summary_info.columns[:, ].values.astype(str).tolist()] + summary_info.values.tolist()
-    #     data_list = [summary_info.columns.astype(str).tolist()] + summary_info.astype(str).values.tolist()
-    #
-    #     # # format a datalist with a header for the event time followed by columnar data with all the date for each event
-    #     # data_list = []
-    #     # print_columns = [c for c in summary_info.columns if c != "Event_Time"]
-    #     # for _, row in summary_info.iterrows():
-    #     #     data_list.append(f"=== Event Time: {row['Event_Time']} ===")
-    #     #     # print the column headers in one line
-    #     #     data_list.append("  ".join(print_columns))
-    #     #     # print the row values in one line
-    #     #     data_list.append("  ".join(str(row[c]) for c in print_columns))
-    #     #     data_list.append("")  # blank line between events
-    #
-    #     t=Table(data_list)
-    #
-    #     t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
-    #                            ('FONTSIZE', (0, 0), (-1, -1), 8),
-    #                            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-    #                            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-    #                            ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
-    #
-    #     elements.append(t)
-    #
-    #     self.docElements.extend(elements)
-    #     return elements;
-
-    # from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle, KeepTogether
 
     def add_summary_info_to_page(self, summary_info: pd.DataFrame):
         # Keep each Event_Time group together and sort chronologically.
@@ -134,7 +103,8 @@ class TournamentSummaryReport():
         for event_time, group in df.sort_values("_EventTimeKey", kind="mergesort").groupby("Event_Time", sort=False):
             rows = []
             # Group header spanning all columns
-            rows.append([f"=== Event Time: {event_time} ==="] + [""] * (len(detail_cols) - 1))
+            # rows.append([f"Event Time: {event_time}"] + [""] * (len(detail_cols) - 1))
+            rows.append([f"{event_time}"] )
             # Detail column headers
             rows.append([str(c) for c in detail_cols])
             # Group detail rows
@@ -149,11 +119,18 @@ class TournamentSummaryReport():
                 ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
                 ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
                 ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-                # Emphasis + span for the event header row
+
+                # Event header row (row 0)
                 ("SPAN", (0, 0), (-1, 0)),
                 ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 16),
+                ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+                ("VALIGN", (0, 0), (-1, 0), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, 0), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
                 ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                # Emphasis for the detail column header row
+
+                # Detail column header row (row 1)
                 ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
             ])
             t.setStyle(style)
@@ -173,9 +150,9 @@ class TournamentSummaryReport():
 #     canvas.saveState()
 #     canvas.setFont('Times-Bold', 16)
 #     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-#     canvas.drawCentredString(TournamentSummaryReport.PAGE_WIDTH / 2.0, 8 * inch, TournamentSummaryReport.Title)
+#     canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 8 * inch, WorkingGuideReport.Title)
 #     canvas.setFont('Times-Roman', 9)
-#     canvas.canvas.drawCentredString(TournamentSummaryReport.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % TournamentSummaryReport.pageinfo)
+#     canvas.canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % WorkingGuideReport.pageinfo)
 #     canvas.restoreState()
 #
 # # define layout for subsequent pages
@@ -184,9 +161,9 @@ class TournamentSummaryReport():
 #     #logo = ImageReader('Z_LOGO_HalfInch.jpg')
 #     #canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
 #     canvas.setFont('Times-Roman', 9)
-#     canvas.drawCentredString(TournamentSummaryReport.PAGE_WIDTH / 2.0, 0.25 * inch,
+#     canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch,
 #                       "Page: %d   Generated: %s   From file: %s" % (
-#                                  doc.page, TournamentSummaryReport.timestamp, TournamentSummaryReport.sourcefile))
+#                                  doc.page, WorkingGuideReport.timestamp, WorkingGuideReport.sourcefile))
 #     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -196,16 +173,16 @@ def page_layout(canvas, doc):
     # logo = ImageReader('Z_LOGO_HalfInch.jpg')
     # canvas.drawImage(logo, .25 * inch, 8.0 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(TournamentSummaryReport.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d   Generated: %s   From file: %s" % (
-                                 doc.page, TournamentSummaryReport.timestamp, TournamentSummaryReport.sourcefile))
+                                 doc.page, WorkingGuideReport.timestamp, WorkingGuideReport.sourcefile))
     canvas.restoreState()
    
     
 def main():
     logger = logging.getLogger('')
     logger.setLevel(logging.INFO)
-    fh = logging.FileHandler("TournamentSummaryReport.log")
+    fh = logging.FileHandler("WorkingGuideReport.log")
     sh = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
     fh.setFormatter(formatter)
@@ -213,7 +190,7 @@ def main():
     logger.addHandler(fh)
     logger.addHandler(sh)
 
-    TSR_pdf = TournamentSummaryReport( "Tournament Summary Report", "DataFileName", "")
+    TSR_pdf = WorkingGuideReport("Working Guide Report", "DataFileName", "")
     competitors_list = { 'First_Name': ['John','Jason'],
                          'Last_Name':  ['Funk','Stele'] }
     competitors = pd.DataFrame(competitors_list)

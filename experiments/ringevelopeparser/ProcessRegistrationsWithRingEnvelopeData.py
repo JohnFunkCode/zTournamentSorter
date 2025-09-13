@@ -15,7 +15,7 @@ from cleaninput import input_errors
 
 
 from reports.division_detail_report import DivisionDetailReport
-from reports.tournament_summary_report import TournamentSummaryReport
+from reports.working_guide_report import WorkingGuideReport
 from reports.kata_score_sheet import KataScoreSheet
 from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
@@ -51,7 +51,7 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
     ###############################################################################
     # Setup a few things for the Division Detail PDF report
-    ltt.tournament_summary_report_pdf = TournamentSummaryReport("Tournament Summary", registration_file_name, output_folder_path)
+    ltt.tournament_summary_report_pdf = WorkingGuideReport("Tournament Summary", registration_file_name, output_folder_path)
 
     ###############################################################################
     # Setup a few things for the Division Detail PDF report
@@ -100,7 +100,7 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
     logging.info("Saving PDFs to disk")
 
-    logging.info("..Saving Tournament Summary Report")
+    logging.info("..Saving Working Guide Report")
     test=ltt.division_detail_report_pdf.summary_info
 
 

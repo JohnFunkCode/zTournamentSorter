@@ -44,9 +44,12 @@ class DivisionDetailReport(object):
         DivisionDetailReport.styles = getSampleStyleSheet()  #sample style sheet doesn't seem to be used
 
         # self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Ranks', 'Competitors'])
+        # self.summary_info = pd.DataFrame(
+        #     columns=['Event_Time', 'Division_Name', 'Division_Type', 'Gender', 'Rank_Label', 'Age', 'Rings', "A_Z",
+        #              'Competitors'])
         self.summary_info = pd.DataFrame(
-            columns=['Event_Time', 'Division_Name', 'Division_Type', 'Gender', 'Rank_Label', 'Age', 'Rings',
-                     'Competitors'])
+            columns=['Event_Time', 'Division_Name', 'Rank_Label', 'Age', "A_Z",'Rings',
+                     'Competitors','Center', 'Corner'])
 
     @staticmethod
     def set_title(title):
@@ -318,8 +321,8 @@ class DivisionDetailReport(object):
 
         ###########
         ## build the data for the summary of the entire division
-        self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age,
-                                rings, ranks, division_competitors)
+        # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age,
+        #                         rings, ranks, division_competitors)
 
         for info in rings:
             # ring = info.get('ring')
@@ -347,10 +350,11 @@ class DivisionDetailReport(object):
                                               rank_label)
             ###########
             ## build the data for the summary of the ring
-            # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
-            #                         maximum_age, str(ring), ranks, filtered_competitors)
-            self.build_summary_info('', '', '', '', '', '',
-                                    '', str(ring), ranks, filtered_competitors)
+            a_z = info[1] + '-' + info[2]
+            self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
+                                    maximum_age, str(ring), a_z, ranks, filtered_competitors)
+            # self.build_summary_info('', '', '', '', '', '',
+            #                         '', str(ring), ranks, filtered_competitors)
 
         # if len(rings)>1:
         #
@@ -373,7 +377,7 @@ class DivisionDetailReport(object):
         #     self.put_dataframe_on_pdfpage(division_competitors, str(rings[0]), event_time, division_name, age_label, rank_label)
 
     def build_summary_info(self, event_time: str, division_name: str, division_type: str, gender: str, rank_label: str,
-                           minimum_age: int, maximum_age: int, rings: list, ranks: list,
+                           minimum_age: int, maximum_age: int, rings: list, a_z: str, ranks: list,
                            division_competitors: pandas.DataFrame):
         # logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks} {len(division_competitors)}')
         # logging.info(f'{division_competitors}')
@@ -389,9 +393,12 @@ class DivisionDetailReport(object):
         else:
             display_age = ''
 
-        new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,
-                   'Gender': gender, 'Rank_Label': rank_label, 'Age': display_age, 'Rings': rings,
-                   'Competitors': len(division_competitors)}
+        # new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,
+        #            'Gender': gender, 'Rank_Label': rank_label, 'Age': display_age, 'Rings': rings, 'A_Z': a_z,
+        #            'Competitors': len(division_competitors)}
+        new_row = {'Event_Time': event_time, 'Division_Name': division_name,
+                   'Rank_Label': rank_label, 'Age': display_age, 'A_Z': a_z,'Rings': rings,
+                   'Competitors': len(division_competitors),'Center': '', 'Corner': ''}
         self.summary_info.loc[len(self.summary_info)] = new_row
 
 

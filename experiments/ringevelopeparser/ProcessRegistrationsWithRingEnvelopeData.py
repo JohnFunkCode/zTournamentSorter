@@ -101,6 +101,9 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
     logging.info("Saving PDFs to disk")
 
     logging.info("..Saving Tournament Summary Report")
+    test=ltt.division_detail_report_pdf.summary_info
+
+
     ltt.tournament_summary_report_pdf.add_summary_info_to_page(ltt.division_detail_report_pdf.summary_info)
     ltt.tournament_summary_report_pdf.write_pdfpage()
 

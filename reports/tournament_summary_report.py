@@ -14,7 +14,7 @@ from reportlab.lib.pagesizes import letter, portrait, landscape
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
-from reportlab.platypus import PageBreak
+from reportlab.platypus import PageBreak, KeepTogether
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 
 import domain_model.constants as constants
@@ -29,7 +29,7 @@ class TournamentSummaryReport():
         # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'TournamentSummaryReport.pdf')) #<--un-comment for stand alone test files
 
         # self.doc = SimpleDocTemplate("TournamentSummaryReport.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
-        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=landscape(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
+        self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
         self.docElements = []
         
         #setup the package scoped global variables we need
@@ -65,24 +65,103 @@ class TournamentSummaryReport():
         logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks}')
         logging.info( f'{division_competitors}')
 
+    # def add_summary_info_to_page(self, summary_info: pd.DataFrame):
+    #     # logging.info( f'summary_info:{summary_info}')
+    #     elements = []
+    #     # data_list = [summary_info.columns[:, ].values.astype(str).tolist()] + summary_info.values.tolist()
+    #     data_list = [summary_info.columns.astype(str).tolist()] + summary_info.astype(str).values.tolist()
+    #
+    #     # # format a datalist with a header for the event time followed by columnar data with all the date for each event
+    #     # data_list = []
+    #     # print_columns = [c for c in summary_info.columns if c != "Event_Time"]
+    #     # for _, row in summary_info.iterrows():
+    #     #     data_list.append(f"=== Event Time: {row['Event_Time']} ===")
+    #     #     # print the column headers in one line
+    #     #     data_list.append("  ".join(print_columns))
+    #     #     # print the row values in one line
+    #     #     data_list.append("  ".join(str(row[c]) for c in print_columns))
+    #     #     data_list.append("")  # blank line between events
+    #
+    #     t=Table(data_list)
+    #
+    #     t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
+    #                            ('FONTSIZE', (0, 0), (-1, -1), 8),
+    #                            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+    #                            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+    #                            ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+    #
+    #     elements.append(t)
+    #
+    #     self.docElements.extend(elements)
+    #     return elements;
+
+    # from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle, KeepTogether
+
     def add_summary_info_to_page(self, summary_info: pd.DataFrame):
-        # logging.info( f'summary_info:{summary_info}')
+        # Keep each Event_Time group together and sort chronologically.
         elements = []
-        # data_list = [summary_info.columns[:, ].values.astype(str).tolist()] + summary_info.values.tolist()
-        data_list = [summary_info.columns.astype(str).tolist()] + summary_info.astype(str).values.tolist()
+        if summary_info is None or summary_info.empty:
+            return elements
 
-        t=Table(data_list)
+        detail_cols = [c for c in summary_info.columns if c != "Event_Time"]
+        if not detail_cols:
+            return elements
 
-        t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
-                               ('FONTSIZE', (0, 0), (-1, -1), 8),
-                               ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                               ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                               ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        df = summary_info.copy()
 
-        elements.append(t)
-        
+        # Build a sortable time key from 'Event_Time' like '9:05 a.m.'/'9:05 am'/'9:05am'
+        import re
+        def _normalize_event_time(s):
+            if pd.isna(s):
+                return None
+            s = str(s).strip().lower().replace(".", "")
+            # remove whitespace before am/pm (e.g., '9:00 am' -> '9:00am')
+            s = re.sub(r"\s*(am|pm)$", r"\1", s)
+            return s
+
+        df["_EventTimeKey"] = pd.to_datetime(
+            df["Event_Time"].map(_normalize_event_time),
+            format="%I:%M%p",
+            errors="coerce",
+        )
+
+        # Ensure string rendering for ReportLab cells (leave the key as datetime)
+        for c in df.columns:
+            if c != "_EventTimeKey":
+                df[c] = df[c].astype(str)
+
+        # Iterate groups in true chronological order
+        for event_time, group in df.sort_values("_EventTimeKey", kind="mergesort").groupby("Event_Time", sort=False):
+            rows = []
+            # Group header spanning all columns
+            rows.append([f"=== Event Time: {event_time} ==="] + [""] * (len(detail_cols) - 1))
+            # Detail column headers
+            rows.append([str(c) for c in detail_cols])
+            # Group detail rows
+            for _, r in group.iterrows():
+                rows.append([r[c] for c in detail_cols])
+
+            t = Table(rows, hAlign="LEFT")
+            style = TableStyle([
+                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8),
+                ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+                ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                # Emphasis + span for the event header row
+                ("SPAN", (0, 0), (-1, 0)),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                # Emphasis for the detail column header row
+                ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
+            ])
+            t.setStyle(style)
+
+            elements.append(KeepTogether([t, Spacer(0, 6)]))
+
         self.docElements.extend(elements)
-        return elements;
+        return elements
 
     def write_pdfpage(self):
         self.doc.build(self.docElements, onFirstPage=page_layout, onLaterPages=page_layout)
@@ -112,10 +191,10 @@ class TournamentSummaryReport():
 
 # define layout for subsequent pages
 def page_layout(canvas, doc):
-    return
+    # return
     canvas.saveState()
-    logo = ImageReader('Z_LOGO_HalfInch.jpg')
-    canvas.drawImage(logo, .25 * inch, 8.0 * inch, mask='auto')
+    # logo = ImageReader('Z_LOGO_HalfInch.jpg')
+    # canvas.drawImage(logo, .25 * inch, 8.0 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
     canvas.drawCentredString(TournamentSummaryReport.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d   Generated: %s   From file: %s" % (

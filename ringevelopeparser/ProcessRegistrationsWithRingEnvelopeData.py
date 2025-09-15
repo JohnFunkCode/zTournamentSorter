@@ -7,7 +7,7 @@ import pandas as pd
 # from pandas.core.interchange.dataframe_protocol import DataFrame
 
 from LoadTournamentTable import LoadTournamentTable
-from experiments.ringevelopeparser.ring_envelope_parser import RingCollection
+from ringevelopeparser.ring_envelope_parser import RingCollection
 
 from cleaninput import cleaninput as CI
 from cleaninput import rename_colums as RN
@@ -21,8 +21,6 @@ from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
 import reports.ExcelFileOutput
 import reports.FileHandlingUtilities
-import domain_model.constants as constants
-import domain_model.name_partitioner
 
 
 def classify_division( division_name: str):

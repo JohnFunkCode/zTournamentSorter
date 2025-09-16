@@ -83,8 +83,7 @@ class RenameColumns:
         logging.info("  Height")
         logging.info("  Division")
         logging.info("  Rank")
-        logging.info("  Forms or Sparring")
-        logging.info("  Techniques")
+        logging.info("  Forms/Spar/Tech category")
         logging.info("  Weapons")
         logging.info("  Tickets")
 

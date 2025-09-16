@@ -41,13 +41,14 @@ class DataValidationController():
         self.data_validation_view.show_view()
 
     def load_ring_envelope_database(self):
-        working_file_name = filedialog.askopenfilename(title="Select the file with the envelope database",
-                                                                            initialdir=self.app_container.tournament_output_folder_path,
-                                                                            filetypes=[("csv","*.csv")])
+        # working_file_name = filedialog.askopenfilename(title="Select the file with the envelope database",
+        #                                                                     initialdir=self.app_container.tournament_output_folder_path,
+        #                                                                     filetypes=[("csv","*.csv")])
+        working_file_name = self.app_container.ring_envelope_database_filename
         # if the ring envelope database file isn't in the folder for the tournament date let the user know we're copying it there.
         path_to_selected_file = str(pathlib.Path(working_file_name).parent)
         if path_to_selected_file != self.app_container.tournament_output_folder_path:
-            tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
+            tk.messagebox.showinfo(title='File Warning', message="The ring envelope database file isn't in the correct tournament folder. I'm copying it there." )
             source=pathlib.Path(working_file_name)
             # source_filename_only = source.name
             destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )
@@ -59,13 +60,14 @@ class DataValidationController():
 
     def load_tournament_file(self):
         # print(self.app_container.tournament_output_folder_path)
-        working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
-                                                                            initialdir=self.app_container.tournament_output_folder_path,
-                                                                            filetypes=[("csv","*.csv")])
+        # working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
+        #                                                                     initialdir=self.app_container.tournament_output_folder_path,
+        #                                                                     filetypes=[("csv","*.csv")])
+        working_file_name = self.app_container.input_data_filename
         # if the input file isn't in the folder for the tournament date let the user know we're copying it there.
         path_to_selected_file = str(pathlib.Path(working_file_name).parent)
         if path_to_selected_file != self.app_container.tournament_output_folder_path:
-            tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
+            tk.messagebox.showinfo(title='File Warning', message="The tournament data file isn't in the correct tournament folder. I'm copying it there." )
             source=pathlib.Path(working_file_name)
             # source_filename_only = source.name
             destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )

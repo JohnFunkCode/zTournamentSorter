@@ -222,7 +222,7 @@ class LoadTournamentTable:
             ###############################################################################
             # Kids Techniques 4-6 year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','L'],[1,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','L'],[2,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4,  maximum_age=6, ring_info=[[3,'A','Z']],             ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4,  maximum_age=6, ring_info=[[4,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 

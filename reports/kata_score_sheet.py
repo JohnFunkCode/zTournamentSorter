@@ -33,9 +33,9 @@ class KataScoreSheet(object):
             p=pathlib.Path(sourcefile)
             name_only = str(p.name)
             output_folder_path_no_extension = name_only[0:len(name_only)-4]
-            self.filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + 'KataScoreSheet.pdf'))
+            self.filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + 'KataScoreSheet.pdf'))
         else:
-            self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf')) #<--comment out for stand alone test files
+            self.filename_with_path=str(pathlib.Path(output_folder_path /'KataScoreSheet.pdf')) #<--comment out for stand alone test files
             # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf')) #<--un-comment for stand alone test files
 
         # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)

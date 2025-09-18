@@ -87,10 +87,10 @@ class LoadTournamentTable:
     # logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     def process_tournament_table(self, filename, clean_df, output_folder_path):
         # create test data
-        # clean_df.to_pickle(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "pickled_clean_dataframe.pkl")
+        # clean_df.to_pickle(output_folder_path / "pickled_clean_dataframe.pkl")
 
         # make sure the sorted directory exists
-        new_folder_path = pathlib.Path( output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'sorted')
+        new_folder_path = pathlib.Path( output_folder_path / 'sorted')
         expanded_folder_path = new_folder_path.expanduser()
         pathlib.Path(expanded_folder_path).mkdir(exist_ok=True, parents=True)
 

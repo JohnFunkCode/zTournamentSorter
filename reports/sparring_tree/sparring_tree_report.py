@@ -45,11 +45,11 @@ class SparringTreeReportPDF():
             p=pathlib.Path(sourcefile)
             name_only = str(p.name)
             output_folder_path_no_extension = name_only[0:len(name_only)-4]
-            self._letter_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
-            self._legal_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
+            self._letter_filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
+            self._legal_filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
         else:
-            self._letter_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
-            self._legal_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
+            self._letter_filename_with_path = str(pathlib.Path(output_folder_path / SPARRING_TREE_REPORT_LETTER_FILE_NAME))
+            self._legal_filename_with_path = str(pathlib.Path(output_folder_path / SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
 
         ''' Create a Sparring Tree'''
         # self._letter_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LETTER_FILE_NAME)

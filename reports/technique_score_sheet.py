@@ -29,7 +29,7 @@ import reports
 
 class TechniqueScoreSheet(object):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
-        self.filename_with_path=str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf')) #<--comment out for stand alone testing
+        self.filename_with_path=str(pathlib.Path(output_folder_path / 'TechniqueScoreSheet.pdf')) #<--comment out for stand alone testing
         # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))   #<--un-comment for stand alone testing
 
         # self.doc = SimpleDocTemplate("TechniqueScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)

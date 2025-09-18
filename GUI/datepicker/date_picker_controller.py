@@ -37,7 +37,8 @@ class DatePickerController:
         new_dir = new_path.expanduser()
         Path(new_dir).mkdir(exist_ok=True, parents=True)
         logging.info(f'new_dir={new_dir}')
-        self.app.tournament_output_folder_path = str(new_dir)
+        # self.app.tournament_output_folder_path = str(new_dir)
+        self.app.tournament_output_folder_path = new_dir
 
         if callable(self.on_complete):
             self.on_complete(selected_date)

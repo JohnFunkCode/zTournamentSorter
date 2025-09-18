@@ -25,8 +25,11 @@ import reports
 
 class DivisionDetailReport(object):
     def __init__(self, title: str, sourcefile: str, output_folder_path: str):
-        filename_with_path = str(pathlib.Path(
-            output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
+        # filename_with_path = str(pathlib.Path(
+        #     output_folder_path / 'DivisionDetailReport.pdf'))
+
+        from pathlib import Path
+        filename_with_path = str(Path(output_folder_path) / 'DivisionDetailReport.pdf')
 
         # self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
         self.doc = SimpleDocTemplate(filename_with_path, pagesize=landscape(letter), topMargin=0)

@@ -61,7 +61,9 @@ class FilePickerController:
         logging.info(f'Ring Envelope Database file is: {path}')
         self._ring_path = path
         setattr(self.app_container, "ring_envelope_database_filename", path)
-        setattr(self.app_container, "tournament_output_folder_path", os.path.dirname(path))
+        dir_name = Path(path).parent
+        setattr(self.app_container, "tournament_output_folder_path", dir_name)
+        # setattr(self.app_container, "tournament_output_folder_path", os.path.dirname(path))
 
     def on_registration_file_chosen(self, path: str):
         if not self._is_valid_csv(path):
@@ -74,7 +76,8 @@ class FilePickerController:
         logging.info(f'Registration Data file is: {path}')
         self._reg_path = path
         setattr(self.app_container, "input_data_filename", path)
-        setattr(self.app_container, "tournament_output_folder_path", os.path.dirname(path))
+        dir_name = Path(path).parent
+        setattr(self.app_container, "tournament_output_folder_path", dir_name)
 
     def on_continue(self, ring_path: str, reg_path: str):
         if not self._is_valid_csv(ring_path):

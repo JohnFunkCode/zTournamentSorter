@@ -31,7 +31,7 @@ class zAppController(tk.Tk):
         # Global state
         self.ring_envelope_database_filename = ''
         self.input_data_filename = ''
-        self.tournament_output_folder_path = ''
+        self.tournament_output_folder_path = None
         self.database = pd.DataFrame()
         self.is_custom_division = False
         self.selected_date = None

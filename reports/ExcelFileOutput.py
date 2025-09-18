@@ -80,8 +80,8 @@ def writeFormattedExcelSheet(df, writer, sheetname):
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern1ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    # fullpath = os.getcwd() + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    # fullpath = os.getcwd() / "Sorted" / filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -143,7 +143,7 @@ def writePattern1ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern2ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -213,7 +213,7 @@ def writePattern2ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern3ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -283,7 +283,7 @@ def writePattern3ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern4ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -355,7 +355,7 @@ def writePattern4ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern5ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -432,7 +432,7 @@ def writePattern5ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #  maximum_age - the maxinum age used in the query
 #  writePattern4ToExcel(filename="KidsKata.xlsx", gender="*",minimum_age=4, maximum_age=6)
 def writePattern6ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath, engine='xlsxwriter')
     logging.info("Generating " + fullpath)
 
@@ -507,7 +507,7 @@ def writePattern6ToExcelViaQuery(output_folder_path:str,filename: str, division_
 #
 def writeWeaponsDivision1ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int, clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -549,7 +549,7 @@ def writeWeaponsDivision1ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision2ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -594,7 +594,7 @@ def writeWeaponsDivision2ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision3ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -643,7 +643,7 @@ def writeWeaponsDivision3ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision4ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -686,7 +686,7 @@ def writeWeaponsDivision4ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision5ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -730,7 +730,7 @@ def writeWeaponsDivision5ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision6ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -774,7 +774,7 @@ def writeWeaponsDivision6ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision7ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -820,7 +820,7 @@ def writeWeaponsDivision7ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision8ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 
@@ -864,7 +864,7 @@ def writeWeaponsDivision8ToExcelViaQuery(output_folder_path:str,filename: str, d
 #
 def writeWeaponsDivision9ToExcelViaQuery(output_folder_path:str,filename: str, division_type: str, gender: str, minimum_age: int, maximum_age: int,clean_df: pd.DataFrame):
 
-    fullpath = output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "Sorted" + reports.FileHandlingUtilities.pathDelimiter() + filename
+    fullpath = output_folder_path / "Sorted" / filename
     writer = pd.ExcelWriter(fullpath)
     logging.info("Generating " + fullpath)
 

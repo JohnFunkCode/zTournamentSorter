@@ -170,8 +170,8 @@ class Participants(object):
       x=2
       participant_subset = self._participant_list[["First Name", "Last Name", "Gender", "Dojo", "Age", "Rank", "Feet", "Inches", "Height", "Weight", "BMI", "Events", "Weapons"]][mask].sort_values("Age")
       participant_subset.sort_values('BMI',inplace=True)
-      #    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Out of State Studio Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
-      #    newdf.rename(columns={'Select Your Z Ultimate Studio':'Dojo','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
+      #    newdf.rename(columns={'Select Your Z Ultimate Dojo':'Dojo','Out of State Dojo Name':'Out of State Dojo Name','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
+      #    newdf.rename(columns={'Select Your Z Ultimate Dojo':'Dojo','Competitor\'s Age?':'Age','Current Belt Rank?':'Rank','Competitor\'s Height (e.g. 4 ft. 2 in. )?':'Height','Competitor\'s Weight (eg. 73lbs.)?':'Weight','Choose Forms, Sparring or Both.':'Events','Choose Weapons.':'Weapons'},inplace=True)
 
       ## update the hitcount every time we touch someone
       for index, row in self._participant_list[mask].iterrows():

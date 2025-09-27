@@ -262,8 +262,20 @@ class DataValidationController():
 
     def process_data(self):
         # Save the database to file
-        save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
-        save_file_name=filedialog.asksaveasfilename(filetypes=[("csv","*.csv")],initialfile=save_file_name,title='Save Data as...')
+        #            destination=pathlib.Path(self.app_container.tournament_output_folder_path / source.name )
+        # save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
+        # save_file_name = pathlib.Path(self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] / "-Processed.csv")
+        input_path = pathlib.Path(self.app_container.input_data_filename)
+        processed_filename = f"{input_path.stem}-Processed.csv"
+
+        save_file_name = filedialog.asksaveasfilename(
+            title='Save Data as...',
+            initialdir=str(input_path.parent),
+            initialfile=processed_filename,
+            defaultextension='.csv',
+            filetypes=[("csv", "*.csv")]
+        )
+
         if(save_file_name != ''):
             logging.info(f"Saving processed file to {save_file_name}")
             df = pd.DataFrame(self.app_container.database)

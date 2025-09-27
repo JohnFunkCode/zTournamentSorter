@@ -37,7 +37,7 @@ class RenameColumns:
 
     def is_YourSudio_a_column_name(self):
         import re
-        searchstring = ".*State.*Studio.*"
+        searchstring = ".*State.*Dojo.*"
 
         compiled_regx=re.compile(searchstring)
 
@@ -71,47 +71,36 @@ class RenameColumns:
 
     def rename_all_columns(self):
         logging.info("The Column Headers must contain the following:")
-        logging.info("  Event Date")
-        logging.info("  Registrant ID")
-        logging.info("  First Name")
-        logging.info("  Last Name")
+        # logging.info("  Event Date")  # No longer requiring event date column
+        logging.info("  Registrant_ID")
+        logging.info("  First_Name")
+        logging.info("  Last_Name")
         logging.info("  Gender")
-        logging.info("  Select Your Studio")
-        logging.info("  Out of State Studio")
+        logging.info("  Dojo")
+        logging.info("  Out_of_State_Dojo")
         logging.info("  Age")
         logging.info("  Weight")
         logging.info("  Height")
         logging.info("  Division")
         logging.info("  Rank")
-        logging.info("  Forms/Spar/Tech category")
+        logging.info("  Events")
         logging.info("  Weapons")
-        logging.info("  Tickets")
+        logging.info("  Spectator_Tickets")
 
-        self.replace_column_name_containing(".*Event.*Date.*", "Event_Date")
+        # self.replace_column_name_containing(".*Event.*Date.*", "Event_Date") # no longer requiring event date column
         self.replace_column_name_containing(".*Registrant.*", "Registrant_ID")
-#        self.replace_column_name_containing(".*First.*Name.*", "First_Name")
         self.replace_column_name_containing(".*First.*", "First_Name")
-#        self.replace_column_name_containing(".*Last.*Name.*", "Last_Name")
         self.replace_column_name_containing(".*Last.*", "Last_Name")
-#        self.replace_column_name_containing(".*Competitor.*Age.*", "Age")
         self.replace_column_name_containing(".*Age.*", "Age")
-        self.replace_column_name_containing('.*Select.*Your.*Studio.*', 'Dojo')
-        self.replace_column_name_containing('.*Out.*State.*Studio.*', 'Out_of_State_Dojo')
-#        self.replace_column_name_containing(".*Competitor.*Weight.*", "Weight")
+        # self.replace_column_name_containing('.*Select.*Your.*Dojo.*', 'Dojo')  #Note we're not fixing the Dojo column because of 'Out_of_State_Dojo'
+        self.replace_column_name_containing('Dojo', 'Dojo')
+        self.replace_column_name_containing('.*Out.*State.*Dojo.*', 'Out_of_State_Dojo')
         self.replace_column_name_containing(".*Weight.*", "Weight")
-#        self.replace_column_name_containing(".*Competitor.*Height.*", "Height")
         self.replace_column_name_containing(".*Height.*", "Height")
         self.replace_column_name_containing(".*Rank.*", "Rank")
-#        self.replace_column_name_containing(".*Division.*Based.*Age.*", "Division")
         self.replace_column_name_containing(".*Division.*", "Division")
-
-        # October 2024 - we replaced events and techniques columns with a single column called Events
-        # self.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
-        # self.replace_column_name_containing(".*Technique.*", "Techniques")
-        self.replace_column_name_containing(".*category.*", "Events")
-
+        self.replace_column_name_containing(".*Events.*", "Events")
         self.replace_column_name_containing(".*Weapons.*", "Weapons")
-#        self.replace_column_name_containing(".*Spectator.*Tickets.*", "Spectator_Tickets")
         self.replace_column_name_containing(".*Tickets.*", "Spectator_Tickets")
 
         self.re_order_columns()
@@ -119,7 +108,7 @@ class RenameColumns:
 #good guide to Regex in Python: https://docs.python.org/2/howto/regex.html
 
     def re_order_columns(self):
-        self.re_ordered_df=self.raw_df[['Registrant_ID','First_Name','Last_Name','Gender','Age','Weight','Height','Rank','Division','Dojo','Out_of_State_Dojo','Events','Weapons']]
+        self.re_ordered_df=self.raw_df[['Registrant_ID','First_Name','Last_Name','Gender','Age','Weight','Height','Rank','Division','Dojo','Out_of_State_Dojo','Events','Weapons','Spectator_Tickets']]
         self.raw_df=self.re_ordered_df
 
 if __name__ == '__main__':
@@ -168,22 +157,6 @@ if __name__ == '__main__':
 
     r.rename_all_columns()
 
-    # r.replace_column_name_containing(".*Event.*Date.*","Event_Date")
-    # r.replace_column_name_containing(".*Registrant.*","Registrant_ID")
-    # r.replace_column_name_containing(".*First.*Name.*","First_Name")
-    # r.replace_column_name_containing(".*Last.*Name.*","Last_Name")
-    # r.replace_column_name_containing(".*Competitor.*Age.*","Age")
-    # r.replace_column_name_containing('.*Select.*Your.*Studio.*','Dojo')
-    # r.replace_column_name_containing('.*Out.*State.*Studio.*','Out_of_State_Studio')
-    # r.replace_column_name_containing(".*Competitor.*Weight.*","Weight")
-    # r.replace_column_name_containing(".*Competitor.*Height.*","Height")
-    # r.replace_column_name_containing(".*Rank.*","Rank")
-    # r.replace_column_name_containing(".*Division.*Based.*Age.*","Division")
-    # r.replace_column_name_containing(".*Forms.*Sparring.*", "Events")
-    # r.replace_column_name_containing(".*Weapons.*", "Weapons")
-    # r.replace_column_name_containing(".*Spectator.*Tickets.*","Spectator_Tickets")
-
-
     logging.info("-----")
     r.print_column_names()
 
@@ -191,8 +164,3 @@ if __name__ == '__main__':
     logging.info(newdf)
 
 
-# newdf.rename(
-#     columns={'Select Your Z Ultimate Studio': 'Dojo', 'Competitor\'s Age?': 'Age', 'Current Belt Rank?': 'Rank',
-#              'Competitor\'s Height (e.g. 4 ft. 2 in. )?': 'Height',
-#              'Competitor\'s Weight (eg. 73lbs.)?': 'Weight', 'Choose Forms, Sparring or Both.': 'Events',
-#              'Choose Weapons.': 'Weapons'}, inplace=True)

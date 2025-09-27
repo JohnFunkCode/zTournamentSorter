@@ -15,52 +15,52 @@ import os
 import sys
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import chardet
 
 import re
 
 # Regex-based auto-mapping from common variants to VALID_HEADERS.
 # Order matters: first match wins.
 AUTO_MAP_PATTERNS = [
-    (re.compile(r".*Event.*Date.*", re.I), "Event Date"),
-    (re.compile(r".*Registrant.*", re.I), "Registrant ID"),
-    (re.compile(r".*Reg\s*ID.*", re.I), "Registrant ID"),
-    (re.compile(r"^ID$", re.I), "Registrant ID"),
-    (re.compile(r".*\bF\s*Name\b.*", re.I), "First Name"),
-    (re.compile(r".*First.*", re.I), "First Name"),
-    (re.compile(r".*\bL\s*Name\b.*", re.I), "Last Name"),
-    (re.compile(r".*Last.*", re.I), "Last Name"),
+    (re.compile(r".*Registrant.*", re.I), "Registrant_ID"),
+    (re.compile(r".*Reg\s*ID.*", re.I), "Registrant_ID"),
+    (re.compile(r"^ID$", re.I), "Registrant_ID"),
+    # (re.compile(r".*Registrant_ID.*", re.I), "Registrant_ID"),
+    (re.compile(r".*\bF\s*Name\b.*", re.I), "First_Name"),
+    (re.compile(r".*First.*", re.I), "First_Name"),
+    (re.compile(r".*\bL\s*Name\b.*", re.I), "Last_Name"),
+    (re.compile(r".*Last.*", re.I), "Last_Name"),
     (re.compile(r".*Gender.*|.*Sex.*", re.I), "Gender"),
-    (re.compile(r".*Select.*Your.*Studio.*|.*Dojo.*", re.I), "Select Your Studio"),
-    (re.compile(r".*Out.*State.*Studio.*|.*Out.*State.*Dojo.*", re.I), "Out of State Studio"),
+    (re.compile(r"Dojo|Studio|.*Select.*Your.*Studio.*|.*Select.*Your.*Dojo.*", re.I), "Dojo"),
+    (re.compile(r".*Out.*State.*", re.I), "Out_of_State_Dojo"),
     (re.compile(r".*Age.*", re.I), "Age"),
     (re.compile(r".*Weight.*", re.I), "Weight"),
     (re.compile(r".*Height.*", re.I), "Height"),
     (re.compile(r".*\bDiv(ision)?\b.*", re.I), "Division"),
     (re.compile(r".*Rank.*", re.I), "Rank"),
-    (re.compile(r".*category.*|.*Cat(egory)?.*|.*Forms.*|.*Spar.*|.*Tech.*", re.I), "Forms/Spar/Tech category"),
+    (re.compile(r".*Events.*|.*category.*|.*Cat(egory)?.*|.*Forms.*|.*Spar.*|.*Tech.*", re.I), "Events"),
     (re.compile(r".*Weapon.*", re.I), "Weapons"),
-    (re.compile(r".*Ticket.*|.*Spectator.*", re.I), "Tickets"),
+    (re.compile(r".*Ticket.*|.*Spectator.*", re.I), "Spectator_Tickets"),
 ]
 
 def _normalize(s: str) -> str:
     return (s or "").strip()
 
 VALID_HEADERS = [
-    "Event Date",
-    "Registrant ID",
-    "First Name",
-    "Last Name",
+    "Registrant_ID",
+    "First_Name",
+    "Last_Name",
     "Gender",
-    "Select Your Studio",
-    "Out of State Studio",
+    "Dojo",
+    "Out_of_State_Dojo",
     "Age",
     "Weight",
     "Height",
     "Division",
     "Rank",
-    "Forms/Spar/Tech category",
+    "Events",
     "Weapons",
-    "Tickets",
+    "Spectator_Tickets",
 ]
 
 DEFAULT_ATTACHED_PATH = os.path.join(
@@ -151,6 +151,10 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
         # Close popup when clicking elsewhere
         self.bind_all("<Button-1>", self._maybe_close_popup, add="+")
 
+        # setup encoding detection
+        self.source_encoding = "utf-8-sig"  # default/fallback
+
+
     # ---------- Auto-assign using regex patterns ----------
     def auto_assign_common(self):
         """
@@ -196,9 +200,20 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
         if path:
             self.load_csv(path)
 
+    # def load_csv(self, path: str):
+    #     try:
+    #         with open(path, "r", newline="", encoding="utf-8-sig") as f:
+    #             reader = csv.reader(f)
+    #             rows = list(reader)
     def load_csv(self, path: str):
         try:
-            with open(path, "r", newline="", encoding="utf-8-sig") as f:
+            with open(path, "rb") as f:
+                rawdata = f.read(4096)
+            result = chardet.detect(rawdata)
+            encoding = result.get("encoding") or "utf-8"
+            self.source_encoding = encoding  # store for later export/readback
+
+            with open(path, "r", newline="", encoding=encoding) as f:
                 reader = csv.reader(f)
                 rows = list(reader)
         except Exception as e:
@@ -211,11 +226,9 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
 
         self.csv_path = path
         self.path_label.config(text=f"Loaded: {path}")
-
         self.original_headers = rows[0]
-        self.preview_rows = rows[1:11]
+        self.preview_rows = rows
         self.assigned.clear()
-
         self._rebuild_table()
         self._update_remaining_label()
 
@@ -364,9 +377,10 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
             chosen = self.assigned.get(i, UNASSIGNED)
             corrected.append(chosen if chosen != UNASSIGNED else original)
 
-        # Read full CSV
+        # Read full CSV using original detected encoding
+        read_encoding = getattr(self, "source_encoding", "utf-8-sig")
         try:
-            with open(self.csv_path, "r", newline="", encoding="utf-8-sig") as f:
+            with open(self.csv_path, "r", newline="", encoding=read_encoding) as f:
                 reader = list(csv.reader(f))
         except Exception as e:
             messagebox.showerror("Error", f"Failed to read CSV for export:\n{e}")
@@ -380,7 +394,6 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
 
         base, ext = os.path.splitext(self.csv_path)
         suggested = base + "_corrected" + ext
-
         out_path = filedialog.asksaveasfilename(
             title="Save corrected CSV",
             initialfile=os.path.basename(suggested),
@@ -391,6 +404,7 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
             return
 
         try:
+            # Always write UTF-8
             with open(out_path, "w", newline="", encoding="utf-8") as f:
                 w = csv.writer(f)
                 w.writerow(corrected)
@@ -400,7 +414,6 @@ Thin '│' columns are visual separators only. First 10 rows shown below."""
             return
 
         messagebox.showinfo("Export complete", f"Saved corrected CSV:\n{out_path}")
-
 
 def main():
     initial = None

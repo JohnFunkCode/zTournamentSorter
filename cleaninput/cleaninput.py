@@ -174,7 +174,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             #print splitString, "|", feet, "|", inches
 
     #Look for out of state dojos and move them into the 'Dojo' column
-    logging.info("   Looking for out of state dojos")
+    logging.info("   Looking for out of state studios")
 
     # First let's establish if the Out_of_State_Dojo column in the input dataframe if there isn't show a warning,
     # then just create one so all the rest of the logic works.
@@ -182,7 +182,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
     if ('Out_of_State_Dojo' not in column_list):
         errorString = "Out_of_State_Dojo column doesn't exist in the input file, out of state dojos won't be processed"
         logging.warning(errorString)
-        cleanDataFrame.insert(0, "Out_of_State_Dojo",'')
+        cleanDataFrame.insert(0,'Out_of_State_Dojo','')
 
     for index, row in cleanDataFrame.iterrows():
         theString=row['Dojo']
@@ -190,7 +190,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             outofstateString=row['Out_of_State_Dojo']
             if(pd.isnull(outofstateString)):
                 errorCount+=1
-                errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " says the student is from Out of State, but there is no out of State Studio provided"
+                errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " says the student is from Out of State, but there is no out of State Dojo provided"
                 #print errorString
                 input_error_list.append(index, 'Height')
             else:

@@ -2,11 +2,11 @@
 # done - the winner is the one with the lowest score, and the lowest spread_score
 # done - calculate the number of buckets, and only test that number and that number +1 to account for the edge cases.
 # done - connect this back up to the test harness
-# tbd - test this all with a few of the edge cases we've cooked up
-# tbd - run tests with the big test data set
-# tbd - think about refactoring the return values to make it easier to call from the tournament code - probably return a list with the partition boundaries.
-# tbd - see if a recursive version is still understandable enough that you could debug it in a year.
-# tbd - clean up comments and logging for production use
+# done - test this all with a few of the edge cases we've cooked up
+# done - run tests with the big test data set
+# done - think about refactoring the return values to make it easier to call from the tournament code - probably return a list with the partition boundaries.
+# done - see if a recursive version is still understandable enough that you could debug it in a year.
+# done - clean up comments and logging for production use
 
 import logging
 import os
@@ -54,9 +54,9 @@ class NamePartionioner:
                 bucket_variance_score = 65535
 
             if (bucket_variance_score < 65535):
-                logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
-                             f'{chr(64 + boundry1 + 1)}-Z::{sizeofbucket2}:{26 - boundry1} '
-                             f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
+                # logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
+                #              f'{chr(64 + boundry1 + 1)}-Z::{sizeofbucket2}:{26 - boundry1} '
+                #              f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
                 self.list_of_scores.append({'bucket_variance_score': bucket_variance_score,
                                             'spread_score': spread_score,
                                             'boundaries': (['A', chr(64 + boundry1)],
@@ -101,10 +101,10 @@ class NamePartionioner:
                     bucket_variance_score = 65535
 
                 if (bucket_variance_score < 65535):
-                    logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
-                                 f'{chr(64 + boundry1 + 1)}-{chr(64 + boundry2)}:{sizeofbucket2}:{boundry2 - boundry1}, '
-                                 f'{chr(64 + boundry2 + 1)}-Z:{sizeofbucket3}:{26 - boundry2} '
-                                 f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
+                    # logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
+                    #              f'{chr(64 + boundry1 + 1)}-{chr(64 + boundry2)}:{sizeofbucket2}:{boundry2 - boundry1}, '
+                    #              f'{chr(64 + boundry2 + 1)}-Z:{sizeofbucket3}:{26 - boundry2} '
+                    #              f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
                     self.list_of_scores.append({'bucket_variance_score': bucket_variance_score,
                                                 'spread_score': spread_score,
                                                 'boundaries': (['A', chr(64 + boundry1)],
@@ -161,11 +161,11 @@ class NamePartionioner:
                         bucket_variance_score = 65535
 
                     if (bucket_variance_score < 65535):
-                        logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
-                                     f'{chr(64 + boundry1 + 1)}-{chr(64 + boundry2)}:{sizeofbucket2}:{boundry2 - boundry1}, '
-                                     f'{chr(64 + boundry2 + 1)}-{chr(64 + boundry3)}:{sizeofbucket3}:{boundry3 - boundry2}, '
-                                     f'{chr(64 + boundry3 + 1)}-Z:{sizeofbucket4}:{26 - boundry3} '
-                                     f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
+                        # logging.info(f'A-{chr(64 + boundry1)}:{sizeofbucket1}:{boundry1 - 0}, '
+                        #              f'{chr(64 + boundry1 + 1)}-{chr(64 + boundry2)}:{sizeofbucket2}:{boundry2 - boundry1}, '
+                        #              f'{chr(64 + boundry2 + 1)}-{chr(64 + boundry3)}:{sizeofbucket3}:{boundry3 - boundry2}, '
+                        #              f'{chr(64 + boundry3 + 1)}-Z:{sizeofbucket4}:{26 - boundry3} '
+                        #              f'- bucket_variance_score={bucket_variance_score} spread_score={spread_score}')
                         self.list_of_scores.append(
                             {'bucket_variance_score': bucket_variance_score, 'spread_score': spread_score,
                              'boundaries': (['A', chr(64 + boundry1)],

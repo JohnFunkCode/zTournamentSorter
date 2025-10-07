@@ -5,12 +5,12 @@ from pathlib import Path
 
 class SplashScreen(ttk.Frame):
     def __init__(self, container):
-        super().__init__(container)
+        super().__init__(container, padding=16)
         # field options
         options = {'padx': 5, 'pady': 5}
 
         # data table label
-        self.opening_label0 = ttk.Label(self, text='zUltimate Tournament App', font="Helvetica 22 bold")
+        self.opening_label0 = ttk.Label(self, text='zUltimate Tournament App', style="Title.TLabel")
         self.opening_label0.grid(column=0, row=0, **options)
 
         # Resolve image path relative to this file to avoid CWD issues

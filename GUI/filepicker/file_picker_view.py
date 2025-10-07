@@ -1,6 +1,6 @@
 # python
-# File: GUI/filepicker/file_picker_view.py
 import os
+import pathlib
 from tkinter import ttk, filedialog
 import tkinter as tk
 
@@ -9,33 +9,40 @@ class FilePickerView:
         self.parent = parent
         self.controller = controller
         self.app_container = getattr(controller, "app_container", None)
-        self._modal_top = None  # Set by controller if shown in a modal
+        self._modal_top = None
 
-        self.root = ttk.Frame(parent)
+        # Store full paths separately (only filenames shown in UI)
+        self._ring_full_path: str | None = None
+        self._reg_full_path: str | None = None
+
+        self.root = ttk.Frame(parent, padding=12)
+        self.root.grid_columnconfigure(0, weight=0)
+        self.root.grid_columnconfigure(1, weight=0)
         self.root.grid_columnconfigure(2, weight=1)
 
         self.ring_file_var = tk.StringVar()
         self.reg_file_var = tk.StringVar()
 
-        # Ring envelope picker
-        ttk.Label(self.root, text="Ring envelope database:").grid(row=0, column=0, padx=8, pady=8, sticky="w")
-        self.ring_btn = ttk.Button(self.root, text="Choose file...", command=self._pick_ring_file)
-        # self.ring_btn = ttk.Button(self.root, text="Choose file...", command=controller.on_ring_file_chosen)
+        options = {"padx": 8, "pady": 8}
+        self.title_label = ttk.Label(self.root, text="Select input files", style="Title.TLabel")
+        self.title_label.grid(row=0, column=0, columnspan=3, sticky="w", padx=4, pady=(0, 8))
 
-        self.ring_btn.grid(row=0, column=1, padx=8, pady=8, sticky="w")
-        self.ring_entry = ttk.Entry(self.root, textvariable=self.ring_file_var, state="readonly")
-        self.ring_entry.grid(row=0, column=2, padx=8, pady=8, sticky="ew")
+        # Ring envelope picker
+        ttk.Label(self.root, text="Ring envelope database:").grid(row=1, column=0, sticky="w", **options)
+        self.ring_btn = ttk.Button(self.root, text="Choose file...", command=self._pick_ring_file)
+        self.ring_btn.grid(row=1, column=1, sticky="w", **options)
+        # Width large enough for "Tourn Ring Envelope Data Base_2025_05_03-proposed"
+        self.ring_entry = ttk.Entry(self.root, textvariable=self.ring_file_var, state="readonly", width=54)
+        self.ring_entry.grid(row=1, column=2, sticky="ew", **options)
 
         # Registration data picker
-        ttk.Label(self.root, text="Registration data:").grid(row=1, column=0, padx=8, pady=8, sticky="w")
+        ttk.Label(self.root, text="Registration data:").grid(row=2, column=0, sticky="w", **options)
         self.reg_btn = ttk.Button(self.root, text="Choose file...", command=self._pick_reg_file)
-        # self.reg_btn = ttk.Button(self.root, text="Choose file...", command=controller.on_registration_file_chosen)
-        self.reg_btn.grid(row=1, column=1, padx=8, pady=8, sticky="w")
-        self.reg_entry = ttk.Entry(self.root, textvariable=self.reg_file_var, state="readonly")
-        self.reg_entry.grid(row=1, column=2, padx=8, pady=8, sticky="ew")
+        self.reg_btn.grid(row=2, column=1, sticky="w", **options)
+        self.reg_entry = ttk.Entry(self.root, textvariable=self.reg_file_var, state="readonly", width=54)
+        self.reg_entry.grid(row=2, column=2, sticky="ew", **options)
 
-        # Continue button (hidden until both files selected)
-        self.continue_btn = ttk.Button(self.root, text="Continue to data validation", command=self._continue)
+        self.continue_btn = ttk.Button(self.root, text="Continue to fix headers", command=self._continue)
         self._hide_continue()
 
     def pack(self, **kwargs):
@@ -52,44 +59,62 @@ class FilePickerView:
         self.root.grid_remove()
 
     def set_modal_top(self, top: tk.Toplevel | None):
-        """Controller can set the toplevel used for modal presentation so this view can close it on Continue."""
         self._modal_top = top
 
     def _pick_ring_file(self):
-        initial_dir = getattr(self.app_container, "tournament_output_folder_path", os.getcwd())
+        initial_dir = getattr(self.app_container, "tournament_output_folder_path", None) or os.getcwd()
+        try:
+            initial_dir = str(pathlib.Path(initial_dir))
+        except Exception:
+            initial_dir = os.getcwd()
+        if not os.path.isdir(initial_dir):
+            initial_dir = os.getcwd()
+        parent_win = self._modal_top if self._modal_top else self.root.winfo_toplevel()
 
         path = filedialog.askopenfilename(
             title="Select the file with the envelope database",
             initialdir=initial_dir,
-            filetypes=[("csv", "*.csv"), ("All files", "*.*")]
+            filetypes=[("csv", "*.csv"), ("All files", "*.*")],
+            parent=parent_win
         )
         if path:
-            self.ring_file_var.set(path)
+            self._ring_full_path = path
+            self.ring_file_var.set(os.path.basename(path))
             if hasattr(self.controller, "on_ring_file_chosen"):
                 self.controller.on_ring_file_chosen(path)
         self._update_continue_visibility()
 
     def _pick_reg_file(self):
-        initial_dir = getattr(self.app_container, "tournament_output_folder_path", os.getcwd())
+        initial_dir = getattr(self.app_container, "tournament_output_folder_path", None) or os.getcwd()
+        try:
+            initial_dir = str(pathlib.Path(initial_dir))
+        except Exception:
+            initial_dir = os.getcwd()
+        if not os.path.isdir(initial_dir):
+            initial_dir = os.getcwd()
+        parent_win = self._modal_top if self._modal_top else self.root.winfo_toplevel()
+
         path = filedialog.askopenfilename(
             title="Select the file with the tournament data",
             initialdir=initial_dir,
-            filetypes=[("csv", "*.csv"), ("All files", "*.*")]
+            filetypes=[("csv", "*.csv"), ("All files", "*.*")],
+            parent=parent_win
         )
         if path:
-            self.reg_file_var.set(path)
+            self._reg_full_path = path
+            self.reg_file_var.set(os.path.basename(path))
             if hasattr(self.controller, "on_registration_file_chosen"):
                 self.controller.on_registration_file_chosen(path)
         self._update_continue_visibility()
 
     def _update_continue_visibility(self):
-        if self.ring_file_var.get() and self.reg_file_var.get():
+        if self._ring_full_path and self._reg_full_path:
             self._show_continue()
         else:
             self._hide_continue()
 
     def _show_continue(self):
-        self.continue_btn.grid(row=3, column=0, columnspan=3, padx=8, pady=(16, 8), sticky="e")
+        self.continue_btn.grid(row=3, column=0, columnspan=3, sticky="e", padx=8, pady=(16, 8))
 
     def _hide_continue(self):
         try:
@@ -98,15 +123,13 @@ class FilePickerView:
             pass
 
     def _continue(self):
-        ring_path = self.ring_file_var.get()
-        reg_path = self.reg_file_var.get()
+        ring_path = self._ring_full_path
+        reg_path = self._reg_full_path
         setattr(self.parent, "ring_envelope_database_filename", ring_path)
         setattr(self.parent, "input_data_filename", reg_path)
-
         if hasattr(self.controller, "on_continue"):
             self.controller.on_continue(ring_path, reg_path)
-        # If we were shown modally, close the dialog
-        if getattr(self, "_modal_top", None):
+        if self._modal_top:
             try:
                 self._modal_top.grab_release()
             except Exception:

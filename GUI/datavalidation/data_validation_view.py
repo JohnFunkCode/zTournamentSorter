@@ -1,30 +1,39 @@
 import logging
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, font as tkfont
 import tkinter.scrolledtext as scrolledtext
 from pandastable import Table, TableModel
 
 class DataValidationView(ttk.Frame):
     def __init__(self, app_container, controller):
-        super().__init__(app_container)
+        super().__init__(app_container, padding=12)
         self.app_container = app_container
-        self.controller=controller
+        self.controller = controller
+
+        # layout weights: table/log expand; button column fixed
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
+        self.columnconfigure(3, weight=0)
+        self.rowconfigure(1, weight=1)  # table area
+        self.rowconfigure(7, weight=1)  # error log area
 
         # field options
-        options = {'padx': 5, 'pady': 5}
+        options = {'padx': 8, 'pady': 8}
 
-        # add padding to the frame and show it
-        self.grid(**options)
+        # Title header (uses Title.TLabel from _apply_unified_theme)
+        self.title_label = ttk.Label(self, text='Data Validation', style='Title.TLabel')
+        self.title_label.grid(column=0, row=0, columnspan=4, sticky=tk.W, padx=4, pady=(0, 4))
 
         # # data table label
         # self.error_log_label = ttk.Label(self, text='Data Table')
         # self.error_log_label.grid(column=0, row=0, sticky=tk.W, **options)
 
         # pandas table
-        self.pandas_table_frame = ttk.Frame(self,borderwidth=2,relief='sunken')
+        self.pandas_table_frame = ttk.Frame(self, borderwidth=2, relief='sunken')
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
-                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=551)  # width=1550, height=551
-        self.pandas_table_frame.grid(row=1,column=0,rowspan=5, columnspan=3,**options)
+                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=551)
+        self.pandas_table_frame.grid(row=1, column=0, rowspan=5, columnspan=3, sticky="nsew", **options)
         self.table.redraw()
 
         self.previous_button = ttk.Button(self, text='Previous Error')
@@ -48,18 +57,19 @@ class DataValidationView(ttk.Frame):
         self.process_data_button['command'] = self.process_data
         self.process_data_button.grid(row=5, column=3,sticky=tk.W, **options)
 
-
         # error log label
         self.error_log_label = ttk.Label(self, text='Data Errors')
         self.error_log_label.grid(row=6, column=0, sticky=tk.W, **options)
 
-        # error log textbox
-        self.error_log = tk.scrolledtext.ScrolledText(self,width=181,height=18,wrap="none")
-        self.error_log.grid(row=7, column=0, columnspan=3, **options)
-
+        # error log textbox (use scrolledtext module + unified font)
+        self.error_log = scrolledtext.ScrolledText(
+            self, width=181, height=18, wrap="none",
+            font=tkfont.nametofont("TkTextFont")
+        )
+        self.error_log.grid(row=7, column=0, columnspan=3, sticky="nsew", **options)
 
     def show_view(self):
-        self.grid()
+        self.grid(sticky="nsew")
 
     def hide_view(self):
         self.grid_forget()

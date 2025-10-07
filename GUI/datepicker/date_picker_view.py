@@ -1,8 +1,7 @@
 # python
 # File: GUI/datepicker/date_picker_view.py
 import logging
-import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, font as tkfont
 from tkcalendar import Calendar
 from datetime import datetime
 
@@ -12,8 +11,15 @@ class DatePickerView:
         self.parent = parent
         self.controller = controller
 
-        self.root = ttk.Frame(parent)
+        self.root = ttk.Frame(parent, padding=12)
         self.root.grid_columnconfigure(0, weight=1)
+
+        # unified spacing for child widgets
+        options = {"padx": 8, "pady": 8}
+
+        # title/header using the unified Title.TLabel style from _apply_unified_theme
+        self.title_label = ttk.Label(self.root, text="Select the tournament date", style="Title.TLabel")
+        self.title_label.grid(row=0, column=0, sticky="w", padx=4, pady=(0, 4))
 
         self.the_calendar = Calendar(
             self.root,
@@ -21,10 +27,9 @@ class DatePickerView:
             maxdate=datetime(2030, 1, 1),
             showweeknumbers=False,
             showothermonthdays=False,
-            foreground="red",
         )
         self.the_calendar.bind("<<CalendarSelected>>", self.update_selected_date_button)
-        self.the_calendar.grid(row=0, column=0, padx=8, pady=8)
+        self.the_calendar.grid(row=1, column=0, sticky="nsew", **options)
 
         self.selected_date_button = ttk.Button(
             self.root,
@@ -32,7 +37,7 @@ class DatePickerView:
             state="disabled",
             command=self.selected_date_clicked,
         )
-        self.selected_date_button.grid(row=1, column=0, padx=8, pady=(0, 8), sticky="e")
+        self.selected_date_button.grid(row=2, column=0, sticky="e", padx=8, pady=(0, 8))
 
     def pack(self, **kwargs):
         self.root.pack(**kwargs)

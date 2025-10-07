@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import messagebox
 from typing import Optional, Callable
 import logging
+from GUI.headercorrector.header_corrector_dialog import HeaderCorrectorDialog
+
 
 try:
     from GUI.filepicker.file_picker_view import FilePickerView
@@ -91,10 +93,18 @@ class FilePickerController:
         setattr(self.app_container, "ring_envelope_database_filename", ring_path)
         setattr(self.app_container, "input_data_filename", reg_path)
 
-        if callable(self.on_complete):
-            self.on_complete(ring_path, reg_path)
-
+        # Close file picker modal before opening next modal
         self._close_modal()
+
+        # Launch header corrector modal
+        parent = self.app_container
+        top = tk.Toplevel(parent)
+        def _after_headers():
+            # After header correction we can invoke original completion
+            if callable(self.on_complete):
+                self.on_complete(ring_path, self.app_container.input_data_filename)
+        HeaderCorrectorDialog(top, self.app_container, on_done=_after_headers)
+        top.wait_window(top)
 
     def _close_modal(self):
         if self.dialog:

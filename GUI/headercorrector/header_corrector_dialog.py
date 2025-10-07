@@ -60,8 +60,8 @@ class HeaderCorrectorDialog(ttk.Frame):
         toolbar = ttk.Frame(outer)
         toolbar.pack(fill="x", pady=(0,6))
         ttk.Button(toolbar, text="Auto Map", command=self.auto_assign_common).pack(side="left")
-        ttk.Button(toolbar, text="Save & Continue", command=self._export_and_finish).pack(side="right")
-        ttk.Button(toolbar, text="Cancel", command=self._cancel).pack(side="right", padx=(0,8))
+        ttk.Button(toolbar, text="Save & Continue", command=self._export_and_finish).pack(side="left")
+        # ttk.Button(toolbar, text="Cancel", command=self._cancel).pack(side="right", padx=(0,8))
 
         self.remaining_label = ttk.Label(outer, text="")
         self.remaining_label.pack(fill="x", pady=(0,6))

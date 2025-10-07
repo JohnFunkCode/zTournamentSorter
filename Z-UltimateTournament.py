@@ -17,8 +17,8 @@ class zAppController(tk.Tk):
         self._apply_unified_theme()
 
         self.title('zUltimate App')
-        # self.geometry('1580x972')
-        self.geometry('1636x1126')
+        # self.geometry('1580x972') # good for macbook air default resolution
+        self.geometry('1636x1126') # good for windows
         self.resizable(True, True)
         # macOS: .ico can raise; do not block startup if it fails
         try:

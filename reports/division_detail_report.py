@@ -25,8 +25,11 @@ import reports
 
 class DivisionDetailReport(object):
     def __init__(self, title: str, sourcefile: str, output_folder_path: str):
-        filename_with_path = str(pathlib.Path(
-            output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'DivisionDetailReport.pdf'))
+        # filename_with_path = str(pathlib.Path(
+        #     output_folder_path / 'DivisionDetailReport.pdf'))
+
+        from pathlib import Path
+        filename_with_path = str(Path(output_folder_path) / 'DivisionDetailReport.pdf')
 
         # self.doc = SimpleDocTemplate("DivisionDetailReport.pdf", pagesize=landscape(letter),topMargin=0)
         self.doc = SimpleDocTemplate(filename_with_path, pagesize=landscape(letter), topMargin=0)
@@ -43,10 +46,13 @@ class DivisionDetailReport(object):
         DivisionDetailReport.PAGE_WIDTH = 8.5 * inch
         DivisionDetailReport.styles = getSampleStyleSheet()  #sample style sheet doesn't seem to be used
 
-        # self.summary_info = pd.DataFrame( columns=['Event_Time','Division_Name','Division_Type','Gender', 'Rank_Label', 'Minimum_Age','Maximum_Age','Rings','Ranks', 'Competitors'])
+        # self.summary_info = pd.DataFrame( columns=['Event_Time','Division','Division_Type','Gender', 'Rank', 'Minimum_Age','Maximum_Age','Ring #','Ranks', '# Comp'])
+        # self.summary_info = pd.DataFrame(
+        #     columns=['Event_Time', 'Division', 'Division_Type', 'Gender', 'Rank', 'Age', 'Ring #', 'Last Name',
+        #              '# Comp'])
         self.summary_info = pd.DataFrame(
-            columns=['Event_Time', 'Division_Name', 'Division_Type', 'Gender', 'Rank_Label', 'Age', 'Rings',
-                     'Competitors'])
+            columns=['Event_Time', 'Division', 'Rank', 'Age', 'Last Name','Ring #',
+                     '# Comp','Center', 'Corner'])
 
     @staticmethod
     def set_title(title):
@@ -103,7 +109,7 @@ class DivisionDetailReport(object):
                            ['DIVISION', division_name],
                            ['AGE', age],
                            ['RANKS', belts],
-                           ['COMPETITORS', df.shape[0]]]
+                           ['# Comp', df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -119,7 +125,7 @@ class DivisionDetailReport(object):
                            ['DIVISION', division_name, ''],
                            ['AGE', age, ''],
                            ['RANKS', belts, split_warning_text],
-                           ['COMPETITORS', df.shape[0]]]
+                           ['# Comp', df.shape[0]]]
             t = Table(headerdata2)
 
             # remember table styles attributes specified as From (Column,Row), To (Column,Row)
@@ -279,8 +285,11 @@ class DivisionDetailReport(object):
         #automatic split logic
         number_of_rings = len(rings)
         highest_ring_number_specified = rings[-1][0]
+        if type(highest_ring_number_specified) is str:
+            highest_ring_number_specified = rings[0][0] #We may want to throw an error here, but S. Liz wants it to print *TBD
 
-        if (number_of_rings > 1):  #means we want to use autosplit
+        # if (number_of_rings > 1):  #means we want to use autosplit
+        if rings[0][1].upper()  == 'AUTO':  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors,
@@ -289,6 +298,8 @@ class DivisionDetailReport(object):
             # print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]
+
+
             for partition in partition_boundaries:
                 # in case we have more partitions than rings, we need to handle it gracefully
                 if (ring_number > highest_ring_number_specified):
@@ -301,20 +312,20 @@ class DivisionDetailReport(object):
             # print(new_ring_info)
             if (len(new_ring_info) < len(rings)):
                 logging.warning(
-                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
+                    f'Using automatic ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
             if (len(new_ring_info) > len(rings)):
                 logging.warning(
-                    f'Overriding ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
+                    f'Using automatic ring configuration for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
             if (len(new_ring_info) == len(rings)):
                 logging.info(
-                    f'Overriding ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
+                    f'Using automatic ring configuration in for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
             rings = new_ring_info
 
         ###########
         ## build the data for the summary of the entire division
-        self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age,
-                                rings, ranks, division_competitors)
+        # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age, maximum_age,
+        #                         rings, ranks, division_competitors)
 
         for info in rings:
             # ring = info.get('ring')
@@ -342,10 +353,11 @@ class DivisionDetailReport(object):
                                               rank_label)
             ###########
             ## build the data for the summary of the ring
-            # self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
-            #                         maximum_age, str(ring), ranks, filtered_competitors)
-            self.build_summary_info('', '', '', '', '', '',
-                                    '', str(ring), ranks, filtered_competitors)
+            a_z = info[1] + '-' + info[2]
+            self.build_summary_info(event_time, division_name, division_type, gender, rank_label, minimum_age,
+                                    maximum_age, str(ring), a_z, ranks, filtered_competitors)
+            # self.build_summary_info('', '', '', '', '', '',
+            #                         '', str(ring), ranks, filtered_competitors)
 
         # if len(rings)>1:
         #
@@ -368,11 +380,11 @@ class DivisionDetailReport(object):
         #     self.put_dataframe_on_pdfpage(division_competitors, str(rings[0]), event_time, division_name, age_label, rank_label)
 
     def build_summary_info(self, event_time: str, division_name: str, division_type: str, gender: str, rank_label: str,
-                           minimum_age: int, maximum_age: int, rings: list, ranks: list,
+                           minimum_age: int, maximum_age: int, rings: list, a_z: str, ranks: list,
                            division_competitors: pandas.DataFrame):
         # logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks} {len(division_competitors)}')
         # logging.info(f'{division_competitors}')
-        # new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank_Label':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Rings':rings, 'Ranks':ranks, 'Competitors':len(division_competitors)}
+        # new_row = {'Event_Time': event_time, 'Division': division_name, 'Division_Type': division_type,'Gender':gender, 'Rank':rank_label, 'Minimum_Age':minimum_age, 'Maximum_Age':maximum_age,'Ring #':rings, 'Ranks':ranks, '# Comp':len(division_competitors)}
 
         #Special case for 3 year olds
         if type(minimum_age) == int:
@@ -384,9 +396,12 @@ class DivisionDetailReport(object):
         else:
             display_age = ''
 
-        new_row = {'Event_Time': event_time, 'Division_Name': division_name, 'Division_Type': division_type,
-                   'Gender': gender, 'Rank_Label': rank_label, 'Age': display_age, 'Rings': rings,
-                   'Competitors': len(division_competitors)}
+        # new_row = {'Event_Time': event_time, 'Division': division_name, 'Division_Type': division_type,
+        #            'Gender': gender, 'Rank': rank_label, 'Age': display_age, 'Ring #': rings, 'Last Name': a_z,
+        #            '# Comp': len(division_competitors)}
+        new_row = {'Event_Time': event_time, 'Division': division_name,
+                   'Rank': rank_label, 'Age': display_age, 'Last Name': a_z,'Ring #': rings,
+                   '# Comp': len(division_competitors),'Center': '', 'Corner': ''}
         self.summary_info.loc[len(self.summary_info)] = new_row
 
 

@@ -45,11 +45,11 @@ class SparringTreeReportPDF():
             p=pathlib.Path(sourcefile)
             name_only = str(p.name)
             output_folder_path_no_extension = name_only[0:len(name_only)-4]
-            self._letter_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
-            self._legal_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
+            self._letter_filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
+            self._legal_filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
         else:
-            self._letter_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LETTER_FILE_NAME))
-            self._legal_filename_with_path = str(pathlib.Path(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
+            self._letter_filename_with_path = str(pathlib.Path(output_folder_path / SPARRING_TREE_REPORT_LETTER_FILE_NAME))
+            self._legal_filename_with_path = str(pathlib.Path(output_folder_path / SPARRING_TREE_REPORT_LEGAL_FILE_NAME))
 
         ''' Create a Sparring Tree'''
         # self._letter_canvas = canvas.Canvas(SPARRING_TREE_REPORT_LETTER_FILE_NAME)
@@ -127,7 +127,8 @@ class SparringTreeReportPDF():
         number_of_rings = len(rings)
         highest_ring_number_specified = rings[-1][0]
 
-        if( number_of_rings >1 ):  #means we want to use autosplit
+        # if( number_of_rings >1 ):  #means we want to use autosplit
+        if rings[0][1].upper() == 'AUTO':  # means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=20)
@@ -144,11 +145,11 @@ class SparringTreeReportPDF():
                 ring_number = ring_number + 1
             print(new_ring_info)
             if(len(new_ring_info) < len(rings)):
-                logging.warning(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
+                logging.warning(f'Using automatic ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info} - results in using less rings than planned!')
             if(len(new_ring_info) > len(rings)):
-                logging.warning(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
+                logging.warning(f'Using automatic ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - results in using MORE rings than planned!')
             if (len(new_ring_info) == len(rings)):
-                logging.info(f'Overriding ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
+                logging.info(f'Using automatic ring configuration in {division_name} Sparring for {event_time} {division_name} {age_label} {rank_label} - original rings: {rings} new rings:{new_ring_info}  - no change in the number of rings used!')
 
             rings=new_ring_info
 

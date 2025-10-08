@@ -1,25 +1,23 @@
+# python
+from .date_picker_view import DatePickerView  # Adjust import as needed
 from datetime import datetime
-import tkinter as tk
-from tkinter import ttk
-from tkcalendar import Calendar
 import logging
 from pathlib import Path
-import GUI.datepicker.date_picker_view
 
-class DatePickerController():
-    def __init__(self, app_container: ttk.Frame):
-        super().__init__()
-        self.app_container = app_container
-        self.date_picker_view = GUI.datepicker.date_picker_view.DatePickerView(app_container,self)
+class DatePickerController:
+    def __init__(self, app_container):
+        self.app = app_container
+        self.parent = None
+        self.on_complete = None
+        self.view = None
 
-    def hide_view(self):
-        self.date_picker_view.hide_view()
+    def show_it(self, parent, on_complete):
+        self.parent = parent
+        self.on_complete = on_complete
+        self.view = DatePickerView(parent, controller=self)
+        self.view.pack(fill="both", expand=True)
 
-    def show_view(self):
-        self.date_picker_view.show_view()
-
-
-    def date_selected(self, selected_date: datetime):
+    def date_selected(self, selected_date):
         # use pathlib for all directory and file access
         # great tutorial at: https://towardsdatascience.com/dont-use-python-os-library-any-more-when-pathlib-can-do-141fefb6bdb5
         long_form_date_string = selected_date.strftime('%Y-%B-%d')
@@ -39,9 +37,8 @@ class DatePickerController():
         new_dir = new_path.expanduser()
         Path(new_dir).mkdir(exist_ok=True, parents=True)
         logging.info(f'new_dir={new_dir}')
-        self.app_container.tournament_output_folder_path = str(new_dir)
+        # self.app.tournament_output_folder_path = str(new_dir)
+        self.app.tournament_output_folder_path = new_dir
 
-        # write a test file to make sure everything works
-        # new_path = Path('~/Documents/Tournaments/' + long_form_date_string + '/test.txt')
-        # f = new_path.expanduser()
-        # f.write_text(f'test file in {long_form_date_string} directory')
+        if callable(self.on_complete):
+            self.on_complete(selected_date)

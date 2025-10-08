@@ -40,18 +40,38 @@ class DataValidationController():
     def show_view(self):
         self.data_validation_view.show_view()
 
-    def load_tournament_file(self):
-        # print(self.app_container.tournament_output_folder_path)
-        working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
-                                                                            initialdir=self.app_container.tournament_output_folder_path,
-                                                                            filetypes=[("csv","*.csv")])
-        # if the input file isn't in the folder for the tournament date ask to move it.
-        path_to_selected_file = str(pathlib.Path(working_file_name).parent)
+    def load_ring_envelope_database(self):
+        # working_file_name = filedialog.askopenfilename(title="Select the file with the envelope database",
+        #                                                                     initialdir=self.app_container.tournament_output_folder_path,
+        #                                                                     filetypes=[("csv","*.csv")])
+        working_file_name = self.app_container.ring_envelope_database_filename
+        # if the ring envelope database file isn't in the folder for the tournament date let the user know we're copying it there.
+        # path_to_selected_file = str(pathlib.Path(working_file_name).parent)
+        path_to_selected_file = pathlib.Path(working_file_name).parent
         if path_to_selected_file != self.app_container.tournament_output_folder_path:
-            tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
+            tk.messagebox.showinfo(title='File Warning', message="The ring envelope database file isn't in the correct tournament folder. I'm copying it there." )
             source=pathlib.Path(working_file_name)
             # source_filename_only = source.name
-            destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )
+            destination=pathlib.Path(self.app_container.tournament_output_folder_path / source.name )
+            copyfile(source,destination)
+            working_file_name=str(destination)
+
+        self.app_container.ring_envelope_database_filename = working_file_name
+
+
+    def load_tournament_file(self):
+        # print(self.app_container.tournament_output_folder_path)
+        # working_file_name = filedialog.askopenfilename(title="Select the file with the tournament data",
+        #                                                                     initialdir=self.app_container.tournament_output_folder_path,
+        #                                                                     filetypes=[("csv","*.csv")])
+        working_file_name = self.app_container.input_data_filename
+        # if the input file isn't in the folder for the tournament date let the user know we're copying it there.
+        path_to_selected_file = pathlib.Path(working_file_name).parent
+        if path_to_selected_file != self.app_container.tournament_output_folder_path:
+            tk.messagebox.showinfo(title='File Warning', message="The tournament data file isn't in the correct tournament folder. I'm copying it there." )
+            source=pathlib.Path(working_file_name)
+            # source_filename_only = source.name
+            destination=pathlib.Path(self.app_container.tournament_output_folder_path / source.name )
             copyfile(source,destination)
             working_file_name=str(destination)
 
@@ -110,10 +130,14 @@ class DataValidationController():
         self.data_validation_view.table.show()
         self.data_validation_view.show_view()
 
-        # TBD figure out how to goto the first error the first time the table is loaded - it appears the table isn't rendered yet.
-        # row= self.input_error_list.error_list[self.error_cursor][0] + 1
-        # column = self.input_error_list.error_list[self.error_cursor][1]
-        # self.data_validation_view.goto_row_column(row,column)
+        # After initial render, highlight the first error (defer until idle so canvas is ready)
+        if len(self.input_error_list.error_list) > 0:
+            first_row = self.input_error_list.error_list[0][0]
+            first_col = self.input_error_list.error_list[0][1]
+            try:
+                self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(first_row, first_col))
+            except Exception:
+                pass
 
 
 
@@ -125,6 +149,11 @@ class DataValidationController():
         # df=self.data_validation_view.table.model
         df = self.app_container.database
         clean_df,error_count= cleaninput.clean_all_input_errors(df, self.input_error_list)
+        # Ensure integer-like columns are actual integers so they don't render with decimal places
+        int_like_cols = ['Registrant_ID']
+        for col in int_like_cols:
+            if col in clean_df.columns:
+                clean_df[col] = pd.to_numeric(clean_df[col], errors='coerce').astype('Int64')
         self.app_container.database =clean_df
         self.data_validation_view.update_table()
 
@@ -132,27 +161,35 @@ class DataValidationController():
         logging.info(f'Input Errors:{self.input_error_list.error_list}')
         for i in range(len(self.input_error_list.error_list)):
             if self.input_error_list.error_list[i][1]=='Age':
-                self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0]+1)
+                self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0])  #was +1)
                 # logging.info(f'Age:')
 
             if self.input_error_list.error_list[i][1]=='Height':
-                self.data_validation_view.highlight_height_error(self.input_error_list.error_list[i][0]+1)
+                self.data_validation_view.highlight_height_error(self.input_error_list.error_list[i][0])  #was +1)
                 # logging.info(f'Height:')
 
             if self.input_error_list.error_list[i][1]=='Weight':
-                self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0]+1)
+                self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0])  #was +1)
                 # logging.info(f'Weight:')
 
             if self.input_error_list.error_list[i][1] == 'Rank':
-                self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0]+1)
+                self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0])  #was +1)
                 # logging.info(f'Rank:')
 
-        # logging.info('Start')
-        #
-        # self.data_validation_view.table.redraw()
-        # self.data_validation_view.table.show()
-        # self.data_validation_view.show_view()
-        # logging.info('End')
+        # Keep the navigation cursor within bounds of the current error list
+        errs = getattr(self.input_error_list, 'error_list', [])
+        if errs:
+            self.error_cursor = max(0, min(self.error_cursor, len(errs) - 1))
+        else:
+            self.error_cursor = 0
+
+        if len(self.input_error_list.error_list) == 0:
+            # No errors: clear any red cell colors and restore default outline
+            self.data_validation_view.reset_color()
+            self.data_validation_view.disable_error_highlighting()
+        else:
+            # There are errors: ensure the red outline persistence is enabled
+            self.data_validation_view.enable_error_highlighting()
 
 
     def load_division_file(self):
@@ -167,7 +204,7 @@ class DataValidationController():
             tk.messagebox.showinfo(title='File Warning', message="That files isn't in the correct tournament folder. I'm copying it there." )
             source=pathlib.Path(working_file_name)
             # source_filename_only = source.name
-            destination=pathlib.Path(self.app_container.tournament_output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + source.name )
+            destination=pathlib.Path(self.app_container.tournament_output_folder_path / source.name )
             copyfile(source,destination)
             working_file_name=str(destination)
 
@@ -198,43 +235,89 @@ class DataValidationController():
         self.data_validation_view.table.show()
         self.data_validation_view.show_view()
 
-
     def previous_error(self):
-        #self.validate_data()
-        if self.error_cursor>0:
-            self.error_cursor-=1
-        row= self.input_error_list.error_list[self.error_cursor][0] + 1
-        column = self.input_error_list.error_list[self.error_cursor][1]
-        self.data_validation_view.goto_row_column(row,column)
-        #showinfo(title='Info', message="Previous error")
+        errs = getattr(self.input_error_list, 'error_list', [])
+        if not errs:
+            showinfo(title='No Errors', message='There are no errors to navigate.')
+            return
+        # Move left if possible
+        if self.error_cursor > 0:
+            self.error_cursor -= 1
+        else:
+            # Already at the first error
+            self.error_cursor = 0
+            showinfo(title='Start of List', message='Already at the first error.')
+            return
+        try:
+            row = errs[self.error_cursor][0]
+            column = errs[self.error_cursor][1]
+            self.data_validation_view.goto_row_column(row, column)
+        except Exception:
+            # Safety clamp
+            self.error_cursor = max(0, min(self.error_cursor, len(errs) - 1))
 
     def next_error(self):
-        if self.error_cursor<len(self.input_error_list.error_list)-1:
-            self.error_cursor+=1
-        row= self.input_error_list.error_list[self.error_cursor][0] + 1
-        column = self.input_error_list.error_list[self.error_cursor][1]
-        self.data_validation_view.goto_row_column(row,column)
-        #showinfo(title='Info', message="Next error")
+        errs = getattr(self.input_error_list, 'error_list', [])
+        if not errs:
+            showinfo(title='No Errors', message='There are no errors to navigate.')
+            return
+        # Move right if possible
+        if self.error_cursor < len(errs) - 1:
+            self.error_cursor += 1
+        else:
+            # Already at the last error
+            self.error_cursor = len(errs) - 1
+            showinfo(title='End of List', message='Already at the last error.')
+            return
+        try:
+            row = errs[self.error_cursor][0]
+            column = errs[self.error_cursor][1]
+            self.data_validation_view.goto_row_column(row, column)
+        except Exception:
+            # Safety clamp
+            self.error_cursor = max(0, min(self.error_cursor, len(errs) - 1))
 
     def recheck_data(self):
         self.data_validation_view.reset_color()
+
+        # Disable Process Data button while checking
+        self.data_validation_view.process_data_button.config(state='disabled')
 
         self.validate_data()
 
         logging.info('Start')
         self.data_validation_view.table.show()
         self.data_validation_view.table.redraw()
-        self.data_validation_view.table.movetoSelection(0,0)
-        self.data_validation_view.table.redraw()
+
+        errs = getattr(self.input_error_list, 'error_list', [])
+        self.error_cursor = 0
+        if errs:
+            row = errs[self.error_cursor][0]
+            column = errs[self.error_cursor][1]
+            try:
+                self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(row, column))
+            except Exception:
+                self.data_validation_view.goto_row_column(row, column)
+        else:
+            # No errors remain; ensure cursor is reset
+            self.error_cursor = 0
+            tk.messagebox.showinfo(
+                title='No More Errors',
+                message='Good Job!  You fixed all the errors.  You may proceed to the next step.'
+            )
+            # Re-enable Process Data button now that validation passed
+            # self.data_validation_view.process_data_button.config(state='normal')
+            self.data_validation_view.process_data_button['state'] = 'normal'
+
 
 
         logging.info('End')
 
-        self.error_cursor=0
-        if len(self.input_error_list.error_list) >0 :
-            row= self.input_error_list.error_list[self.error_cursor][0] + 1
-            column = self.input_error_list.error_list[self.error_cursor][1]
-            self.data_validation_view.goto_row_column(row,column)
+        # self.error_cursor=0
+        # if len(self.input_error_list.error_list) >0 :
+        #     row= self.input_error_list.error_list[self.error_cursor][0] # + 1
+        #     column = self.input_error_list.error_list[self.error_cursor][1]
+        #     self.data_validation_view.goto_row_column(row,column)
 
 
     # def process_data(self):
@@ -242,8 +325,20 @@ class DataValidationController():
 
     def process_data(self):
         # Save the database to file
-        save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
-        save_file_name=filedialog.asksaveasfilename(filetypes=[("csv","*.csv")],initialfile=save_file_name,title='Save Data as...')
+        #            destination=pathlib.Path(self.app_container.tournament_output_folder_path / source.name )
+        # save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
+        # save_file_name = pathlib.Path(self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] / "-Processed.csv")
+        input_path = pathlib.Path(self.app_container.input_data_filename)
+        processed_filename = f"{input_path.stem}-Processed.csv"
+
+        save_file_name = filedialog.asksaveasfilename(
+            title='Save Data as...',
+            initialdir=str(input_path.parent),
+            initialfile=processed_filename,
+            defaultextension='.csv',
+            filetypes=[("csv", "*.csv")]
+        )
+
         if(save_file_name != ''):
             logging.info(f"Saving processed file to {save_file_name}")
             df = pd.DataFrame(self.app_container.database)

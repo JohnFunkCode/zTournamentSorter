@@ -18,7 +18,7 @@ from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
 from reports.division_detail_report import DivisionDetailReport
-from reports.tournament_summary_report import TournamentSummaryReport
+from reports.working_guide_report import WorkingGuideReport
 from reports.kata_score_sheet import KataScoreSheet
 from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
@@ -33,11 +33,11 @@ class LoadTournamentTable:
     def __int__(self):
         ###############################################################################
         # Setup a few variables to hold all the reports
-        self.divison_detail_report_pdf =None #= DivisionDetailReport.DivisionDetailReport()
-        #self.kata_score_sheet = None #kata_score_sheet_pdf.KataScoreSheet()
+        self.division_detail_report_pdf = None # = DivisionDetailReport.DivisionDetailReport()
+        # self.kata_score_sheet = None #kata_score_sheet_pdf.KataScoreSheet()
         self.kata_score_sheet_pdf = None
         self.technique_score_sheet_pdf = None
-        self.sparing_tree_pdf = None #reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
+        self.sparing_tree_pdf = None # reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
         self.tournament_summary_report_pdf = None
 
     ###############################################################################
@@ -45,7 +45,7 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
+        self.division_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
         # self.TournamentSummaryPDF.add_division_details(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, division_competitors=clean_df)
         self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, division_type="Forms", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
     #
@@ -58,7 +58,7 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the sparring tree in one line
     #  This prevents a lot of duplication
     def writeSingleSparringTreeandDivisionReport(self, event_time: str, division_name, gender: str, rank_label: str, minimum_age: int, maximum_age: int, ring_info: list, ranks: list, clean_df : pd.DataFrame ):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Sparring", gender=gender,rank_label=rank_label, minimum_age=minimum_age,maximum_age=maximum_age, rings=ring_info,ranks=ranks,clean_df=clean_df)
+        self.division_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Sparring", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
         # rings = [info[0] for info in ring_info]   #extracts the first element (ring number) from each item in the ring_info list and store them in a new list called rings
         self.sparing_tree_pdf.write_single_sparring_tree(event_time=event_time, division_name=division_name, gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info,ranks=ranks, clean_df=clean_df)
 
@@ -67,7 +67,7 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name,division_type="Weapons", gender=gender,rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info,ranks=ranks, clean_df=clean_df)
+        self.division_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Weapons", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
         self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time=event_time, division_name=division_name, division_type="Weapons", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
 
     ###############################################################################
@@ -75,7 +75,7 @@ class LoadTournamentTable:
     #  Provides a convenience wrapper that writes to both the division detail report and the kata score sheet in one line
     #  This prevents a lot of duplication
     def writeSingleTechniqueScoreSheetandDivisionReport(self,event_time: str, division_name: str, gender: str, rank_label: str, minimum_age: int,maximum_age: int, ring_info: list, ranks: list,clean_df: pd.DataFrame):
-        self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
+        self.division_detail_report_pdf.writeSingleDivisionDetailReport(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
         self.technique_score_sheet_pdf.writeSingleTechniqueScoreSheet(event_time=event_time, division_name=division_name, division_type="Techniques", gender=gender, rank_label=rank_label, minimum_age=minimum_age, maximum_age=maximum_age, rings=ring_info, ranks=ranks, clean_df=clean_df)
 
 
@@ -87,10 +87,10 @@ class LoadTournamentTable:
     # logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     def process_tournament_table(self, filename, clean_df, output_folder_path):
         # create test data
-        # clean_df.to_pickle(output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + "pickled_clean_dataframe.pkl")
+        # clean_df.to_pickle(output_folder_path / "pickled_clean_dataframe.pkl")
 
-        #make sure the sorted directory exists
-        new_folder_path = pathlib.Path( output_folder_path + reports.FileHandlingUtilities.pathDelimiter() + 'sorted')
+        # make sure the sorted directory exists
+        new_folder_path = pathlib.Path( output_folder_path / 'sorted')
         expanded_folder_path = new_folder_path.expanduser()
         pathlib.Path(expanded_folder_path).mkdir(exist_ok=True, parents=True)
 
@@ -107,7 +107,7 @@ class LoadTournamentTable:
         logging.info("Generating the output results...")
 
         # try:      #<--- un-comment for final distribution
-        if True:    #<--- un-comment for testing
+        if True:    # <--- un-comment for testing
             ### Special Handling for files with less than 30 competitors- Added for Fall 2022 Tournament
             if clean_df.shape[0] < 30:
                 ###############################################################################
@@ -119,7 +119,7 @@ class LoadTournamentTable:
                 self.sparing_tree_pdf = reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF(filename, output_folder_path, isCustomDivision=True)
 
                 logging.warning("\u001b[31m*** Special Handling!  Printing Just One Kata Sheet and One Sparring Tree with the small data file provided!\u001b[0m")
-                #self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
+                # self.divison_detail_report_pdf.writeSingleDivisionDetailReport(event_time="", division_name="",division_type="Forms", gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[1],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
                 self.kata_score_sheet_pdf.writeSingleKataScoreSheet(event_time="", division_name="", division_type="Forms",    gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
                 self.sparing_tree_pdf.write_single_sparring_tree(   event_time="", division_name="", gender="*", rank_label="",minimum_age=1, maximum_age=constants.AGELESS, rings=[''],ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT,constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT,constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BLACK_BELT,constants.SECOND_DEGREE_BLACK_BELT, constants.THIRD_DEGREE_BLACK_BELT,constants.FOURTH_DEGREE_BLACK_BELT,constants.FIFTH_DEGREE_BLACK_BELT,constants.JUNIOR_BLACK_BELT], clean_df=clean_df)
 
@@ -131,11 +131,11 @@ class LoadTournamentTable:
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
-            self.tournament_summary_report_pdf = TournamentSummaryReport("Tournament Summary",filename,output_folder_path)
+            self.tournament_summary_report_pdf = WorkingGuideReport("Tournament Summary", filename, output_folder_path)
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
-            self.divison_detail_report_pdf = DivisionDetailReport("Division Detail",filename,output_folder_path)
+            self.division_detail_report_pdf = DivisionDetailReport("Division Detail", filename, output_folder_path)
 
             ###############################################################################
             # Setup a few things for the Kata Score Sheet PDF report
@@ -222,7 +222,7 @@ class LoadTournamentTable:
             ###############################################################################
             # Kids Techniques 4-6 year olds
             #
-            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','L'],[1,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
+            self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="White, Yellow, Orange",      minimum_age=4,  maximum_age=6, ring_info=[[1,'A','L'],[2,'M','Z']], ranks=[constants.WHITE_BELT,constants.YELLOW_BELT,constants.ORANGE_BELT],clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Purple, Blue, Blue/Stripe",  minimum_age=4,  maximum_age=6, ring_info=[[3,'A','Z']],             ranks=[constants.PURPLE_BELT,constants.BLUE_BELT,constants.BLUE_STRIPE_BELT], clean_df=clean_df)
             self.writeSingleTechniqueScoreSheetandDivisionReport(event_time="10:30am",division_name="Kids Techniques",gender="*", rank_label="Green, Green/Stripe, Brown", minimum_age=4,  maximum_age=6, ring_info=[[4,'A','Z']],             ranks=[constants.GREEN_BELT,constants.GREEN_STRIPE_BELT,constants.THIRD_DEGREE_BROWN_BELT,constants.SECOND_DEGREE_BROWN_BELT,constants.FIRST_DEGREE_BROWN_BELT], clean_df=clean_df)
 
@@ -657,12 +657,12 @@ class LoadTournamentTable:
 
             logging.info("Saving PDFs to disk")
 
-            logging.info("..Saving Tournament Summary Report")
-            self.tournament_summary_report_pdf.add_summary_info_to_page(self.divison_detail_report_pdf.summary_info)
+            logging.info("..Saving Working Guide Report")
+            self.tournament_summary_report_pdf.add_summary_info_to_page(self.division_detail_report_pdf.summary_info)
             self.tournament_summary_report_pdf.write_pdfpage()
 
             logging.info("..Saving Division Report")
-            self.divison_detail_report_pdf.write_pdfpage()
+            self.division_detail_report_pdf.write_pdfpage()
 
             logging.info("..Saving Kata Score Sheets")
             self.kata_score_sheet_pdf.write_pdfpage()

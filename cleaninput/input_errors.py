@@ -6,7 +6,7 @@ class InputErrors():
         self.error_list = []
 
     def append(self, index: int, column:str):
-        self.error_list.append([index,column])
+        self.error_list.append([index+1,column])
 
 
 

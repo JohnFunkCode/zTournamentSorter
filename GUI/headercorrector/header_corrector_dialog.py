@@ -59,7 +59,7 @@ class HeaderCorrectorDialog(ttk.Frame):
         self.on_done = on_done
 
         self.parent_tl.title("Correct Column Headers")
-        self.parent_tl.transient(app_container)
+        self.parent_tl.transient(app_container.winfo_toplevel())
         self.parent_tl.grab_set()
 
         self.csv_path = getattr(self.app, "input_data_filename", None)
@@ -177,9 +177,10 @@ class HeaderCorrectorDialog(ttk.Frame):
         self._update_headings_only()
         self._update_remaining_label()
         if made:
-            msg = "\n".join(f"  • Col {i+1}: {orig} → {tgt}" for i, orig, tgt in made[:12])
-            extra = "" if len(made) <= 12 else f"\n  …and {len(made)-12} more."
-            messagebox.showinfo("Auto Map", f"Auto-assigned {len(made)} column(s):\n{msg}{extra}")
+            # Show all auto-mapped canonical column names (no truncation)
+            targets = [tgt for _, _, tgt in made]
+            msg = "\n".join(f"  • {t}" for t in targets)
+            messagebox.showinfo("Auto Map", f"Auto-assigned {len(targets)} column(s):\n{msg}")
         else:
             messagebox.showinfo("Auto Map", "No additional columns were auto-assigned.")
 
@@ -367,16 +368,24 @@ class HeaderCorrectorDialog(ttk.Frame):
         self._finish()
 
     def _finish(self):
+        # Release any grabs, then destroy this dialog, then schedule the callback on the main loop
         try:
             self.parent_tl.grab_release()
         except Exception:
             pass
-        self.parent_tl.destroy()
+        try:
+            self.parent_tl.destroy()
+        except Exception:
+            pass
         if callable(self.on_done):
             try:
-                self.on_done()
+                # Schedule on the main event loop to avoid running during teardown
+                self.after(0, self.on_done)
             except Exception:
-                pass
+                try:
+                    self.parent_tl.after(0, self.on_done)
+                except Exception:
+                    pass
 
     def _cancel(self):
         if messagebox.askyesno("Cancel", "Cancel header correction?"):

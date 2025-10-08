@@ -54,7 +54,8 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
         logging.warning(errorString)
     else:
         inputDataFrame.drop(columns="Registrant_ID",inplace=True)
-    inputDataFrame.insert(0, "Registrant_ID", list(range(0, number_of_rows)))
+    inputDataFrame.insert(0, "Registrant_ID", list(range(1, number_of_rows+1)))
+
 
     # Drop any un-named columns
     for column_name in column_list:
@@ -117,7 +118,7 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
     #Height
     logging.info("   Looking for invalid height")
 #    import re
-    compiledRegex=re.compile('\d+')
+    compiledRegex=re.compile(r'\d+')
     for index, row in cleanDataFrame.iterrows():
         splitString=row['Height']
         if pd.isnull(splitString):

@@ -142,8 +142,8 @@ class zAppController(tk.Tk):
             self.ring_envelope_database_filename = ring_path
             self.input_data_filename = reg_path
             # Now that header correction has finished, proceed
-            self.data_validation_controller.load_ring_envelope_database()
             self.data_validation_controller.load_tournament_file()
+            # self.data_validation_controller.load_ring_envelope_database()
             self.splash_screen.hide_view()
 
         self.file_picker_controller.show_modal(self, on_complete=_on_files_selected)

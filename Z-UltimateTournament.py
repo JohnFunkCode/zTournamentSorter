@@ -17,8 +17,11 @@ class zAppController(tk.Tk):
         self._apply_unified_theme()
 
         self.title('zUltimate App')
+        # Tournament Laptop has a 1920x1080 screen - Must stay below those limits
         # self.geometry('1580x972') # good for macbook air default resolution
-        self.geometry('1636x1126') # good for windows
+        # self.geometry('1636x1126') # good for windows
+        self.geometry('1470x956') # good for macbook air default resolution
+
         self.resizable(True, True)
         # macOS: .ico can raise; do not block startup if it fails
         try:

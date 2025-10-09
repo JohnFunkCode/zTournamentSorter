@@ -31,8 +31,10 @@ class DataValidationView(ttk.Frame):
 
         # pandas table
         self.pandas_table_frame = ttk.Frame(self, borderwidth=2, relief='sunken')
+        # to show 25 lines we had the pandas table sized to 1211 x 551
+        # current size is 1211 x 442 allows for 20 lines
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
-                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=551)
+                           showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=442)
         self.pandas_table_frame.grid(row=1, column=0, rowspan=5, columnspan=3, sticky="nsew", **options)
         self.table.redraw()
 
@@ -150,8 +152,9 @@ class DataValidationView(ttk.Frame):
         self.error_log_label.grid(row=6, column=0, sticky=tk.W, **options)
 
         # error log textbox (use scrolledtext module + unified font)
+        # size was 181x18
         self.error_log = scrolledtext.ScrolledText(
-            self, width=181, height=18, wrap="none",
+            self, width=181, height=12, wrap="none",
             font=tkfont.nametofont("TkTextFont")
         )
         self.error_log.grid(row=7, column=0, columnspan=3, sticky="nsew", **options)

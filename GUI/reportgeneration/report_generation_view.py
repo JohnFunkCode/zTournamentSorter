@@ -29,7 +29,10 @@ class ReportGenerationView(ttk.Frame):
         self.processing_log_label.grid(row=0, column=0, sticky=tk.W, **options)
 
         # processing log textbox
-        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self, width=201, height=40, wrap="none", font=tkfont.nametofont("TkTextFont"))  # was width=212,height=43
+        # old sizes 212x43
+        # 201x40
+        # current size of 201x31 allows for 30 lines now 201x31
+        self.processing_log_textbox = tk.scrolledtext.ScrolledText(self, width=201, height=31, wrap="none", font=tkfont.nametofont("TkTextFont"))
         self.processing_log_textbox.grid(row=1, column=0, columnspan=3, **options)
 
         # button 1

@@ -466,6 +466,7 @@ class DataValidationController():
             logging.info(f"Saving processed file to {save_file_name}")
             df = pd.DataFrame(self.app_container.database)
             df.to_csv(save_file_name,index=False)
+            # self.app_container.input_data_filename = save_file_name
         else:
             logging.warning(f"Not saving processed file!")
 

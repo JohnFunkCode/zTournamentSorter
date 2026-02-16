@@ -66,17 +66,25 @@ class WorkingGuideReport():
         logging.info( f'{division_competitors}')
 
 
-    def add_summary_info_to_page(self, summary_info: pd.DataFrame):
+    # Build the data needed for the working guide report and the judge assignment google sheet
+    # This method is unusual because it returns to data sets.
+    #
+    # The summary_table is a list of lists of strings
+    #  containing a list of times, that each contain a list of events, which are all strings
+    #  it is used to create the working guide PDF report
+    # The summary_table_df is a dataframe with columns for each event
+    #  it is used to create the judge assignment google spreadsheet
+    def build_working_guide_data(self, raw_data: pd.DataFrame) -> tuple[list[list[str]], pd.DataFrame] :
         # Keep each Event_Time group together and sort chronologically.
         elements = []
-        if summary_info is None or summary_info.empty:
+        if raw_data is None or raw_data.empty:
             return elements
 
-        detail_cols = [c for c in summary_info.columns if c != "Event_Time"]
+        detail_cols = [c for c in raw_data.columns if c != "Event_Time"]
         if not detail_cols:
             return elements
 
-        df = summary_info.copy()
+        df = raw_data.copy()
 
         # Build a sortable time key from 'Event_Time' like '9:05 a.m.'/'9:05 am'/'9:05am'
         import re
@@ -99,19 +107,48 @@ class WorkingGuideReport():
             if c != "_EventTimeKey":
                 df[c] = df[c].astype(str)
 
-        # Iterate groups in true chronological order
+        #add the following column headers to the summary_table_df: Division,Rank,Age,Last Name,Ring #,Competitor Count,Judge Assigned,Comments
+        summary_table_column_names = ['Division','Rank','Age','Last Name','Ring #','Competitor Count','Judge Assigned','Comments']
+        # create a dataframe from the summary table
+        summary_table_df = pd.DataFrame(columns=summary_table_column_names )
+
+        summary_table = []
         for event_time, group in df.sort_values("_EventTimeKey", kind="mergesort").groupby("Event_Time", sort=False):
             rows = []
             # Group header spanning all columns
             # rows.append([f"Event Time: {event_time}"] + [""] * (len(detail_cols) - 1))
             rows.append([f"{event_time}"] )
+
+            #add the event time to the summary_table_df
+            summary_table_df.loc[len(summary_table_df)] = {'Division': event_time}
+            # pd.concat([summary_table_df, pd.DataFrame({'Division': [event_time]})], ignore_index=True)
+
+
             # Detail column headers
             rows.append([str(c) for c in detail_cols])
             # Group detail rows
             for _, r in group.iterrows():
                 rows.append([r[c] for c in detail_cols])
 
-            t = Table(rows, hAlign="LEFT")
+                #add the row to the summary_table_df
+                # pd.concat([summary_table_df, pd.DataFrame(r)], ignore_index=True)
+                summary_table_df.loc[len(summary_table_df)] = r
+
+            summary_table.append(rows)
+
+
+        # The summary_table is a list of lists of strings
+        #  containing a list of times, that each contain a list of events, which are all strings
+        #  it is used to create the working guide PDF report
+        # The summary_table_df is a dataframe with columns for each event
+        #  it is used to create the judge assignment google spreadsheet
+        return summary_table, summary_table_df
+
+    def add_summary_info_to_page(self, summary_table: list[list[str]]):
+        elements = []
+        for event_time in summary_table:
+            # for rows in event_time:
+            t = Table(event_time, hAlign="LEFT")
             style = TableStyle([
                 ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
                 ("FONTSIZE", (0, 0), (-1, -1), 8),
@@ -139,6 +176,81 @@ class WorkingGuideReport():
 
         self.docElements.extend(elements)
         return elements
+
+
+    # def add_summary_info_to_page(self, summary_info: pd.DataFrame):
+    #     # Keep each Event_Time group together and sort chronologically.
+    #     elements = []
+    #     if summary_info is None or summary_info.empty:
+    #         return elements
+    #
+    #     detail_cols = [c for c in summary_info.columns if c != "Event_Time"]
+    #     if not detail_cols:
+    #         return elements
+    #
+    #     df = summary_info.copy()
+    #
+    #     # Build a sortable time key from 'Event_Time' like '9:05 a.m.'/'9:05 am'/'9:05am'
+    #     import re
+    #     def _normalize_event_time(s):
+    #         if pd.isna(s):
+    #             return None
+    #         s = str(s).strip().lower().replace(".", "")
+    #         # remove whitespace before am/pm (e.g., '9:00 am' -> '9:00am')
+    #         s = re.sub(r"\s*(am|pm)$", r"\1", s)
+    #         return s
+    #
+    #     df["_EventTimeKey"] = pd.to_datetime(
+    #         df["Event_Time"].map(_normalize_event_time),
+    #         format="%I:%M%p",
+    #         errors="coerce",
+    #     )
+    #
+    #     # Ensure string rendering for ReportLab cells (leave the key as datetime)
+    #     for c in df.columns:
+    #         if c != "_EventTimeKey":
+    #             df[c] = df[c].astype(str)
+    #
+    #     # Iterate groups in true chronological order
+    #     for event_time, group in df.sort_values("_EventTimeKey", kind="mergesort").groupby("Event_Time", sort=False):
+    #         rows = []
+    #         # Group header spanning all columns
+    #         # rows.append([f"Event Time: {event_time}"] + [""] * (len(detail_cols) - 1))
+    #         rows.append([f"{event_time}"] )
+    #         # Detail column headers
+    #         rows.append([str(c) for c in detail_cols])
+    #         # Group detail rows
+    #         for _, r in group.iterrows():
+    #             rows.append([r[c] for c in detail_cols])
+    #
+    #         t = Table(rows, hAlign="LEFT")
+    #         style = TableStyle([
+    #             ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+    #             ("FONTSIZE", (0, 0), (-1, -1), 8),
+    #             ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+    #             ("INNERGRID", (0, 0), (-1, -1), 0.25, colors.black),
+    #             ("BOX", (0, 0), (-1, -1), 0.25, colors.black),
+    #             ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+    #
+    #             # Event header row (row 0)
+    #             ("SPAN", (0, 0), (-1, 0)),
+    #             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+    #             ("FONTSIZE", (0, 0), (-1, 0), 16),
+    #             ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+    #             ("VALIGN", (0, 0), (-1, 0), "MIDDLE"),
+    #             ("TOPPADDING", (0, 0), (-1, 0), 8),
+    #             ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+    #             ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+    #
+    #             # Detail column header row (row 1)
+    #             ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
+    #         ])
+    #         t.setStyle(style)
+    #
+    #         elements.append(KeepTogether([t, Spacer(0, 6)]))
+    #
+    #     self.docElements.extend(elements)
+    #     return elements
 
     def write_pdfpage(self):
         self.doc.build(self.docElements, onFirstPage=page_layout, onLaterPages=page_layout)

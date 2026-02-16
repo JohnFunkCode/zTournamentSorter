@@ -21,6 +21,7 @@ from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
 import reports.ExcelFileOutput
 import reports.FileHandlingUtilities
+from reports import working_guide_google_sheet
 
 
 def classify_division( division_name: str):
@@ -100,9 +101,22 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
     logging.info("..Saving Working Guide Report")
     test=ltt.division_detail_report_pdf.summary_info
+    working_guide_list, working_guide_dataframe = ltt.tournament_summary_report_pdf.build_working_guide_data(ltt.division_detail_report_pdf.summary_info)
+    ltt.tournament_summary_report_pdf.add_summary_info_to_page(working_guide_list)
 
+    # call new code that will send the working_guide_dataframe to the judge assignment google sheet
+    # try:
+    #     spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
+    #     if spreadsheet_id:
+    #         logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
+    # except working_guide_google_sheet.WorkingGuideGoogleSheetError as exc:
+    #     logging.error("Unable to update working guide Google Sheet: %s", exc)
+    spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
+    if spreadsheet_id:
+        logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
 
-    ltt.tournament_summary_report_pdf.add_summary_info_to_page(ltt.division_detail_report_pdf.summary_info)
+    
+
     ltt.tournament_summary_report_pdf.write_pdfpage()
 
     logging.info("..Saving Division Report")

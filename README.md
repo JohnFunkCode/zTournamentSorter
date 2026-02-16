@@ -48,7 +48,18 @@ Karate tournaments involve complex coordination — multiple events, divisions, 
 - ⚖️ Fair sparring tree generation by size and dojo  
 - 📄 Automatic PDF creation for score sheets and sparring brackets  
 - 🗂️ Supports multiple event types (Sparring, Kata, Weapons, etc.)  
+- 🤝 Pushes judge assignments to a shared Google Sheet for team collaboration  
 - 🕹️ Simple, efficient workflow for tournament organizers  
+
+---
+
+## 🤝 Collaborative Judge Assignments
+
+Tournament staffs often split up once PDFs are generated, so keeping judge assignments synchronized is critical. The workflow now includes an **optional Google Sheet hand-off** that mirrors the working guide data to a live spreadsheet so multiple coordinators can update ring judges together.
+
+- `reports/working_guide_google_sheet.py` prepares the working guide dataframe and calls the uploader.
+- `GoogleSheetReaderWriter/gsheet_rw` contains the authenticated client code that talks to Google Sheets.
+- When enabled, `upload_working_guide_dataframe()` publishes the assignments so every ring lead sees the most current plan without emailing files around.
 
 ---
 

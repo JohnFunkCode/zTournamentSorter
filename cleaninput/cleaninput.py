@@ -158,16 +158,16 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
                input_error_list.append(index, 'Height')
 
             #Write it to new columns in the data frame
-            cleanDataFrame.loc[index,'Feet']=feet
-            cleanDataFrame.loc[index,'Inches']=inches
-            heightInInches = (int(feet)*12)+int(inches)
-            cleanDataFrame.loc[index,'HeightInInches']=heightInInches
-            bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Weight'])
-            cleanDataFrame.loc[index,'BMI']=bodyMassIndex
-            #print splitString, "|", feet, "|", inches
+            # cleanDataFrame.loc[index,'Feet']=int(feet)
+            # cleanDataFrame.loc[index,'Inches']=int(inches)
+            # heightInInches = (int(feet)*12)+int(inches)
+            # cleanDataFrame.loc[index,'HeightInInches']=heightInInches
+            # bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Weight'])
+            # cleanDataFrame.loc[index,'BMI']=bodyMassIndex
+            # #print splitString, "|", feet, "|", inches
 
-            cleanDataFrame.at[index,'Feet']=feet
-            cleanDataFrame.at[index,'Inches']=inches
+            cleanDataFrame.at[index,'Feet']=int(feet)
+            cleanDataFrame.at[index,'Inches']=int(inches)
             heightInInches = (int(feet)*12)+int(inches)
             cleanDataFrame.at[index,'HeightInInches']=heightInInches
             bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Weight'])

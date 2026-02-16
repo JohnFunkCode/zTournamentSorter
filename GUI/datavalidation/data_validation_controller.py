@@ -22,6 +22,8 @@ import GUI.datavalidation.data_validation_view
 
 from logging import Handler, getLogger
 
+import reports.quick_print_dataframe
+
 
 
 class DataValidationController():
@@ -32,7 +34,6 @@ class DataValidationController():
         self.input_error_list = input_errors.InputErrors()
         self.error_cursor = 0
         # self.errorLogFileName=''
-
 
     def hide_view(self):
         self.data_validation_view.hide_view()
@@ -134,12 +135,11 @@ class DataValidationController():
         if len(self.input_error_list.error_list) > 0:
             first_row = self.input_error_list.error_list[0][0]
             first_col = self.input_error_list.error_list[0][1]
-            try:
-                self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(first_row, first_col))
-            except Exception:
-                pass
-
-
+            if first_row is not None:
+                try:
+                    self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(first_row, first_col))
+                except Exception:
+                    pass
 
     def validate_data(self):
         self.input_error_list = []
@@ -160,21 +160,18 @@ class DataValidationController():
         self.input_error_list.error_list.sort()
         logging.info(f'Input Errors:{self.input_error_list.error_list}')
         for i in range(len(self.input_error_list.error_list)):
+            row_token = self.input_error_list.error_list[i][0]
+            zero_based_row = row_token
+            if zero_based_row is None:
+                continue
             if self.input_error_list.error_list[i][1]=='Age':
-                self.data_validation_view.highlight_age_error(self.input_error_list.error_list[i][0])  #was +1)
-                # logging.info(f'Age:')
-
+                self.data_validation_view.highlight_age_error(zero_based_row)
             if self.input_error_list.error_list[i][1]=='Height':
-                self.data_validation_view.highlight_height_error(self.input_error_list.error_list[i][0])  #was +1)
-                # logging.info(f'Height:')
-
+                self.data_validation_view.highlight_height_error(zero_based_row)
             if self.input_error_list.error_list[i][1]=='Weight':
-                self.data_validation_view.highlight_weight_error(self.input_error_list.error_list[i][0])  #was +1)
-                # logging.info(f'Weight:')
-
+                self.data_validation_view.highlight_weight_error(zero_based_row)
             if self.input_error_list.error_list[i][1] == 'Rank':
-                self.data_validation_view.highlight_rank_error(self.input_error_list.error_list[i][0])  #was +1)
-                # logging.info(f'Rank:')
+                self.data_validation_view.highlight_rank_error(zero_based_row)
 
         # Keep the navigation cursor within bounds of the current error list
         errs = getattr(self.input_error_list, 'error_list', [])
@@ -190,7 +187,6 @@ class DataValidationController():
         else:
             # There are errors: ensure the red outline persistence is enabled
             self.data_validation_view.enable_error_highlighting()
-
 
     def load_division_file(self):
         self.is_custom_division=True
@@ -251,6 +247,8 @@ class DataValidationController():
         try:
             row = errs[self.error_cursor][0]
             column = errs[self.error_cursor][1]
+            if row is None:
+                return
             self.data_validation_view.goto_row_column(row, column)
         except Exception:
             # Safety clamp
@@ -272,6 +270,8 @@ class DataValidationController():
         try:
             row = errs[self.error_cursor][0]
             column = errs[self.error_cursor][1]
+            if row is None:
+                return
             self.data_validation_view.goto_row_column(row, column)
         except Exception:
             # Safety clamp
@@ -294,10 +294,13 @@ class DataValidationController():
         if errs:
             row = errs[self.error_cursor][0]
             column = errs[self.error_cursor][1]
-            try:
-                self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(row, column))
-            except Exception:
-                self.data_validation_view.goto_row_column(row, column)
+            if row is not None:
+                try:
+                    self.data_validation_view.after_idle(lambda: self.data_validation_view.goto_row_column(row, column))
+                except Exception:
+                    self.data_validation_view.goto_row_column(row, column)
+            # Enable the "Print Errors" button
+            self.data_validation_view.print_errors_button['state'] = 'normal'
         else:
             # No errors remain; ensure cursor is reset
             self.error_cursor = 0
@@ -308,6 +311,9 @@ class DataValidationController():
             # Re-enable Process Data button now that validation passed
             # self.data_validation_view.process_data_button.config(state='normal')
             self.data_validation_view.process_data_button['state'] = 'normal'
+
+            # disable the "Print Errors" button
+            self.data_validation_view.print_errors_button['state'] = 'disabled'
 
 
 
@@ -322,6 +328,120 @@ class DataValidationController():
 
     # def process_data(self):
     #     showinfo(title='Info', message="Start processing data")
+
+    def print_errors(self):
+        errs = getattr(self.input_error_list, 'error_list', [])
+        if not errs:
+            showinfo(title='No Errors', message='There are no errors to print.')
+            return
+
+        df = getattr(self.app_container, 'database', pd.DataFrame())
+        if df.empty or 'Registrant_ID' not in df.columns:
+            showinfo(
+                title='Print Errors',
+                message="No data or 'Registrant_ID' column available to map errors."
+            )
+            return
+
+        registrant_series = df['Registrant_ID'].astype('string').fillna('')
+        error_rows = []
+        for err in errs:
+            registrant_token = None
+            err_column = None
+            if isinstance(err, dict):
+                registrant_token = (
+                    err.get('Registrant_ID')
+                    or err.get('registrant_id')
+                    or err.get('row')
+                    or err.get('Row')
+                )
+                err_column = err.get('column') or err.get('Column')
+            elif isinstance(err, (list, tuple)) and len(err) >= 2:
+                registrant_token, err_column = err[0], err[1]
+            if registrant_token is None:
+                continue
+
+            registrant_str = str(registrant_token).strip()
+            match_mask = registrant_series.str.strip() == registrant_str
+            if not match_mask.any():
+                continue
+
+            matched_rows = df.loc[match_mask]
+            for _, row_series in matched_rows.iterrows():
+                row_dict = row_series.to_dict()
+                row_dict['*Error Column*'] = err_column
+                error_rows.append(row_dict)
+
+        if not error_rows:
+            showinfo(
+                title='Print Errors',
+                message='No matching rows were found for the current error list.'
+            )
+            return
+
+        error_dataframe = pd.DataFrame(error_rows)
+        # Drop helper columns that should not be shown in the final output
+        if '_ErrorRegistrant_ID' in error_dataframe.columns:
+            error_dataframe = error_dataframe.drop(columns=['_ErrorRegistrant_ID'])
+
+        error_col_name = '*Error Column*'
+        group_columns = [col for col in error_dataframe.columns if col != error_col_name]
+
+        def _merge_error_labels(series):
+            seen = []
+            for value in series:
+                if pd.isna(value):
+                    continue
+                label = str(value).strip()
+                if label and label not in seen:
+                    seen.append(label)
+            return ', '.join(seen)
+
+        if group_columns:
+            error_dataframe = (
+                error_dataframe
+                .groupby(group_columns, dropna=False)[error_col_name]
+                .apply(_merge_error_labels)
+                .reset_index()
+            )
+        else:
+            error_dataframe[error_col_name] = error_dataframe[error_col_name].apply(
+                lambda v: '' if pd.isna(v) else str(v).strip()
+            )
+
+        ordered_columns = [error_col_name] + [col for col in error_dataframe.columns if col != error_col_name]
+        error_dataframe = error_dataframe[ordered_columns]
+        printers = reports.quick_print_dataframe.list_printers()
+        if not printers:
+            tk.messagebox.showerror(title='Print Error', message='No printers found on this system.')
+            return
+
+        parent = self.data_validation_view.winfo_toplevel()
+        dialog = reports.quick_print_dataframe.PrinterDialog(parent, printers)
+        parent.wait_window(dialog)
+        if dialog.selected_printer is None:
+            return
+
+        printable_df = error_dataframe.copy()
+        # only print the "*Error Column*", "Registrant_ID", "First_Name", "Last_Name" and "Dojo" columns
+        printable_df = printable_df[['Registrant_ID', 'First_Name', 'Last_Name', 'Dojo', '*Error Column*',]]
+        printable_text = reports.quick_print_dataframe.format_for_print(printable_df)
+        try:
+            reports.quick_print_dataframe.send_to_printer(
+                printable_text,
+                printer=dialog.selected_printer,
+            )
+            showinfo(
+                title='Print',
+                message=f"Error report sent to '{dialog.selected_printer}'.",
+            )
+        except RuntimeError as exc:
+            tk.messagebox.showerror(
+                title='Print Error',
+                message=f'Could not print the error report:\n{exc}',
+            )
+
+        return
 
     def process_data(self):
         # Save the database to file

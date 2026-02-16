@@ -124,28 +124,34 @@ class DataValidationView(ttk.Frame):
             return result
         self.table.set_yviews = _set_yviews_wrapper
 
+        # group action buttons in a side column so they align vertically
+        self.button_column = ttk.Frame(self)
+        self.button_column.grid(row=1, column=3, rowspan=6, sticky="n", **options)
 
-
-        self.previous_button = ttk.Button(self, text='Previous Error')
+        self.previous_button = ttk.Button(self.button_column, text='Previous Error')
         self.previous_button['command'] = self.handle_previous_button
-        self.previous_button.grid(row=1, column=3,sticky=tk.W, **options)
+        self.previous_button.pack(fill='x', pady=(0, 4))
 
-        self.next_button = ttk.Button(self, text='Next Error')
+        self.next_button = ttk.Button(self.button_column, text='Next Error')
         self.next_button['command'] = self.handle_next_button
-        self.next_button.grid(row=2, column=3, sticky=tk.W, **options)
+        self.next_button.pack(fill='x', pady=(0, 4))
 
-        self.delete_button = ttk.Button(self, text='Delete Row')
+        self.delete_button = ttk.Button(self.button_column, text='Delete Row')
         self.delete_button['command'] = self.handle_delete_button
-        self.delete_button.grid(row=3, column=3, sticky=tk.W, **options)
+        self.delete_button.pack(fill='x', pady=(0, 4))
 
-        self.recheck_button = ttk.Button(self, text='Re-Check Data')
+        self.recheck_button = ttk.Button(self.button_column, text='Re-Check Data')
         self.recheck_button['command'] = self.handle_recheck_button
-        self.recheck_button.grid(row=4, column=3, sticky=tk.W, **options)
+        self.recheck_button.pack(fill='x', pady=(0, 4))
 
-        # button 1
-        self.process_data_button = ttk.Button(self, text='Process Data', state='disabled')
+        self.print_errors_button = ttk.Button(self.button_column, text='Print Errors')
+        self.print_errors_button['command'] = self.handle_print_errors_button
+        self.print_errors_button.pack(fill='x', pady=(0, 4))
+
+        # process data button (disabled until all errors are resolved)
+        self.process_data_button = ttk.Button(self.button_column, text='Process Data', state='disabled')
         self.process_data_button['command'] = self.process_data
-        self.process_data_button.grid(row=5, column=3,sticky=tk.W, **options)
+        self.process_data_button.pack(fill='x', pady=(0, 4))
 
         # error log label
         self.error_log_label = ttk.Label(self, text='Data Errors')
@@ -189,6 +195,9 @@ class DataValidationView(ttk.Frame):
         self.app_container.database= self.table.model.df
         self.controller.recheck_data()
 
+    def handle_print_errors_button(self):
+        self.app_container.database= self.table.model.df
+        self.controller.print_errors()
 
     def process_data(self):
         self.controller.process_data()

@@ -4,6 +4,8 @@ import logging
 import time
 import pathlib
 from shutil import copyfile
+from pathlib import Path
+import re
 
 import tkinter as tk
 from tkinter import ttk
@@ -25,6 +27,32 @@ from logging import Handler, getLogger
 import reports.quick_print_dataframe
 
 
+def _next_versioned_filename(path: str, width: int = 2) -> Path:
+    """
+    Given 'file.txt', returns:
+        file-01.txt (if none exist)
+        file-02.txt (if file-01.txt exists)
+        etc.
+    """
+    p = Path(path)
+    parent = p.parent
+    stem = p.stem
+    suffix = p.suffix
+
+    # Regex to match existing versions
+    pattern = re.compile(rf"^{re.escape(stem)}-(\d+){re.escape(suffix)}$")
+
+    max_version = 0
+    search_string = f"{stem}-*{suffix}"
+
+    for f in parent.glob(search_string):
+        match = pattern.match(f.name)
+        if match:
+            max_version = max(max_version, int(match.group(1)))
+
+    next_version = max_version + 1
+    next_filename = f"{stem}-{next_version:0{width}d}{suffix}"
+    return next_filename
 
 class DataValidationController():
     def __init__(self, app_container: ttk.Frame):
@@ -449,7 +477,9 @@ class DataValidationController():
         # save_file_name = self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] + "-Processed.csv"
         # save_file_name = pathlib.Path(self.app_container.input_data_filename[0:len(self.app_container.input_data_filename) - 4] / "-Processed.csv")
         input_path = pathlib.Path(self.app_container.input_data_filename)
-        processed_filename = f"{input_path.stem}-Processed.csv"
+        # processed_filename = f"{input_path.stem}-Processed.csv"
+        # processed_filename = _next_versioned_filename(input_path.stem + input_path.suffix)
+        processed_filename = _next_versioned_filename(str(input_path))
 
         save_file_name = filedialog.asksaveasfilename(
             title='Save Data as...',
@@ -485,3 +515,5 @@ class DataValidationController():
 
     def test_two(self):
         self.data_validation_view.goto_row_column(11,'Age')
+
+

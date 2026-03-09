@@ -84,64 +84,92 @@ class EnvelopeReport():
         box_padding = 0.2 * inch
         start_y = EnvelopeReport.PAGE_HEIGHT - x_position
 
-        self.canvas.setFont('Helvetica-Bold', 16)
-        self.canvas.drawString(x_position, start_y, EnvelopeReport.Title)
-
-        self.canvas.setFont('Helvetica', 12)
-        self.canvas.drawRightString(
-            EnvelopeReport.PAGE_WIDTH - x_position,
-            start_y,
-            f"Event Time: {row.get('Event_Time', '')}"
-        )
+        # self.canvas.setFont('Helvetica-Bold', 16)
+        # self.canvas.drawString(x_position, start_y, EnvelopeReport.Title)
+        #
+        # self.canvas.setFont('Helvetica', 12)
+        # self.canvas.drawRightString(
+        #     EnvelopeReport.PAGE_WIDTH - x_position,
+        #     start_y,
+        #     f"Event Time: {row.get('Event_Time', '')}"
+        # )
 
         current_y = start_y - 0.5 * inch
-        field_labels = [
-            "Division",
-            "Rank",
-            "Age",
-            "Last Name",
-            "Ring #",
-            "# Comp",
-            "Center",
-            "Corner",
-        ]
-        total_field_rows = len(field_labels)
-        box_height = total_field_rows * line_height + (2 * box_padding)
-        box_width = EnvelopeReport.PAGE_WIDTH - (2 * x_position) + (2 * box_padding)
-        self.canvas.roundRect(
-            x_position - box_padding,
-            current_y - box_height + box_padding,
-            box_width,
-            box_height,
-            6,
-        )
+        # field_labels = [
+        #     "Division",
+        #     "Rank",
+        #     "Age",
+        #     "Last Name",
+        #     "Ring #",
+        #     "# Comp",
+        #     "Center",
+        #     "Corner",
+        # ]
+        # total_field_rows = len(field_labels)
+        # box_height = total_field_rows * line_height + (2 * box_padding)
+        # box_width = EnvelopeReport.PAGE_WIDTH - (2 * x_position) + (2 * box_padding)
+        # self.canvas.roundRect(
+        #     x_position - box_padding,
+        #     current_y - box_height + box_padding,
+        #     box_width,
+        #     box_height,
+        #     6,
+        # )
 
+
+        event_time = row.get("Event_Time", "")
         division_value = row.get("Division", "")
         rank_value = row.get("Rank", "")
         age_value = row.get("Age", "")
-        last_name_value = row.get("Last Name", "")
-        ring_value = row.get("Ring #", "")
+        last_name_range = row.get("Last Name", "")
+        ring_number= row.get("Ring #", "")
         competitor_count = row.get("# Comp", "")
         center_value = row.get("Center", "")
+        if center_value == "":
+            center_value = " " * 20 # twenty spaces
         corner_value = row.get("Corner", "")
+        if corner_value == "":
+            corner_value = " " * 20 # twenty spaces
 
-        self._draw_field_line(x_position, current_y, "Division", division_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Rank", rank_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Age", age_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Last Name", last_name_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Ring #", ring_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "# Comp", competitor_count)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Center", center_value)
-        current_y -= line_height
-        self._draw_field_line(x_position, current_y, "Corner", corner_value)
+        self._draw_field_line(.5, .75, "Event Time", event_time)
+        self._draw_field_line(4.75, .75, "Ring #", ring_number)
+        self._draw_field_line(.25, 1.5, "Division", f'{division_value} ({age_value})')
+        self._draw_field_line(.25, 2.25, "Rank", rank_value)
+        self._draw_field_line(.25, 3, "Last Name Starting With", last_name_range)
+        self._draw_field_line(.25, 3.75, "Participants", competitor_count)
+        self._draw_field_line(.25, 4.5, "Comments", " " * 50)
+
+        self._draw_field_line(5, 2, "Center", center_value)
+        self._draw_field_line(5, 2.5, "Corner", corner_value)
+
+        if "A-" in last_name_range:
+            if not ("Z" in last_name_range):
+                self._draw_field_line(5, 3, f'{last_name_range} Stays in Ring {ring_number}',"")
+
+        # # static instructions
+        # self._draw_instructions(x,y,font,size,false,"Please")
+        # self._draw_instructions(x,y,font,size,underline,"Print")
+        # self._draw_instructions(x,y,font,size,underline,"Names of the students and Dojos clearly.  DO NOT abbreviate.")
+        # self._draw_instructions(x,y,font,size,underline,"Bring winners to the head table to award trophies.")
+        # self._draw_instructions(x,y,font,size,underline,"Have your paperwork done before you get to the head table.")
+        #
+        # # Places
+        # self._draw_instructions(x,y,font,size,underline,"1st Place")
+        # self._draw_instructions(x,y,font,size,underline,"(name)")
+        # self._draw_instructions(x,y,font,size,underline,"(studio)")
+        # self._draw_instructions(x,y,font,size,underline,"2nd Place")
+        # self._draw_instructions(x,y,font,size,underline,"(name)")
+        # self._draw_instructions(x,y,font,size,underline,"(studio)")
+        # self._draw_instructions(x,y,font,size,underline,"3rd Place")
+        # self._draw_instructions(x,y,font,size,underline,"(name)")
+        # self._draw_instructions(x,y,font,size,underline,"(studio)")
+        # self._draw_instructions(x,y,font,size,underline,"4th Place")
+        # self._draw_instructions(x,y,font,size,underline,"(name)")
+        # self._draw_instructions(x,y,font,size,underline,"(studio)")
 
         self._draw_footer()
+
+
 
     def _draw_footer(self) -> None:
         self.canvas.setFont('Times-Roman', 9)
@@ -157,10 +185,26 @@ class EnvelopeReport():
         self.canvas.save()
 
     def _draw_field_line(self, x_position: float, y_position: float, label: str, value: Any) -> None:
-        self.canvas.setFont('Helvetica-Bold', 11)
-        self.canvas.drawString(x_position, y_position, f"{label}:")
-        self.canvas.setFont('Helvetica', 11)
-        self.canvas.drawString(x_position + 2.5 * inch, y_position, str(value))
+        adjusted_x = x_position * inch
+        adjusted_y = EnvelopeReport.PAGE_HEIGHT - y_position * inch
+        self.canvas.setFont('Helvetica-Bold', 18)
+        if label == "":
+            label_text = ""
+        else:
+            label_text = f"{label}"
+        self.canvas.drawString(adjusted_x, adjusted_y, label_text)
+        label_width = self.canvas.stringWidth(label_text, 'Helvetica-Bold', 18)
+
+        value_text = "" if value is None else str(value)
+        self.canvas.setFont('Helvetica', 18)
+        value_x = adjusted_x + label_width + 0.15 * inch
+        self.canvas.drawString(value_x, adjusted_y, value_text)
+
+        if value_text:
+            underline_y = adjusted_y - 0.05 * inch
+            value_width = self.canvas.stringWidth(value_text, 'Helvetica', 18)
+            self.canvas.setLineWidth(0.5)
+            self.canvas.line(value_x, underline_y, value_x + value_width, underline_y)
 
 
 def page_layout(canvas, doc):

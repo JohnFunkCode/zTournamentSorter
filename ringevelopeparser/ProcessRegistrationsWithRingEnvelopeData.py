@@ -13,9 +13,9 @@ from cleaninput import cleaninput as CI
 from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
-
+from reports.envelope_report import EnvelopeReport
 from reports.division_detail_report import DivisionDetailReport
-from reports.working_guide_report import WorkingGuideReport
+from reports.working_guide import WorkingGuide
 from reports.kata_score_sheet import KataScoreSheet
 from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
@@ -50,7 +50,12 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
     ###############################################################################
     # Setup a few things for the Division Detail PDF report
-    ltt.tournament_summary_report_pdf = WorkingGuideReport("Tournament Summary", registration_file_name, output_folder_path)
+    ltt.envelope_report_pdf = EnvelopeReport("Envelope", registration_file_name, output_folder_path)
+
+
+    ###############################################################################
+    # Setup a few things for the Division Detail PDF report
+    ltt.working_guide_pdf = WorkingGuide("Working Guide", registration_file_name, output_folder_path)
 
     ###############################################################################
     # Setup a few things for the Division Detail PDF report
@@ -99,10 +104,10 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
     logging.info("Saving PDFs to disk")
 
-    logging.info("..Saving Working Guide Report")
-    test=ltt.division_detail_report_pdf.summary_info
-    working_guide_list, working_guide_dataframe = ltt.tournament_summary_report_pdf.build_working_guide_data(ltt.division_detail_report_pdf.summary_info)
-    ltt.tournament_summary_report_pdf.add_summary_info_to_page(working_guide_list)
+    logging.info("..Saving Working Guide")
+    envelope_df =ltt.division_detail_report_pdf.summary_info
+    working_guide_list, working_guide_dataframe = ltt.working_guide_pdf.build_working_guide_data(ltt.division_detail_report_pdf.summary_info)
+    ltt.working_guide_pdf.add_summary_info_to_page(working_guide_list)
 
     # call new code that will send the working_guide_dataframe to the judge assignment google sheet
     # try:
@@ -115,9 +120,15 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
     if spreadsheet_id:
         logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
 
-    
 
-    ltt.tournament_summary_report_pdf.write_pdfpage()
+    # Envelope Report - using the ltt.envelope_report_pdf.summary_info
+
+    logging.info("..Saving Envelope Report")
+    ltt.envelope_report_pdf.add_summary_info_to_page(envelope_df)
+    ltt.envelope_report_pdf.write_pdfpage()
+
+    logging.info("..Saving Working Guide")
+    ltt.working_guide_pdf.write_pdfpage()
 
     logging.info("..Saving Division Report")
     ltt.division_detail_report_pdf.write_pdfpage()

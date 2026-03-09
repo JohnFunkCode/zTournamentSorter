@@ -108,13 +108,22 @@ class ReportGenerationView(ttk.Frame):
                 self.sparring_tree_legal_size_label = ttk.Label(self.final_output_labelframe, text='  sparring tree - legal size.pdf', style="DisabledHyperlink.TLabel")
                 self.sparring_tree_legal_size_label.grid(row=5, column=0, sticky=tk.W, **options)
 
-        # Working Guide Report label
+        # Working Guide label
         if self.app_container.is_custom_division == False:
-            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  working guide report.pdf', style="Hyperlink.TLabel", cursor="hand2")
+            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  working guide.pdf', style="Hyperlink.TLabel", cursor="hand2")
             self.tournament_summary_report_label.grid(row=6, column=0, sticky=tk.W, **options)
-            tournament_summary_report_disk_path = pathlib.Path(self.app_container.tournament_output_folder_path / 'WorkingGuideReport.pdf')
+            tournament_summary_report_disk_path = pathlib.Path(self.app_container.tournament_output_folder_path / 'WorkingGuide.pdf')
             tournament_summary_report_filename_with_path = 'file://' + str(tournament_summary_report_disk_path)
             self.tournament_summary_report_label.bind('<Button-1>', lambda x: webbrowser.open(tournament_summary_report_filename_with_path))
+
+        # Envelope Guide label
+        if self.app_container.is_custom_division == False:
+            self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  envelope report.pdf', style="Hyperlink.TLabel", cursor="hand2")
+            self.tournament_summary_report_label.grid(row=6, column=0, sticky=tk.W, **options)
+            tournament_summary_report_disk_path = pathlib.Path(self.app_container.tournament_output_folder_path / 'EnvelopeReport.pdf')
+            tournament_summary_report_filename_with_path = 'file://' + str(tournament_summary_report_disk_path)
+            self.tournament_summary_report_label.bind('<Button-1>', lambda x: webbrowser.open(tournament_summary_report_filename_with_path))
+
 
         self.final_output_labelframe.grid()
 

@@ -1,1 +1,1 @@
-start c:\users\John\anaconda3\python.exe LoadTournamentTable.py
+start python.exe LoadTournamentTable.py

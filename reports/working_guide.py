@@ -22,51 +22,51 @@ import reports
 import reports.FileHandlingUtilities
 
 
-class WorkingGuideReport():
+class WorkingGuide():
 
     def __init__(self, title:str, data_file_name: str, output_folder_path:str):
-        self.filename_with_path = f'{pathlib.Path(output_folder_path)}{reports.FileHandlingUtilities.pathDelimiter()}{"WorkingGuideReport.pdf"}'
-        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'WorkingGuideReport.pdf')) #<--un-comment for stand alone test files
+        self.filename_with_path = f'{pathlib.Path(output_folder_path)}{reports.FileHandlingUtilities.pathDelimiter()}{"WorkingGuide.pdf"}'
+        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'WorkingGuide.pdf')) #<--un-comment for stand alone test files
 
-        # self.doc = SimpleDocTemplate("WorkingGuideReport.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
+        # self.doc = SimpleDocTemplate("WorkingGuide.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
         self.docElements = []
         
         #setup the package scoped global variables we need
         now = datetime.datetime.now()
-        WorkingGuideReport.timestamp = now.strftime("%Y-%m-%d %H:%M")
-        # WorkingGuideReport.sourcefile = "not initialized"
-        WorkingGuideReport.sourcefile = data_file_name
-        WorkingGuideReport.pageinfo = "not initialized"
-        # WorkingGuideReport.Title = "not initialized"
-        WorkingGuideReport.Title = title
-        WorkingGuideReport.PAGE_HEIGHT = 11 * inch
-        WorkingGuideReport.PAGE_WIDTH = 8.5 * inch
-        WorkingGuideReport.ring_number= "not initialized"
-        WorkingGuideReport.event_time= "not initialized"
-        WorkingGuideReport.division_name= "not initialized"
-        WorkingGuideReport.age= "not initialized"
-        WorkingGuideReport.belts= "not initialized"
-        # WorkingGuideReport.split_warning_text="not initialized"
+        WorkingGuide.timestamp = now.strftime("%Y-%m-%d %H:%M")
+        # WorkingGuide.sourcefile = "not initialized"
+        WorkingGuide.sourcefile = data_file_name
+        WorkingGuide.pageinfo = "not initialized"
+        # WorkingGuide.Title = "not initialized"
+        WorkingGuide.Title = title
+        WorkingGuide.PAGE_HEIGHT = 11 * inch
+        WorkingGuide.PAGE_WIDTH = 8.5 * inch
+        WorkingGuide.ring_number= "not initialized"
+        WorkingGuide.event_time= "not initialized"
+        WorkingGuide.division_name= "not initialized"
+        WorkingGuide.age= "not initialized"
+        WorkingGuide.belts= "not initialized"
+        # WorkingGuide.split_warning_text="not initialized"
 
     @staticmethod
     def set_title(title):
-        WorkingGuideReport.Title = title
+        WorkingGuide.Title = title
 
     @staticmethod
     def set_pageInfo(pageinfo):
-        WorkingGuideReport.pageinfo = pageinfo
+        WorkingGuide.pageinfo = pageinfo
 
     @staticmethod
     def set_sourcefile(sourcefile):
-        WorkingGuideReport.sourcefile = sourcefile
+        WorkingGuide.sourcefile = sourcefile
 
     def add_division_details(self,event_time: str, division_name: str, division_type: str, gender: str, rank_label:str, minimum_age: int, maximum_age: int, rings: list, ranks:list, division_competitors: pandas.DataFrame):
         logging.info( f'division summary:{event_time} {division_name}  {division_type} {gender} {rank_label} {minimum_age} {maximum_age} {rings} {ranks}')
         logging.info( f'{division_competitors}')
 
 
-    # Build the data needed for the working guide report and the judge assignment google sheet
+    # Build the data needed for the working guide and the judge assignment google sheet
     # This method is unusual because it returns to data sets.
     #
     # The summary_table is a list of lists of strings
@@ -108,7 +108,8 @@ class WorkingGuideReport():
                 df[c] = df[c].astype(str)
 
         #add the following column headers to the summary_table_df: Division,Rank,Age,Last Name,Ring #,Competitor Count,Judge Assigned,Comments
-        summary_table_column_names = ['Division','Rank','Age','Last Name','Ring #','Competitor Count','Judge Assigned','Comments']
+        # summary_table_column_names = ['Division','Rank','Age','Last Name','Ring #','Competitor Count','Judge Assigned','Comments']
+        summary_table_column_names = ['Division','Rank','Age','Last Name','Ring #','# Comp','Judge Assigned','Comments']
         # create a dataframe from the summary table
         summary_table_df = pd.DataFrame(columns=summary_table_column_names )
 
@@ -142,6 +143,10 @@ class WorkingGuideReport():
         #  it is used to create the working guide PDF report
         # The summary_table_df is a dataframe with columns for each event
         #  it is used to create the judge assignment google spreadsheet
+
+        # rename the column # Comp to Competitor Count - because google doesn't support columns that start with a symbol
+        summary_table_df.rename(columns={'# Comp': 'Competitor Count'}, inplace=True)
+
         return summary_table, summary_table_df
 
     def add_summary_info_to_page(self, summary_table: list[list[str]]):
@@ -262,9 +267,9 @@ class WorkingGuideReport():
 #     canvas.saveState()
 #     canvas.setFont('Times-Bold', 16)
 #     #    canvas.drawCentredString(PAGE_WIDTH/2.0, PDFReport.PAGE_HEIGHT-108, PDFReport.Title)
-#     canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 8 * inch, WorkingGuideReport.Title)
+#     canvas.drawCentredString(WorkingGuide.PAGE_WIDTH / 2.0, 8 * inch, WorkingGuide.Title)
 #     canvas.setFont('Times-Roman', 9)
-#     canvas.canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % WorkingGuideReport.pageinfo)
+#     canvas.canvas.drawCentredString(WorkingGuide.PAGE_WIDTH / 2.0, 0.25 * inch, "First Page / %s" % WorkingGuide.pageinfo)
 #     canvas.restoreState()
 #
 # # define layout for subsequent pages
@@ -273,9 +278,9 @@ class WorkingGuideReport():
 #     #logo = ImageReader('Z_LOGO_HalfInch.jpg')
 #     #canvas.drawImage(logo, .25 * inch, 7.5 * inch, mask='auto')
 #     canvas.setFont('Times-Roman', 9)
-#     canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch,
+#     canvas.drawCentredString(WorkingGuide.PAGE_WIDTH / 2.0, 0.25 * inch,
 #                       "Page: %d   Generated: %s   From file: %s" % (
-#                                  doc.page, WorkingGuideReport.timestamp, WorkingGuideReport.sourcefile))
+#                                  doc.page, WorkingGuide.timestamp, WorkingGuide.sourcefile))
 #     canvas.restoreState()
 
 # define layout for subsequent pages
@@ -285,16 +290,16 @@ def page_layout(canvas, doc):
     # logo = ImageReader('Z_LOGO_HalfInch.jpg')
     # canvas.drawImage(logo, .25 * inch, 8.0 * inch, mask='auto')
     canvas.setFont('Times-Roman', 9)
-    canvas.drawCentredString(WorkingGuideReport.PAGE_WIDTH / 2.0, 0.25 * inch,
+    canvas.drawCentredString(WorkingGuide.PAGE_WIDTH / 2.0, 0.25 * inch,
                       "Page: %d   Generated: %s   From file: %s" % (
-                                 doc.page, WorkingGuideReport.timestamp, WorkingGuideReport.sourcefile))
+                                 doc.page, WorkingGuide.timestamp, WorkingGuide.sourcefile))
     canvas.restoreState()
    
     
 def main():
     logger = logging.getLogger('')
     logger.setLevel(logging.INFO)
-    fh = logging.FileHandler("WorkingGuideReport.log")
+    fh = logging.FileHandler("WorkingGuide.log")
     sh = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%H:%M:%S')
     fh.setFormatter(formatter)
@@ -302,7 +307,7 @@ def main():
     logger.addHandler(fh)
     logger.addHandler(sh)
 
-    TSR_pdf = WorkingGuideReport("Working Guide Report", "DataFileName", "")
+    TSR_pdf = WorkingGuide("Working Guide", "DataFileName", "")
     competitors_list = { 'First_Name': ['John','Jason'],
                          'Last_Name':  ['Funk','Stele'] }
     competitors = pd.DataFrame(competitors_list)

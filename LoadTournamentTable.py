@@ -18,7 +18,7 @@ from cleaninput import rename_colums as RN
 from cleaninput import input_errors
 
 from reports.division_detail_report import DivisionDetailReport
-from reports.working_guide_report import WorkingGuideReport
+from reports.working_guide import WorkingGuide
 from reports.kata_score_sheet import KataScoreSheet
 from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
@@ -38,7 +38,7 @@ class LoadTournamentTable:
         self.kata_score_sheet_pdf = None
         self.technique_score_sheet_pdf = None
         self.sparing_tree_pdf = None # reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF()
-        self.tournament_summary_report_pdf = None
+        self.working_guide_pdf = None
 
     ###############################################################################
     # writeSingleKataScoreSheetandDivisionReport
@@ -131,7 +131,7 @@ class LoadTournamentTable:
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
-            self.tournament_summary_report_pdf = WorkingGuideReport("Tournament Summary", filename, output_folder_path)
+            self.working_guide_pdf = WorkingGuide("Tournament Summary", filename, output_folder_path)
 
             ###############################################################################
             # Setup a few things for the Division Detail PDF report
@@ -657,9 +657,9 @@ class LoadTournamentTable:
 
             logging.info("Saving PDFs to disk")
 
-            logging.info("..Saving Working Guide Report")
-            self.tournament_summary_report_pdf.add_summary_info_to_page(self.division_detail_report_pdf.summary_info)
-            self.tournament_summary_report_pdf.write_pdfpage()
+            logging.info("..Saving Working Guide")
+            self.working_guide_pdf.add_summary_info_to_page(self.division_detail_report_pdf.summary_info)
+            self.working_guide_pdf.write_pdfpage()
 
             logging.info("..Saving Division Report")
             self.division_detail_report_pdf.write_pdfpage()

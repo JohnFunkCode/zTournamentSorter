@@ -137,7 +137,7 @@ class EnvelopeReport():
         self._draw_field_line(.25, 2.25, "Rank", rank_value)
         self._draw_field_line(.25, 3, "Last Name Starting With", last_name_range)
         self._draw_field_line(.25, 3.75, "Participants", competitor_count)
-        self._draw_field_line(.25, 4.5, "Comments", " " * 50)
+        self._draw_field_line(.25, 4.5, "Comments", " " * 80)
 
         self._draw_field_line(5, 2, "Center", center_value)
         self._draw_field_line(5, 2.5, "Corner", corner_value)
@@ -146,30 +146,57 @@ class EnvelopeReport():
             if not ("Z" in last_name_range):
                 self._draw_field_line(5, 3, f'{last_name_range} Stays in Ring {ring_number}',"")
 
-        # # static instructions
-        # self._draw_instructions(x,y,font,size,false,"Please")
-        # self._draw_instructions(x,y,font,size,underline,"Print")
-        # self._draw_instructions(x,y,font,size,underline,"Names of the students and Dojos clearly.  DO NOT abbreviate.")
-        # self._draw_instructions(x,y,font,size,underline,"Bring winners to the head table to award trophies.")
-        # self._draw_instructions(x,y,font,size,underline,"Have your paperwork done before you get to the head table.")
+        underline = True
+        no_underline = False
+        # static instructions
+        self._draw_instructions(.25,5.25,'Helvetica-Bold',15,no_underline,"Please")
+        self._draw_instructions(1,5.26,'Helvetica',12,underline,"Print")
+        self._draw_instructions(1.4,5.25,'Helvetica',12,no_underline,"names of the students and Dojos clearly.  DO NOT abbreviate.")
+        self._draw_instructions(1, 5.5, 'Helvetica', 12, no_underline, "Bring participant patches to the ring to be handed out.")
+        self._draw_instructions(1,5.75,'Helvetica',12,no_underline,"Bring winners to the head table to award trophies.")
+        self._draw_instructions(1,6,'Helvetica',12,no_underline,"Have your paperwork done before you get to the head table.")
         #
         # # Places
-        # self._draw_instructions(x,y,font,size,underline,"1st Place")
-        # self._draw_instructions(x,y,font,size,underline,"(name)")
-        # self._draw_instructions(x,y,font,size,underline,"(studio)")
-        # self._draw_instructions(x,y,font,size,underline,"2nd Place")
-        # self._draw_instructions(x,y,font,size,underline,"(name)")
-        # self._draw_instructions(x,y,font,size,underline,"(studio)")
-        # self._draw_instructions(x,y,font,size,underline,"3rd Place")
-        # self._draw_instructions(x,y,font,size,underline,"(name)")
-        # self._draw_instructions(x,y,font,size,underline,"(studio)")
-        # self._draw_instructions(x,y,font,size,underline,"4th Place")
-        # self._draw_instructions(x,y,font,size,underline,"(name)")
-        # self._draw_instructions(x,y,font,size,underline,"(studio)")
+        self._draw_instructions(.25,7,'Helvetica-Bold',15,no_underline,"1st Place")
+        self._draw_instructions(1.25,7,'Helvetica',12,no_underline,"(name)")
+        self._draw_instructions(1.9,7,'Helvetica',12,underline," " * 43)
+        self._draw_instructions(4,7,'Helvetica',12,no_underline,"(studio)")
+        self._draw_instructions(4.625,7,'Helvetica',12,underline," " * 45)
+
+        self._draw_instructions(.25, 7.5, 'Helvetica-Bold', 15, no_underline, "2nd Place")
+        self._draw_instructions(1.25, 7.5, 'Helvetica', 12, no_underline, "(name)")
+        self._draw_instructions(1.9, 7.5, 'Helvetica', 12, underline, " " * 43)
+        self._draw_instructions(4, 7.5, 'Helvetica', 12, no_underline, "(studio)")
+        self._draw_instructions(4.625, 7.5, 'Helvetica', 12, underline, " " * 45)
+
+        self._draw_instructions(.25, 8, 'Helvetica-Bold', 15, no_underline, "3rd Place")
+        self._draw_instructions(1.25, 8, 'Helvetica', 12, no_underline, "(name)")
+        self._draw_instructions(1.9, 8, 'Helvetica', 12, underline, " " * 43)
+        self._draw_instructions(4, 8, 'Helvetica', 12, no_underline, "(studio)")
+        self._draw_instructions(4.625, 8, 'Helvetica', 12, underline, " " * 45)
+
+        self._draw_instructions(.25, 8.5, 'Helvetica-Bold', 15, no_underline, "4th Place")
+        self._draw_instructions(1.25, 8.5, 'Helvetica', 12, no_underline, "(name)")
+        self._draw_instructions(1.9, 8.5, 'Helvetica', 12, underline, " " * 43)
+        self._draw_instructions(4, 8.5, 'Helvetica', 12, no_underline, "(studio)")
+        self._draw_instructions(4.625, 8.5, 'Helvetica', 12, underline, " " * 45)
 
         self._draw_footer()
 
 
+    def _draw_instructions(self, x_position: float, y_position: float, font: str, size: float, underline: bool, text: str) -> None:
+        adjusted_x = x_position * inch
+        adjusted_y = EnvelopeReport.PAGE_HEIGHT - (y_position * inch)
+
+        self.canvas.setFont(font, size)
+        self.canvas.drawString(adjusted_x, adjusted_y, text)
+
+
+        if underline:
+            underline_y = adjusted_y - 0.03 * inch
+            underline_width = self.canvas.stringWidth(text, font, size)
+            self.canvas.setLineWidth(0.5)
+            self.canvas.line(adjusted_x, underline_y, adjusted_x + underline_width, underline_y)
 
     def _draw_footer(self) -> None:
         self.canvas.setFont('Times-Roman', 9)

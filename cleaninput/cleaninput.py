@@ -30,7 +30,7 @@ def clean_unicode_from_file(inputFileName):
             if not b:
                 break
             if (b > b'\x7f'):
-                errorString="Replaced garbage character {} with # character".format(ord(b))
+                errorString=f"Replaced garbage character {ord(b)} with # character"
                 logging.warning(errorString)
                 b = b'\x23'
                 f.seek(-1, 1)
@@ -69,33 +69,45 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
 
     #next check for non-numeric data in the age field
     logging.info("   Checking the age field")
+
+    # show the type of the weight column for debugging purposes
+    # print(cleanDataFrame['Age'].dtype)
+
+    if cleanDataFrame['Age'].dtype != 'int64':
+        #Strip any non-numeric characters from the Age and make the column an int64 type
+        # Source - https://stackoverflow.com/a/73625937
+        cleanDataFrame['Age'] = cleanDataFrame['Age'].str.replace('[^0-9]', '', regex=True).astype('int64')
+
     for index, row in cleanDataFrame.iterrows():
         try:
             age=int(row['Age'])
             if (age < 3):
                 errorCount += 1
-                errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
-                    row["Last_Name"]) + " has an age field of "+str(age)+" which is less than the age in our youngest division"
+                errorString = f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has an age field of {age} which is less than the age in our youngest division"
                 logging.info(errorString)
                 input_error_list.append(index, 'Age')
 
         except ValueError:
             errorCount+=1
-            errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has something other than a number in Age field"
+            errorString=f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has something other than a number in Age field"
             logging.info(errorString)
             input_error_list.append(index, 'Age')
 
     #Weight
-    logging.info("   Looking for invalid weight")
-    #Convert weight to digits with regex and generate an error if not valid
+    logging.info("   Checking the weight field")
+
+    if cleanDataFrame['Weight'].dtype != 'int64':
+        #Strip any non-numeric characters from the weight and make the column an int64 type
+        # Source - https://stackoverflow.com/a/73625937
+        cleanDataFrame['Weight'] = cleanDataFrame['Weight'].str.replace('[^0-9]', '', regex=True).astype('int64')
+
     import re
     compiledRegex=re.compile(r'\d+')
     for index, row in cleanDataFrame.iterrows():
         rawWeightString=str(row['Weight'])
         if pd.isnull(rawWeightString):
             errorCount += 1
-            errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
-                row["Last_Name"]) + " has an empty Weight field"
+            errorString = f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has an empty Weight field"
             logging.info(errorString)
             input_error_list.append(index, 'Weight')
         else:
@@ -105,26 +117,44 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             else:
                 cleanWeightString=matchList.group()
     #        cleanDataFrame.loc[index,'Competitor\'s Weight (in lbs.)?']=cleanWeightString #try .at instead http://pandas.pydata.org/pandas-docs/stable/indexing.html#fast-scalar-value-getting-and-setting
+
             cleanDataFrame.at[index,'Weight']=int(cleanWeightString) #cast it as an int to match the type stored in the dataframe
 
             #print cleanWeightString
             cleanWeight=int(cleanWeightString)
             if (0==cleanWeight) or (350 < cleanWeight):
                 errorCount+=1
-                errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has an invalid Weight field:" + rawWeightString
+                errorString=f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has an invalid Weight field: {rawWeightString}"
                 logging.info(errorString)
                 input_error_list.append(index, 'Weight')
 
+            # show the type of the weight column for debugging purposes
+            # print(cleanDataFrame['Weight'].dtype)
+
+
     #Height
     logging.info("   Looking for invalid height")
-#    import re
+
+    # create two new columns for feet and inches and make them ints
+    cleanDataFrame['Feet']=0
+    cleanDataFrame['Feet'] = cleanDataFrame['Feet'].astype('int64')
+
+    cleanDataFrame['Inches']=0
+    cleanDataFrame['Inches'] = cleanDataFrame['Inches'].astype('int64')
+
+    cleanDataFrame['HeightInInches']=0
+    cleanDataFrame['HeightInInches'] = cleanDataFrame['HeightInInches'].astype('int64')
+
+    cleanDataFrame['BMI'] = 0
+    cleanDataFrame['BMI'] = cleanDataFrame['HeightInInches'].astype('int64')
+
+
     compiledRegex=re.compile(r'\d+')
     for index, row in cleanDataFrame.iterrows():
         splitString=row['Height']
         if pd.isnull(splitString):
             errorCount += 1
-            errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
-                row["Last_Name"]) + " has an empty Height field"
+            errorString = f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has an empty Height field"
             logging.info(errorString)
             input_error_list.append(index, 'Height')
         else:
@@ -153,18 +183,9 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             if (int(feet) < 2) or (int(feet) > 7):
                #print splitString, "|", feet, "|", inches, "is not reasonable"
                errorCount+=1
-               errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " has bad data in the height field: " + splitString
+               errorString=f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has bad data in the height field: {splitString}"
                logging.info(errorString)
                input_error_list.append(index, 'Height')
-
-            #Write it to new columns in the data frame
-            # cleanDataFrame.loc[index,'Feet']=int(feet)
-            # cleanDataFrame.loc[index,'Inches']=int(inches)
-            # heightInInches = (int(feet)*12)+int(inches)
-            # cleanDataFrame.loc[index,'HeightInInches']=heightInInches
-            # bodyMassIndex=(heightInInches*2)+int(cleanDataFrame.loc[index,'Weight'])
-            # cleanDataFrame.loc[index,'BMI']=bodyMassIndex
-            # #print splitString, "|", feet, "|", inches
 
             cleanDataFrame.at[index,'Feet']=int(feet)
             cleanDataFrame.at[index,'Inches']=int(inches)
@@ -191,7 +212,11 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
             outofstateString=row['Out_of_State_Dojo']
             if(pd.isnull(outofstateString)):
                 errorCount+=1
-                errorString="Error: The row: "+str(row["Registrant_ID"])+" "+str(row["First_Name"])+" "+str(row["Last_Name"])+ " says the student is from Out of State, but there is no out of State Dojo provided"
+                errorString = (
+                    f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} "
+                    f"says the student is from Out of State, but there is no out of State Dojo provided"
+                )
+                logging.info(errorString)
                 #print errorString
                 input_error_list.append(index, 'Height')
             else:
@@ -243,14 +268,15 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
         rank = row["Rank"]
         if pd.isnull(rank):
             errorCount += 1
-            errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
-                row["Last_Name"]) + " has an empty Current Belt Rank field"
+            errorString = (
+                f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} "
+                f"has an empty Current Belt Rank field"
+            )
             logging.info(errorString)
             input_error_list.append(index, 'Rank')
         if rank not in valid_ranks:
             errorCount += 1
-            errorString = "Error: The row: " + str(row["Registrant_ID"]) + " " + str(row["First_Name"]) + " " + str(
-                row["Last_Name"]) + " has an invalid  Belt Rank field: "+str(rank)
+            errorString = f"Error: The row: {row['Registrant_ID']} {row['First_Name']} {row['Last_Name']} has an invalid  Belt Rank field: {rank}"
             logging.info(errorString)
             input_error_list.append(index, 'Rank')
 

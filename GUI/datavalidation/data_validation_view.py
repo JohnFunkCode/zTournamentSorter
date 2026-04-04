@@ -35,6 +35,8 @@ class DataValidationView(ttk.Frame):
         # current size is 1211 x 442 allows for 20 lines
         self.table = Table(parent=self.pandas_table_frame, model=TableModel(app_container.database),
                            showtoolbar=False, showstatusbar=False, enable_menus=False, width=1211, height=442)
+        self.table.floatprecision = 0   # do not show decimals in numeric cells
+
         self.pandas_table_frame.grid(row=1, column=0, rowspan=5, columnspan=3, sticky="nsew", **options)
         self.table.redraw()
 

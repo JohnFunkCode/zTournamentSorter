@@ -36,6 +36,7 @@ class zAppController(tk.Tk):
         self.database = pd.DataFrame()
         self.is_custom_division = False
         self.selected_date = None
+        self.save_google_sheets = False
 
         # Controllers
         self.menu_bar = GUI.menubar.menu_bar.MenuBar(self)

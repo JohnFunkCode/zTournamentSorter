@@ -97,9 +97,9 @@ def upload_working_guide_dataframe(df: pd.DataFrame) -> Optional[str]:
 
     from GoogleSheetReaderWriter.gsheet_rw.app import AppConfig
     cfg = AppConfig.load(config_path)
-    worksheet_title =  cfg.worksheet_title
-    spreadsheet_title = cfg.spreadsheet_title
     drive_folder_id = cfg.drive_folder_id
+    spreadsheet_title = cfg.working_guide_spreadsheet_title
+    worksheet_title = cfg.working_guide_worksheet_title
 
     if not drive_folder_id:
         raise ValueError("Missing drive folder name. Provide drive_folder_name or set it in config/config.yaml.")
@@ -109,6 +109,8 @@ def upload_working_guide_dataframe(df: pd.DataFrame) -> Optional[str]:
 
     if not worksheet_title:
         raise ValueError("Missing worksheet title. Provide worksheet_title or set worksheet_title in config/config.yaml.")
+
+
 
     if clients is None:
         clients = build_clients_from_config(cfg)
@@ -148,10 +150,7 @@ def upload_working_guide_dataframe(df: pd.DataFrame) -> Optional[str]:
         save_registry(registry_path, registry)
         created_new = True
         logging.getLogger(__name__).info(
-            "event=spreadsheet_created spreadsheet_id=%s title=%s folder_name=%s",
-            spreadsheet_id,
-            spreadsheet_title
-            # folder_name,
+            f"event=spreadsheet_created spreadsheet_id={spreadsheet_id} title=%s folder_name={spreadsheet_title}"
         )
 
     write_dataframe(clients, spreadsheet_id, timestamp_title, df)
@@ -187,10 +186,7 @@ def upload_working_guide_dataframe(df: pd.DataFrame) -> Optional[str]:
     share_spreadsheet(clients, spreadsheet_id, cfg.share_emails, role=share_role)
 
     logging.getLogger(__name__).info(
-        "event=spreadsheet_updated spreadsheet_id=%s tab=%s created_new=%s",
-        spreadsheet_id,
-        timestamp_title,
-        created_new,
+        f"event=spreadsheet_updated spreadsheet_id={spreadsheet_id} tab={timestamp_title} created_new={created_new}",
     )
     return spreadsheet_id
 

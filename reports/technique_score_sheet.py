@@ -23,14 +23,11 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
-import reports
-# import FileHandlingUtilities  #<--un-comment for stand alone testing
 
 
 class TechniqueScoreSheet(object):
     def __init__(self,title:str, sourcefile:str,output_folder_path:str):
-        self.filename_with_path=str(pathlib.Path(output_folder_path / 'TechniqueScoreSheet.pdf')) #<--comment out for stand alone testing
-        # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.pathDelimiter() +'TechniqueScoreSheet.pdf'))   #<--un-comment for stand alone testing
+        self.filename_with_path = str(pathlib.Path(output_folder_path) / 'TechniqueScoreSheet.pdf')
 
         # self.doc = SimpleDocTemplate("TechniqueScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
@@ -326,7 +323,7 @@ def first_page_layout(canvas, doc):
 
     #####
     # Background Template Image
-    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'technique_score_sheet_template-300dpi.png'  #<--comment out for stand alone testing
+    backgroundImageFilename = str(pathlib.Path(__file__).resolve().parent / 'technique_score_sheet_template-300dpi.png')
     # backgroundImageFilename='technique_score_sheet_template-600dpi.png'  #<--un-comment for stand alone testing
     background = ImageReader(backgroundImageFilename)
     canvas.drawImage(background, 0 * inch, 0 * inch, mask='auto', width=TechniqueScoreSheet.PAGE_WIDTH, height=TechniqueScoreSheet.PAGE_HEIGHT)
@@ -427,4 +424,3 @@ if __name__ == "__main__":
 
 
   technique_score_sheet.write_pdfpage()
-

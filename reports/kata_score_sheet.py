@@ -23,8 +23,6 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import PageBreak
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
 import domain_model.constants as constants
-import reports
-# import FileHandlingUtilities  #<--un-comment for stand alone testing
 
 
 class KataScoreSheet(object):
@@ -36,7 +34,7 @@ class KataScoreSheet(object):
             self.filename_with_path = str(pathlib.Path(output_folder_path / output_folder_path_no_extension + '-' + 'KataScoreSheet.pdf'))
         else:
             self.filename_with_path=str(pathlib.Path(output_folder_path /'KataScoreSheet.pdf')) #<--comment out for stand alone test files
-            # self.filename_with_path=str(pathlib.Path(output_folder_path + FileHandlingUtilities.reports.FileHandlingUtilities.pathDelimiter() +'KataScoreSheet.pdf')) #<--un-comment for stand alone test files
+            # self.filename_with_path = str(pathlib.Path(output_folder_path) / 'KataScoreSheet.pdf')
 
         # self.doc = SimpleDocTemplate("KataScoreSheet.pdf", pagesize=portrait(letter),topMargin=0, bottomMargin=0)
         self.doc = SimpleDocTemplate(self.filename_with_path, pagesize=portrait(letter),topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
@@ -341,7 +339,7 @@ def first_page_layout(canvas, doc):
     #####
     # Background Template Image
     # canvas.drawCentredString(KataScoreSheet.PAGE_WIDTH / 2.0, 10.25 * inch, KataScoreSheet.split_warning_text)
-    backgroundImageFilename='reports'+reports.FileHandlingUtilities.pathDelimiter()+'kata_score_sheet_template-300dpi.png'  #<--comment out for stand alone testing
+    backgroundImageFilename = str(pathlib.Path(__file__).resolve().parent / 'kata_score_sheet_template-300dpi.png')
     # backgroundImageFilename='kata_score_sheet_template-300dpi.png'  #<--un-comment for stand alone testing
     background = ImageReader(backgroundImageFilename)
     canvas.drawImage(background, 0 * inch, 0 * inch, mask='auto', width=KataScoreSheet.PAGE_WIDTH, height=KataScoreSheet.PAGE_HEIGHT)

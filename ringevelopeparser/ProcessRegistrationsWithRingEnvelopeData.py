@@ -1,5 +1,6 @@
 import sys
 import os
+import traceback
 from pathlib import Path
 import logging
 
@@ -21,7 +22,7 @@ from reports.technique_score_sheet import TechniqueScoreSheet
 import reports.sparring_tree.sparring_tree_report
 import reports.ExcelFileOutput
 import reports.FileHandlingUtilities
-from reports import working_guide_google_sheet
+from reports import working_guide_google_sheet, tournament_score_google_sheet
 
 
 def classify_division( division_name: str):
@@ -36,131 +37,148 @@ def classify_division( division_name: str):
     else:
         assert False, "Error: Invalid division_name"
 
-def process_registrations_with_ring_envelope_data(ring_definition_file_name: str, registration_file_name:str, clean_df: pd.DataFrame, output_folder_path: str):
-    clean_df['hitcount'] = 0  # setup a new column for hit rate.
+def process_registrations_with_ring_envelope_data(ring_definition_file_name: str, registration_file_name:str, clean_df: pd.DataFrame, output_folder_path: str, save_google_sheets: bool ):
+    try:
+        clean_df['hitcount'] = 0  # setup a new column for hit rate.
 
-    # load ring definition data from the ring_envelope file
-    ring_defition_collection = RingCollection.from_csv(ring_definition_file_name)
+        # load ring definition data from the ring_envelope file
+        ring_defition_collection = RingCollection.from_csv(ring_definition_file_name)
 
-    # get all events
-    events = ring_defition_collection.get_all_events()
+        # get all events
+        events = ring_defition_collection.get_all_events()
 
-    #instanciate a LoadTournamentTable class
-    ltt = LoadTournamentTable()
+        #instanciate a LoadTournamentTable class
+        ltt = LoadTournamentTable()
 
-    ###############################################################################
-    # Setup a few things for the Division Detail PDF report
-    ltt.envelope_report_pdf = EnvelopeReport("Envelope", registration_file_name, output_folder_path)
-
-
-    ###############################################################################
-    # Setup a few things for the Division Detail PDF report
-    ltt.working_guide_pdf = WorkingGuide("Working Guide", registration_file_name, output_folder_path)
-
-    ###############################################################################
-    # Setup a few things for the Division Detail PDF report
-    ltt.division_detail_report_pdf = DivisionDetailReport("Division Detail", registration_file_name, output_folder_path)
-
-    ###############################################################################
-    # Setup a few things for the Kata Score Sheet PDF report
-    ltt.kata_score_sheet_pdf = KataScoreSheet("Forms", registration_file_name, output_folder_path, isCustomDivision=False)
-
-    ###############################################################################
-    # Setup a few things for the Techniques Score Sheet PDF report
-    ltt.technique_score_sheet_pdf = TechniqueScoreSheet("Techniques", registration_file_name, output_folder_path)
-
-    ###############################################################################
-    # Setup a few things for the Sparring Tree PDF report
-    ltt.sparing_tree_pdf = reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF(registration_file_name, output_folder_path,
-                                                                                            isCustomDivision=False)
-
-    # print them out
-    for evt in events:
-        header = (
-            f"event_time: {evt.event_time} \t| "
-            f"division_name: {evt.division_name} | "
-            f"gender: {evt.gender} |  "
-            f"minimum_age: {evt.min_age} | "
-            f" maximum_age: {evt.max_age} | "
-            f"ranks_label: {evt.rank_label} | "
-            f"ranks: {evt.ranks} 7| "
-            f"ring_info: {evt.ring_info}"
-        )
-        print(header)
+        ###############################################################################
+        # Setup a few things for the Division Detail PDF report
+        ltt.envelope_report_pdf = EnvelopeReport("Envelope", registration_file_name, output_folder_path)
 
 
-        division_type = classify_division(evt.division_name)
-        if division_type == "Kata":
-            ltt.writeSingleKataScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
-        elif division_type == "Techniques":
-            ltt.writeSingleTechniqueScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
-        elif division_type == "Weapons":
-            ltt.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
-        elif division_type == "Sparring":
-            ltt.writeSingleSparringTreeandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
+        ###############################################################################
+        # Setup a few things for the Division Detail PDF report
+        ltt.working_guide_pdf = WorkingGuide("Working Guide", registration_file_name, output_folder_path)
+
+        ###############################################################################
+        # Setup a few things for the Division Detail PDF report
+        ltt.division_detail_report_pdf = DivisionDetailReport("Division Detail", registration_file_name, output_folder_path)
+
+        ###############################################################################
+        # Setup a few things for the Kata Score Sheet PDF report
+        ltt.kata_score_sheet_pdf = KataScoreSheet("Forms", registration_file_name, output_folder_path, isCustomDivision=False)
+
+        ###############################################################################
+        # Setup a few things for the Techniques Score Sheet PDF report
+        ltt.technique_score_sheet_pdf = TechniqueScoreSheet("Techniques", registration_file_name, output_folder_path)
+
+        ###############################################################################
+        # Setup a few things for the Sparring Tree PDF report
+        ltt.sparing_tree_pdf = reports.sparring_tree.sparring_tree_report.SparringTreeReportPDF(registration_file_name, output_folder_path,
+                                                                                                isCustomDivision=False)
+
+        # print them out
+        for evt in events:
+            header = (
+                f"event_time: {evt.event_time} \t| "
+                f"division_name: {evt.division_name} | "
+                f"gender: {evt.gender} |  "
+                f"minimum_age: {evt.min_age} | "
+                f" maximum_age: {evt.max_age} | "
+                f"ranks_label: {evt.rank_label} | "
+                f"ranks: {evt.ranks} 7| "
+                f"ring_info: {evt.ring_info}"
+            )
+            print(header)
+
+
+            division_type = classify_division(evt.division_name)
+            if division_type == "Kata":
+                ltt.writeSingleKataScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
+            elif division_type == "Techniques":
+                ltt.writeSingleTechniqueScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
+            elif division_type == "Weapons":
+                ltt.writeWeaponsDivisionToSingleKataScoreSheetandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
+            elif division_type == "Sparring":
+                ltt.writeSingleSparringTreeandDivisionReport(evt.event_time, evt.division_name, evt.gender, evt.rank_label, evt.min_age, evt.max_age, evt.ring_info, evt.ranks, clean_df)
+            else:
+                assert False, "Error: Invalid division_name"
+
+
+        logging.info("Saving PDFs to disk")
+
+        logging.info("..Saving Working Guide")
+        envelope_df =ltt.division_detail_report_pdf.summary_info
+        working_guide_list, working_guide_dataframe = ltt.working_guide_pdf.build_working_guide_data(ltt.division_detail_report_pdf.summary_info)
+        ltt.working_guide_pdf.add_summary_info_to_page(working_guide_list)
+
+        if save_google_sheets:
+            logging.info("..Updating Google Sheets")
+
+            # call new code that will send the working_guide_dataframe to the judge assignment google sheet
+            # try:
+            #     spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
+            #     if spreadsheet_id:
+            #         logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
+            # except working_guide_google_sheet.WorkingGuideGoogleSheetError as exc:
+            #     logging.error("Unable to update working guide Google Sheet: %s", exc)
+            spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
+            if spreadsheet_id:
+                logging.info(f"Working guide Google Sheet updated. Spreadsheet ID: {spreadsheet_id}")
+            else:
+                logging.error("Unable to update the Working Guide Google Sheet")
+
+
+            # call new code that will send the working_guide_dataframe to the tournament score google sheet
+            spreadsheet_id = tournament_score_google_sheet.upload_tournament_score_data(working_guide_list)
+            if spreadsheet_id:
+                logging.info(f"Tournament Score Google Sheet updated. Spreadsheet ID: {spreadsheet_id}")
+            else:
+                logging.error("Unable to update the Tournament Score Google Sheet")
         else:
-            assert False, "Error: Invalid division_name"
+            logging.info("Skipping updating the Google Sheet as requested")
 
 
-    logging.info("Saving PDFs to disk")
+        # Envelope Report - using the ltt.envelope_report_pdf.summary_info
 
-    logging.info("..Saving Working Guide")
-    envelope_df =ltt.division_detail_report_pdf.summary_info
-    working_guide_list, working_guide_dataframe = ltt.working_guide_pdf.build_working_guide_data(ltt.division_detail_report_pdf.summary_info)
-    ltt.working_guide_pdf.add_summary_info_to_page(working_guide_list)
+        logging.info("..Saving Envelope Report")
+        ltt.envelope_report_pdf.add_summary_info_to_page(envelope_df)
+        ltt.envelope_report_pdf.write_pdfpage()
 
-    # call new code that will send the working_guide_dataframe to the judge assignment google sheet
-    # try:
-    #     spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
-    #     if spreadsheet_id:
-    #         logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
-    # except working_guide_google_sheet.WorkingGuideGoogleSheetError as exc:
-    #     logging.error("Unable to update working guide Google Sheet: %s", exc)
-    spreadsheet_id = working_guide_google_sheet.upload_working_guide_dataframe(working_guide_dataframe)
-    if spreadsheet_id:
-        logging.info("Working guide Google Sheet updated. Spreadsheet ID: %s", spreadsheet_id)
+        logging.info("..Saving Working Guide")
+        ltt.working_guide_pdf.write_pdfpage()
 
+        logging.info("..Saving Division Report")
+        ltt.division_detail_report_pdf.write_pdfpage()
 
-    # Envelope Report - using the ltt.envelope_report_pdf.summary_info
+        logging.info("..Saving Kata Score Sheets")
+        ltt.kata_score_sheet_pdf.write_pdfpage()
+        logging.info("..Saving Technique Score Sheets")
+        ltt.technique_score_sheet_pdf.write_pdfpage()
+        logging.info("..Saving Sparring Trees")
+        ltt.sparing_tree_pdf.close()
 
-    logging.info("..Saving Envelope Report")
-    ltt.envelope_report_pdf.add_summary_info_to_page(envelope_df)
-    ltt.envelope_report_pdf.write_pdfpage()
+        logging.info("Division Summary Report")
+        pd.set_option('display.max_rows', None)
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.width', None)
+        logging.info(ltt.division_detail_report_pdf.summary_info)
 
-    logging.info("..Saving Working Guide")
-    ltt.working_guide_pdf.write_pdfpage()
+        #print hitcount warnings
+        if clean_df.shape[0] > 30:
+            logging.warning("\u001b[31mInvestigate these entries in the spreadsheet!  They didn't get put into any events:\u001b[0m")
+            for index, row in clean_df.iterrows():
+                name = row['First_Name'] + " " + row['Last_Name']
+                events = row['Events']
+                hc = row['hitcount']
+                if hc < 1 :
+                    # logging.info("  " + name + ": " + str(hc))
+                    logging.warning(f'\u001b[31m   Name:{name} Events:{events} <---was put in {hc} events\u001b[0m')
 
-    logging.info("..Saving Division Report")
-    ltt.division_detail_report_pdf.write_pdfpage()
-
-    logging.info("..Saving Kata Score Sheets")
-    ltt.kata_score_sheet_pdf.write_pdfpage()
-    logging.info("..Saving Technique Score Sheets")
-    ltt.technique_score_sheet_pdf.write_pdfpage()
-    logging.info("..Saving Sparring Trees")
-    ltt.sparing_tree_pdf.close()
-
-    logging.info("Division Summary Report")
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.width', None)
-    logging.info(ltt.division_detail_report_pdf.summary_info)
-
-    #print hitcount warnings
-    if clean_df.shape[0] > 30:
-        logging.warning("\u001b[31mInvestigate these entries in the spreadsheet!  They didn't get put into any events:\u001b[0m")
-        for index, row in clean_df.iterrows():
-            name = row['First_Name'] + " " + row['Last_Name']
-            events = row['Events']
-            hc = row['hitcount']
-            if hc < 1 :
-                # logging.info("  " + name + ": " + str(hc))
-                logging.warning(f'\u001b[31m   Name:{name} Events:{events} <---was put in {hc} events\u001b[0m')
-
-    # except Exception as e:            #<--- un-comment for final distribution
-    #     logging.error(f'Fatal error processing the data:\n {e}')
-    #     exc = sys.exception()
-    #     logging.error(repr(traceback.format_tb(exc.__traceback__)))
+    except Exception as e:            #<--- un-comment for final distribution
+        # logging.error(f'Fatal error processing the data:\n {e}')
+        # exc = sys.exception()
+        # logging.error(repr(traceback.format_tb(exc.__traceback__)))
+        logging.exception("Fatal error processing the data")
 
     logging.info("Done!")
 
@@ -174,7 +192,7 @@ if __name__ == "__main__":
 
 
     # hard code registration file name, ring definition file name, and output folder path for now
-    registration_file_name = "/Users/johnfunk/documents/Tournaments/2025-May-03/RegExp_LizTrialFile_20250425-FixedHeaders_Processed.csv"
+    registration_file_name = "/Users/johnfunk/documents/Tournaments/2026-April-25/RegistrantExport_EM0393_20260325134355-75.csv"
     # ring_definition_file_name = ring_definition_file_path / "Tourn Ring Envelope Data Base_2025_05_03-fixed_rank+fixed_ring_numbers.csv"
     ring_definition_file_name = ring_definition_file_path / "Tourn Ring Envelope Data Base_2025_05_03-proposed.csv"
 
@@ -215,4 +233,4 @@ if __name__ == "__main__":
 
     # clean_df['hitcount'] = 0  # setup a new column for hit rate.
 
-    process_registrations_with_ring_envelope_data(ring_definition_file_name, registration_file_name, clean_df, output_folder_path)
+    process_registrations_with_ring_envelope_data(ring_definition_file_name, registration_file_name, clean_df, output_folder_path, True)

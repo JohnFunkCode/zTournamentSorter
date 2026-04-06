@@ -7,7 +7,7 @@ from shutil import copyfile
 
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkinter import filedialog
 import pandas as pd
 from tkinter.messagebox import showinfo
@@ -469,6 +469,13 @@ class DataValidationController():
             # self.app_container.input_data_filename = save_file_name
         else:
             logging.warning(f"Not saving processed file!")
+
+        save_google_sheets =  messagebox.askyesno(
+            title="Google Spreadsheets",
+            message="Write the Google Spreadsheets this time?",
+            default=messagebox.YES
+        )
+        self.app_container.save_google_sheets=save_google_sheets
 
 
         self.data_validation_view.error_log.delete("1.0",tk.END)

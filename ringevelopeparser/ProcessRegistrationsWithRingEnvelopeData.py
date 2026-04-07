@@ -127,9 +127,11 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
             else:
                 logging.error("Unable to update the Working Guide Google Sheet")
 
+            # get the directory from the ring_definition_file_name
+            dojo_list_directory = Path(ring_definition_file_name).parent
 
             # call new code that will send the working_guide_dataframe to the tournament score google sheet
-            spreadsheet_id = tournament_score_google_sheet.upload_tournament_score_data(working_guide_list)
+            spreadsheet_id = tournament_score_google_sheet.upload_tournament_score_data(working_guide_list, dojo_list_directory)
             if spreadsheet_id:
                 logging.info(f"Tournament Score Google Sheet updated. Spreadsheet ID: {spreadsheet_id}")
             else:

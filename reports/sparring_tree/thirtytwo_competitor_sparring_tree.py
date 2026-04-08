@@ -152,26 +152,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
     def draw_header_info_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks: str, split_label: str, number_of_competitors: int):
         self._legal_pages = self._legal_pages + 1
         ''' draw the header text onto the tree '''
-        # self._c.drawString(14.7 * cm, 35 * cm, "Time:")
-        # self._c.drawString(16 * cm, 35 * cm, event_time)
-        # self._c.drawString(14.7 * cm, 34.25 * cm, "Event:")
-        # self._c.drawString(16 * cm, 34.25 * cm, event_title)
-        # self._c.drawString(14.7 * cm, 33.5 * cm, "Rank:")
-        # self._c.drawString(16 * cm, 33.5 * cm, ranks)
-        # self._c.drawString(14.7 * cm, 32.75 * cm, "Ring#:")
-        # self._c.drawString(16 * cm, 32.75 * cm, str(ring))
-        # if split_label != '':
-        #     self._c.setFillColorRGB(255,0,0)
-        #     self._c.drawString(17 * cm, 32.75 * cm, 'Contestants '+ split_label)
-        #     self._c.setFillColorRGB(0, 0, 0)
-        # self._c.drawString(14.7 * cm, 32 *cm, "Competitors:")
-        #
-        # if number_of_competitors > constants.TOO_MANY_COMPETITORS:
-        #     self._c.setFillColorRGB(255, 0, 0)
-        #     self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
-        #     self._c.setFillColorRGB(0, 0, 0)
-        # else:
-        #     self._c.drawString(17.5 *cm, 32 *cm, "{}".format(number_of_competitors))
+
         self._c.drawString(14.2 * cm, 35 * cm, "Ring:")
         self._c.drawString(16 * cm, 35 * cm, f'{ring}   {event_time}')
         self._c.drawString(14.2 * cm, 34.25 * cm, "Division:")
@@ -186,7 +167,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
             self._c.setFillColorRGB(0, 0, 0)
         self._c.drawString(14.2 * cm, 32 *cm, "Competitors:")
 
-        if number_of_competitors > constants.TOO_MANY_COMPETITORS:
+        if number_of_competitors > constants.MAXIMUM_COMPETITORS:
             self._c.setFillColorRGB(255, 0, 0)
             self._c.drawString(17 *cm, 32 *cm, "{}".format(number_of_competitors))
             self._c.setFillColorRGB(0, 0, 0)
@@ -213,7 +194,7 @@ class ThirtyTwoCompetitorTree(SparringTree):
             name = competitor['First_Name'] + ' ' + competitor['Last_Name']
             # logging.info('\n' + name)
             px, py = self.calculate_canvas_coordinates_from_competitor_index(competitor_count, i)
-            if competitor_count > constants.TOO_MANY_COMPETITORS :
+            if competitor_count > constants.MAXIMUM_COMPETITORS :
                 self._c.setFillColorRGB(255, 0, 0)
                 self._c.drawString(px, py, name)
                 self._c.setFillColorRGB(0, 0, 0)

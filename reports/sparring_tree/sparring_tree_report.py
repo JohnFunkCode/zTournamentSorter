@@ -131,7 +131,7 @@ class SparringTreeReportPDF():
         if rings[0][1].upper() == 'AUTO':  # means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
-            partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=20)
+            partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors, min_number_of_partitions=number_of_rings,max_entries_per_partition=constants.MAXIMUM_COMPETITORS)
             print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]

@@ -63,7 +63,7 @@ SECOND_ALPHABETIC_SPLIT_LABEL='M - Z'
 SLEEP_TIME=.01
 
 #Number of competitors in a division to raise an alert
-TOO_MANY_COMPETITORS = 16
+MAXIMUM_COMPETITORS = 16
 
 #Ageless - we replace this with + (e.g. 18-100 gets expressed as 18+)
 AGELESS = 100

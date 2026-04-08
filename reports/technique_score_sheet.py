@@ -112,7 +112,7 @@ class TechniqueScoreSheet(object):
         elements.append(Spacer(width=1, height= -0.5 * inch))
 
 
-        if inputdf.shape[0] > constants.TOO_MANY_COMPETITORS:
+        if inputdf.shape[0] > constants.MAXIMUM_COMPETITORS:
             logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,division_name,ring_number,inputdf.shape[0]))
 
         # if split_warning_text is None:
@@ -152,7 +152,7 @@ class TechniqueScoreSheet(object):
         t = Table(data_list)
         t.hAlign = 'LEFT'
 
-        if len(data_list) > constants.TOO_MANY_COMPETITORS +1:
+        if len(data_list) > constants.MAXIMUM_COMPETITORS +1:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),
@@ -254,7 +254,7 @@ class TechniqueScoreSheet(object):
             np = domain_model.name_partitioner.NamePartionioner()
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors,
                                                                        min_number_of_partitions=number_of_rings,
-                                                                       max_entries_per_partition=20)
+                                                                       max_entries_per_partition=constants.MAXIMUM_COMPETITORS)
             print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]

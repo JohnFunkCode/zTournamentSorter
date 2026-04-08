@@ -97,7 +97,7 @@ class DivisionDetailReport(object):
         elements.append(t)
         elements.append(Spacer(1, 0.1 * inch))
 
-        if df.shape[0] > constants.TOO_MANY_COMPETITORS:
+        if df.shape[0] > constants.MAXIMUM_COMPETITORS:
             logging.warning("\u001b[31m***{} {} Ring {} has too many competitors. It has {}\u001b[0m".format(event_time,
                                                                                                              division_name,
                                                                                                              ring_number,
@@ -206,7 +206,7 @@ class DivisionDetailReport(object):
         data_list = [df_for_printing.columns[:, ].values.astype(str).tolist()] + df_for_printing.values.tolist()
 
         t = Table(data_list)
-        if len(data_list) > constants.TOO_MANY_COMPETITORS + 1:
+        if len(data_list) > constants.MAXIMUM_COMPETITORS + 1:
             t.setStyle(TableStyle([('FONTNAME', (0, 0), (-1, -1), "Helvetica"),
                                    ('FONTSIZE', (0, 0), (-1, -1), 8),
                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.red),

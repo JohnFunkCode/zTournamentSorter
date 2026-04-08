@@ -8,6 +8,8 @@ from reportlab.pdfgen import canvas
 
 from reports.sparring_tree import bracket_position_map as BPM
 from domain_model.competitors import Competitors
+import domain_model.constants as constants
+
 
 
 class SparringTree():
@@ -77,7 +79,7 @@ class SparringTree():
     def add_page_with_competitors_on_tree(self, ring: int, event_time: str, event_title: str, age: str, ranks, split_label:str, competitors: Competitors) -> object:
         ''' adds a compleate page with a tree and the competitors '''
 
-        if competitors.get_number_of_competitors() > 20:
+        if competitors.get_number_of_competitors() > constants.MAXIMUM_COMPETITORS:
             logging.warning("\u001b[31m*** {} {} Ring:{} has too many competitors. It has {}\u001b[0m".format(event_time,event_title,ring,competitors.get_number_of_competitors()))
 
         # lay down the template

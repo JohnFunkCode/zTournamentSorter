@@ -15,6 +15,8 @@ from GoogleSheetReaderWriter.gsheet_rw.sheets_client import (
     auto_resize_columns,
     build_clients_from_config,
     create_spreadsheet,
+    delete_all_named_ranges,
+    delete_all_protected_ranges,
     get_column_pixel_sizes,
     read_sheet_to_dataframe,
     move_sheet_tab_to_index,
@@ -181,10 +183,14 @@ def upload_tournament_score_data(
         save_registry(registry_path, registry)
         created_new = True
         logging.getLogger(__name__).info(
-            f"event=spreadsheet_created spreadsheet_id={spreadsheet_id} title={spreadsheet_title}"
+            "Created tournament score spreadsheet '%s' (id=%s).",
+            spreadsheet_title,
+            spreadsheet_id,
         )
 
     deleted_tabs = 0
+    deleted_named_ranges = delete_all_named_ranges(clients, spreadsheet_id)
+    deleted_protected_ranges = delete_all_protected_ranges(clients, spreadsheet_id)
     if not created_new:
         deleted_tabs = _delete_all_tabs_except_first(clients, spreadsheet_id)
 
@@ -195,8 +201,12 @@ def upload_tournament_score_data(
     first_tab_id = int(tab_metadata[0]["sheetId"])
 
     # Overwrite tabs deterministically each run.
+    used_sheet_titles: set[str] = set()
     for idx, timeslot in enumerate(working_guilde_list):
-        sheet_title = _timeslot_sheet_title(timeslot, idx)
+        sheet_title = _make_unique_sheet_title(
+            _timeslot_sheet_title(timeslot, idx),
+            used_sheet_titles,
+        )
         if idx == 0:
             rename_sheet_tab(clients, spreadsheet_id, first_tab_id, sheet_title)
         else:
@@ -208,7 +218,14 @@ def upload_tournament_score_data(
     share_spreadsheet(clients, spreadsheet_id, cfg.share_emails, role=share_role)
 
     logging.getLogger(__name__).info(
-        f"event=spreadsheet_updated spreadsheet_id={spreadsheet_id} created_new={created_new} deleted_tabs={deleted_tabs} tabs_written={len(working_guilde_list)}",
+        "Tournament score spreadsheet ready: id=%s, tabs_written=%s, tabs_deleted=%s, "
+        "named_ranges_deleted=%s, protected_ranges_deleted=%s, dojos=%s.",
+        spreadsheet_id,
+        len(working_guilde_list),
+        deleted_tabs,
+        deleted_named_ranges,
+        deleted_protected_ranges,
+        len(all_dojos),
     )
     return spreadsheet_id
 
@@ -290,6 +307,28 @@ def _timeslot_sheet_title(timeslot: list[list[str]], index: int) -> str:
     label = _extract_timeslot_label(timeslot)
     # return _sanitize_sheet_title(f"Timeslot {index + 1:02d} - {label}")
     return _sanitize_sheet_title(f"{label}")
+
+
+def _make_unique_sheet_title(base_title: str, used_titles: set[str]) -> str:
+    candidate = _sanitize_sheet_title(base_title)
+    if candidate not in used_titles:
+        used_titles.add(candidate)
+        return candidate
+
+    suffix_index = 2
+    while True:
+        suffix = f" ({suffix_index})"
+        truncated_base = candidate[: max(0, 100 - len(suffix))].rstrip()
+        deduped = f"{truncated_base}{suffix}"
+        if deduped not in used_titles:
+            used_titles.add(deduped)
+            logging.getLogger(__name__).warning(
+                "Duplicate timeslot tab title '%s' renamed to '%s' to keep sheet names unique.",
+                candidate,
+                deduped,
+            )
+            return deduped
+        suffix_index += 1
 
 
 def _time_row_indexes(df: pd.DataFrame) -> list[int]:

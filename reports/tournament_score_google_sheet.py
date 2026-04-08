@@ -13,7 +13,9 @@ import re
 from GoogleSheetReaderWriter.gsheet_rw.sheets_client import (
     add_sheet_tab,
     auto_resize_columns,
+    build_tournament_score_named_range_name,
     build_clients_from_config,
+    clear_sheet_values,
     create_spreadsheet,
     delete_all_named_ranges,
     delete_all_protected_ranges,
@@ -28,6 +30,8 @@ from GoogleSheetReaderWriter.gsheet_rw.sheets_client import (
     share_spreadsheet,
     spreadsheet_exists,
     write_dataframe,
+    write_tournament_score_leaderboard_sheet,
+    write_tournament_score_totals_sheet,
     GoogleClientsProtocol,
     GoogleClients, write_data_to_tournament_score_sheet
 )
@@ -121,7 +125,7 @@ def upload_tournament_score_data(
     colorado.sort()
     out_of_state.sort()
 
-    all_dojos = colorado + out_of_state
+    all_dojos = _deduplicate_dojo_names(colorado + out_of_state)
 
     # try:
     #     gsheet_app = _get_gsheet_app()
@@ -202,6 +206,7 @@ def upload_tournament_score_data(
 
     # Overwrite tabs deterministically each run.
     used_sheet_titles: set[str] = set()
+    timeslot_tab_info: list[dict[str, int | str]] = []
     for idx, timeslot in enumerate(working_guilde_list):
         sheet_title = _make_unique_sheet_title(
             _timeslot_sheet_title(timeslot, idx),
@@ -209,10 +214,44 @@ def upload_tournament_score_data(
         )
         if idx == 0:
             rename_sheet_tab(clients, spreadsheet_id, first_tab_id, sheet_title)
+            sheet_id = first_tab_id
+            clear_sheet_values(clients, spreadsheet_id, sheet_title)
         else:
-            add_sheet_tab(clients, spreadsheet_id, sheet_title)
+            sheet_id = add_sheet_tab(clients, spreadsheet_id, sheet_title)
         # then write the data to the sheet
         write_data_to_tournament_score_sheet(clients, spreadsheet_id, sheet_title, timeslot, all_dojos)
+        timeslot_tab_info.append({"title": sheet_title, "sheet_id": sheet_id})
+
+    totals_sheet_title = "Totals"
+    totals_sheet_id = add_sheet_tab(clients, spreadsheet_id, totals_sheet_title)
+    write_tournament_score_totals_sheet(
+        clients=clients,
+        spreadsheet_id=spreadsheet_id,
+        worksheet_title=totals_sheet_title,
+        values=_build_totals_sheet_values(timeslot_tab_info, all_dojos),
+        dojo_names=all_dojos,
+    )
+    move_sheet_tab_to_index(
+        clients=clients,
+        spreadsheet_id=spreadsheet_id,
+        sheet_id=totals_sheet_id,
+        index=len(timeslot_tab_info),
+    )
+
+    leaderboard_sheet_title = "Leader Board"
+    leaderboard_sheet_id = add_sheet_tab(clients, spreadsheet_id, leaderboard_sheet_title)
+    write_tournament_score_leaderboard_sheet(
+        clients=clients,
+        spreadsheet_id=spreadsheet_id,
+        worksheet_title=leaderboard_sheet_title,
+        dojo_names=all_dojos,
+    )
+    move_sheet_tab_to_index(
+        clients=clients,
+        spreadsheet_id=spreadsheet_id,
+        sheet_id=leaderboard_sheet_id,
+        index=len(timeslot_tab_info) + 1,
+    )
 
 
     share_spreadsheet(clients, spreadsheet_id, cfg.share_emails, role=share_role)
@@ -221,7 +260,7 @@ def upload_tournament_score_data(
         "Tournament score spreadsheet ready: id=%s, tabs_written=%s, tabs_deleted=%s, "
         "named_ranges_deleted=%s, protected_ranges_deleted=%s, dojos=%s.",
         spreadsheet_id,
-        len(working_guilde_list),
+        len(working_guilde_list) + 2,
         deleted_tabs,
         deleted_named_ranges,
         deleted_protected_ranges,
@@ -356,6 +395,74 @@ def _looks_like_time(value: str) -> bool:
         rf"^{noon_re}$",
     ]
     return any(re.match(p, v) for p in patterns)
+
+
+def _build_totals_sheet_values(
+    timeslot_tab_info: list[dict[str, int | str]],
+    all_dojos: list[str],
+) -> list[list[str]]:
+    values: list[list[str]] = [["Timeslot"] + list(all_dojos)]
+    for timeslot_info in timeslot_tab_info:
+        sheet_title = str(timeslot_info["title"])
+        sheet_id = int(timeslot_info["sheet_id"])
+        row = [sheet_title]
+        for dojo_name in all_dojos:
+            named_range_name = build_tournament_score_named_range_name(
+                worksheet_title=sheet_title,
+                sheet_id=sheet_id,
+                dojo_name=dojo_name,
+            )
+            row.append(f"={named_range_name}")
+        values.append(row)
+
+    total_row_index = len(values) + 1
+    totals_row = ["Total"]
+    for column_index in range(2, len(all_dojos) + 2):
+        column_letter = _column_number_to_letter(column_index)
+        totals_row.append(f"=SUM({column_letter}2:{column_letter}{total_row_index - 1})")
+    values.append(totals_row)
+    return values
+
+
+def _column_number_to_letter(column_number: int) -> str:
+    letters: list[str] = []
+    while column_number > 0:
+        column_number, remainder = divmod(column_number - 1, 26)
+        letters.append(chr(65 + remainder))
+    return "".join(reversed(letters))
+
+
+def _deduplicate_dojo_names(dojo_names: list[str]) -> list[str]:
+    logger = logging.getLogger(__name__)
+    seen_counts: dict[str, int] = {}
+    used_names: set[str] = set()
+    resolved_names: list[str] = []
+
+    for original_name in dojo_names:
+        base_name = str(original_name).strip()
+        lookup_key = base_name.casefold()
+        count = seen_counts.get(lookup_key, 0) + 1
+        seen_counts[lookup_key] = count
+
+        candidate_name = base_name if count == 1 else f"{base_name}-{count}"
+        candidate_key = candidate_name.casefold()
+        while candidate_key in used_names:
+            count += 1
+            seen_counts[lookup_key] = count
+            candidate_name = f"{base_name}-{count}"
+            candidate_key = candidate_name.casefold()
+
+        if candidate_name != base_name:
+            logger.warning(
+                "Duplicate dojo name '%s' renamed to '%s' for spreadsheet export.",
+                base_name,
+                candidate_name,
+            )
+
+        used_names.add(candidate_key)
+        resolved_names.append(candidate_name)
+
+    return resolved_names
 
 
 def _widen_columns_by_header(

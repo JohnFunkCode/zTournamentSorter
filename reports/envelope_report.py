@@ -131,8 +131,8 @@ class EnvelopeReport():
         if corner_value == "":
             corner_value = " " * 20 # twenty spaces
 
-        self._draw_field_line(.5, .75, "Event Time", event_time)
-        self._draw_field_line(4.75, .75, "Ring #", ring_number)
+        self._draw_field_line(.25, .75, "Event Time", event_time)
+        self._draw_field_line(5, .75, "Ring #", ring_number)
         self._draw_field_line(.25, 1.5, "Division", f'{division_value} ({age_value})')
         self._draw_field_line(.25, 2.25, "Rank", rank_value)
         self._draw_field_line(.25, 3, "Last Name Starting With", last_name_range)
@@ -159,27 +159,27 @@ class EnvelopeReport():
         # # Places
         self._draw_instructions(.25,7,'Helvetica-Bold',15,no_underline,"1st Place")
         self._draw_instructions(1.25,7,'Helvetica',12,no_underline,"(name)")
-        self._draw_instructions(1.9,7,'Helvetica',12,underline," " * 43)
-        self._draw_instructions(4,7,'Helvetica',12,no_underline,"(studio)")
-        self._draw_instructions(4.625,7,'Helvetica',12,underline," " * 45)
+        self._draw_instructions(1.9,7,'Helvetica',12,underline," " * 53)  # was 43 spaces
+        self._draw_instructions(4.5,7,'Helvetica',12,no_underline,"(studio)") # was 4
+        self._draw_instructions(5.125,7,'Helvetica',12,underline," " * 55) # was 4.625 and 45 spaces
 
         self._draw_instructions(.25, 7.5, 'Helvetica-Bold', 15, no_underline, "2nd Place")
         self._draw_instructions(1.25, 7.5, 'Helvetica', 12, no_underline, "(name)")
-        self._draw_instructions(1.9, 7.5, 'Helvetica', 12, underline, " " * 43)
-        self._draw_instructions(4, 7.5, 'Helvetica', 12, no_underline, "(studio)")
-        self._draw_instructions(4.625, 7.5, 'Helvetica', 12, underline, " " * 45)
+        self._draw_instructions(1.9, 7.5, 'Helvetica', 12, underline, " " * 53) # was 43 spaces
+        self._draw_instructions(4.5, 7.5, 'Helvetica', 12, no_underline, "(studio)") # was 4
+        self._draw_instructions(5.125, 7.5, 'Helvetica', 12, underline, " " * 55) # was 4.625 and 45 spaces
 
         self._draw_instructions(.25, 8, 'Helvetica-Bold', 15, no_underline, "3rd Place")
         self._draw_instructions(1.25, 8, 'Helvetica', 12, no_underline, "(name)")
-        self._draw_instructions(1.9, 8, 'Helvetica', 12, underline, " " * 43)
-        self._draw_instructions(4, 8, 'Helvetica', 12, no_underline, "(studio)")
-        self._draw_instructions(4.625, 8, 'Helvetica', 12, underline, " " * 45)
+        self._draw_instructions(1.9, 8, 'Helvetica', 12, underline, " " * 53)
+        self._draw_instructions(4.5, 8, 'Helvetica', 12, no_underline, "(studio)")
+        self._draw_instructions(5.125, 8, 'Helvetica', 12, underline, " " * 55)
 
         self._draw_instructions(.25, 8.5, 'Helvetica-Bold', 15, no_underline, "4th Place")
         self._draw_instructions(1.25, 8.5, 'Helvetica', 12, no_underline, "(name)")
-        self._draw_instructions(1.9, 8.5, 'Helvetica', 12, underline, " " * 43)
-        self._draw_instructions(4, 8.5, 'Helvetica', 12, no_underline, "(studio)")
-        self._draw_instructions(4.625, 8.5, 'Helvetica', 12, underline, " " * 45)
+        self._draw_instructions(1.9, 8.5, 'Helvetica', 12, underline, " " * 53) # was 4
+        self._draw_instructions(4.5, 8.5, 'Helvetica', 12, no_underline, "(studio)")
+        self._draw_instructions(5.125, 8.5, 'Helvetica', 12, underline, " " * 55)
 
         self._draw_footer()
 

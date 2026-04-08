@@ -81,7 +81,7 @@ def upload_tournament_score_data(
 ) -> Optional[str]:
 
     clients: GoogleClients = None
-    config_path: str = "./GoogleSheetReaderWriter/config/config.yaml"
+    config_path: Optional[str | Path] = None
     share_role: str = "writer"
     unprotected_last_n: int = 2
 
@@ -135,7 +135,11 @@ def upload_tournament_score_data(
     #
     # normalized_df = _prepare_dataframe(dataframe, expected_columns=gsheet_app.EXPECTED_COLUMNS)
     # resolved_config = _resolve_config_path(config_path)
-    config_path = _resolve_config_path(config_path)
+    try:
+        config_path = _resolve_config_path(config_path)
+    except WorkingGuideGoogleSheetError as exc:
+        logging.warning("%s Upload skipped.", exc)
+        return None
 
 
     # tmp_file = tempfile.NamedTemporaryFile(suffix=".csv", delete=False)
@@ -504,6 +508,10 @@ def _widen_columns_by_header(
 def _resolve_config_path(candidate: Optional[str | Path]) -> Path:
     configured = candidate or os.environ.get(CONFIG_ENV_VAR) or DEFAULT_CONFIG_PATH
     path = Path(configured).expanduser()
+    if not path.is_absolute():
+        path = (Path(__file__).resolve().parents[1] / path).resolve()
+    else:
+        path = path.resolve()
     if not path.exists():
         raise WorkingGuideGoogleSheetError(
             f"Google Sheet config not found at {path}. Set {CONFIG_ENV_VAR} or pass config_path explicitly."

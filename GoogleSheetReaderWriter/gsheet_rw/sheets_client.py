@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
 import json
 import logging
 from pathlib import Path
 import re
+import threading
 import time
 from typing import Any, Dict, Iterable, List, Optional, Protocol, Sequence, Tuple
 
@@ -27,6 +29,34 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 KEYRING_SERVICE_NAME = "gsheet-rw"
+SHEETS_WRITE_LIMIT_PER_MINUTE = 50 # Google's actual limit is 60
+SHEETS_WRITE_WINDOW_SECONDS = 60.0
+_sheets_write_timestamps: deque[float] = deque()
+_sheets_write_lock = threading.Lock()
+
+
+def _wait_for_sheets_write_slot() -> None:
+    logger = logging.getLogger(__name__)
+    while True:
+        sleep_seconds = 0.0
+        with _sheets_write_lock:
+            now = time.monotonic()
+            while _sheets_write_timestamps and now - _sheets_write_timestamps[0] >= SHEETS_WRITE_WINDOW_SECONDS:
+                _sheets_write_timestamps.popleft()
+
+            if len(_sheets_write_timestamps) < SHEETS_WRITE_LIMIT_PER_MINUTE:
+                _sheets_write_timestamps.append(now)
+                return
+
+            oldest = _sheets_write_timestamps[0]
+            sleep_seconds = max(0.1, SHEETS_WRITE_WINDOW_SECONDS - (now - oldest))
+
+        logger.info(
+            "Pausing %.1f seconds to stay within the Google Sheets write quota (%s writes/minute/user).",
+            sleep_seconds,
+            SHEETS_WRITE_LIMIT_PER_MINUTE,
+        )
+        time.sleep(sleep_seconds)
 
 
 def _execute_with_retry(
@@ -34,12 +64,15 @@ def _execute_with_retry(
     *,
     max_attempts: int = 7,
     base_delay_seconds: float = 1.0,
+    is_sheets_write: bool = False,
 ) -> Any:
     logger = logging.getLogger(__name__)
     delay = base_delay_seconds
     last_error: Optional[Exception] = None
     for attempt in range(1, max_attempts + 1):
         try:
+            if is_sheets_write:
+                _wait_for_sheets_write_slot()
             return request.execute()
         except HttpError as exc:
             status = getattr(getattr(exc, "resp", None), "status", None)
@@ -55,7 +88,7 @@ def _execute_with_retry(
                 delay,
             )
             time.sleep(delay)
-            delay = min(delay * 2, 20.0)
+            delay = min(delay * 2, 64.0)
     if last_error:
         raise last_error
 
@@ -386,7 +419,8 @@ def create_spreadsheet(
                             }
                         ]
                     },
-                )
+                ),
+                is_sheets_write=True,
             )
 
         return spreadsheet_id, sheet_id
@@ -401,7 +435,8 @@ def create_spreadsheet(
             clients.sheets.spreadsheets().create(
                 body=spreadsheet_body,
                 fields="spreadsheetId,sheets(properties(sheetId))",
-            )
+            ),
+            is_sheets_write=True,
         )
     except HttpError as e:
         logging.getLogger(__name__).error(
@@ -426,7 +461,8 @@ def add_sheet_tab(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": [{"addSheet": {"properties": {"title": title}}}]},
-        )
+        ),
+        is_sheets_write=True,
     )
     replies = resp.get("replies", [])
     if not replies:
@@ -453,7 +489,8 @@ def rename_sheet_tab(
                     }
                 ]
             },
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -467,7 +504,8 @@ def clear_sheet_values(
             spreadsheetId=spreadsheet_id,
             range=_a1_range(worksheet_title, "A:ZZZ"),
             body={},
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -490,7 +528,8 @@ def move_sheet_tab_to_index(
                     }
                 ]
             },
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -546,7 +585,8 @@ def delete_all_named_ranges(
                 clients.sheets.spreadsheets().batchUpdate(
                     spreadsheetId=spreadsheet_id,
                     body={"requests": requests},
-                )
+                ),
+                is_sheets_write=True,
             )
             deleted_count += len(chunk_ids)
 
@@ -616,7 +656,8 @@ def delete_all_protected_ranges(
                         for protected_range_id in chunk_ids
                     ]
                 },
-            )
+            ),
+            is_sheets_write=True,
         )
 
     remaining_meta = _execute_with_retry(
@@ -696,7 +737,8 @@ def write_dataframe(
             range=range_name,
             valueInputOption="RAW",
             body=body,
-        )
+        ),
+        is_sheets_write=True,
     )
 
     sheet_id = _get_sheet_id(clients, spreadsheet_id, worksheet_title)
@@ -714,7 +756,8 @@ def write_dataframe(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": requests},
-        )
+        ),
+        is_sheets_write=True,
     )
 
 ### Backup
@@ -1005,7 +1048,8 @@ def write_data_to_tournament_score_sheet(
                 "valueInputOption": "USER_ENTERED",
                 "data": raw_value_updates,
             },
-        )
+        ),
+        is_sheets_write=True,
     )
 
     data_max_cols = max((len(row) for row in timeslot_values), default=0)
@@ -1193,7 +1237,8 @@ def write_data_to_tournament_score_sheet(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": format_requests},
-        )
+        ),
+        is_sheets_write=True,
     )
 
     created_named_ranges = 0
@@ -1214,7 +1259,8 @@ def write_data_to_tournament_score_sheet(
                 clients.sheets.spreadsheets().batchUpdate(
                     spreadsheetId=spreadsheet_id,
                     body={"requests": named_range_requests},
-                )
+                ),
+                is_sheets_write=True,
             )
             created_named_ranges = len(resp.get("replies", [])) if isinstance(resp, dict) else len(named_range_requests)
         except HttpError as exc:
@@ -1256,7 +1302,8 @@ def write_tournament_score_totals_sheet(
             range=_a1_range(worksheet_title, "A1"),
             valueInputOption="USER_ENTERED",
             body=body,
-        )
+        ),
+        is_sheets_write=True,
     )
 
     sheet_id = _get_sheet_id(clients, spreadsheet_id, worksheet_title)
@@ -1404,7 +1451,8 @@ def write_tournament_score_totals_sheet(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": requests},
-        )
+        ),
+        is_sheets_write=True,
     )
 
     protect_columns_except_last_n(
@@ -1448,7 +1496,8 @@ def write_tournament_score_totals_sheet(
                 clients.sheets.spreadsheets().batchUpdate(
                     spreadsheetId=spreadsheet_id,
                     body={"requests": named_range_requests},
-                )
+                ),
+                is_sheets_write=True,
             )
 
 
@@ -1469,7 +1518,8 @@ def write_tournament_score_leaderboard_sheet(
             range=_a1_range(worksheet_title, "A1"),
             valueInputOption="USER_ENTERED",
             body={"values": values},
-        )
+        ),
+        is_sheets_write=True,
     )
 
     sheet_id = _get_sheet_id(clients, spreadsheet_id, worksheet_title)
@@ -1535,7 +1585,8 @@ def write_tournament_score_leaderboard_sheet(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": requests},
-        )
+        ),
+        is_sheets_write=True,
     )
     auto_resize_columns(
         clients=clients,
@@ -1622,7 +1673,8 @@ def auto_resize_columns(
                     }
                 ]
             },
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -1676,7 +1728,8 @@ def set_column_pixel_size(
                     }
                 ]
             },
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -1712,7 +1765,8 @@ def protect_columns_except_last_n(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": [req]},
-        )
+        ),
+        is_sheets_write=True,
     )
 
 
@@ -1848,7 +1902,8 @@ def shade_columns_except_last_n(
         clients.sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={"requests": requests},
-        )
+        ),
+        is_sheets_write=True,
     )
 
 

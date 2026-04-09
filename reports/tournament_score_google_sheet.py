@@ -13,6 +13,7 @@ import re
 from GoogleSheetReaderWriter.gsheet_rw.sheets_client import (
     add_sheet_tab,
     auto_resize_columns,
+    build_protected_range_editor_accounts,
     build_tournament_score_named_range_name,
     build_clients_from_config,
     clear_sheet_values,
@@ -32,6 +33,7 @@ from GoogleSheetReaderWriter.gsheet_rw.sheets_client import (
     write_dataframe,
     write_tournament_score_leaderboard_sheet,
     write_tournament_score_totals_sheet,
+    OrphanNamedRangeError,
     GoogleClientsProtocol,
     GoogleClients, write_data_to_tournament_score_sheet
 )
@@ -78,6 +80,8 @@ def _get_gsheet_app():
 def upload_tournament_score_data(
     working_guilde_list: list[list[list[str]]],
     dojo_list_directory: Union[str, pathlib.Path],
+    *,
+    _allow_recreate_on_orphan: bool = True,
 ) -> Optional[str]:
 
     clients: GoogleClients = None
@@ -163,6 +167,10 @@ def upload_tournament_score_data(
 
     if clients is None:
         clients = build_clients_from_config(cfg)
+    protected_range_editor_emails = build_protected_range_editor_accounts(
+        clients,
+        cfg.protected_range_editor_accounts or [cfg.owner_email],
+    )
     registry_path = (
         Path(config_path).expanduser().resolve().parent.parent / "data" / "sheet_registry.yaml"
     )
@@ -196,66 +204,99 @@ def upload_tournament_score_data(
             spreadsheet_id,
         )
 
-    deleted_tabs = 0
-    deleted_named_ranges = delete_all_named_ranges(clients, spreadsheet_id)
-    deleted_protected_ranges = delete_all_protected_ranges(clients, spreadsheet_id)
-    if not created_new:
-        deleted_tabs = _delete_all_tabs_except_first(clients, spreadsheet_id)
+    try:
+        deleted_tabs = 0
+        deleted_named_ranges = delete_all_named_ranges(clients, spreadsheet_id)
+        deleted_protected_ranges = delete_all_protected_ranges(clients, spreadsheet_id)
+        if not created_new:
+            deleted_tabs = _delete_all_tabs_except_first(clients, spreadsheet_id)
 
-    tab_metadata = _list_sheet_tab_metadata(clients, spreadsheet_id)
-    if not tab_metadata:
-        raise RuntimeError("Spreadsheet has no tabs after cleanup.")
+        tab_metadata = _list_sheet_tab_metadata(clients, spreadsheet_id)
+        if not tab_metadata:
+            raise RuntimeError("Spreadsheet has no tabs after cleanup.")
 
-    first_tab_id = int(tab_metadata[0]["sheetId"])
+        first_tab_id = int(tab_metadata[0]["sheetId"])
 
-    # Overwrite tabs deterministically each run.
-    used_sheet_titles: set[str] = set()
-    timeslot_tab_info: list[dict[str, int | str]] = []
-    for idx, timeslot in enumerate(working_guilde_list):
-        sheet_title = _make_unique_sheet_title(
-            _timeslot_sheet_title(timeslot, idx),
-            used_sheet_titles,
+        # Overwrite tabs deterministically each run.
+        used_sheet_titles: set[str] = set()
+        timeslot_tab_info: list[dict[str, int | str]] = []
+        for idx, timeslot in enumerate(working_guilde_list):
+            sheet_title = _make_unique_sheet_title(
+                _timeslot_sheet_title(timeslot, idx),
+                used_sheet_titles,
+            )
+            if idx == 0:
+                rename_sheet_tab(clients, spreadsheet_id, first_tab_id, sheet_title)
+                sheet_id = first_tab_id
+                clear_sheet_values(clients, spreadsheet_id, sheet_title)
+            else:
+                sheet_id = add_sheet_tab(clients, spreadsheet_id, sheet_title)
+            write_data_to_tournament_score_sheet(
+                clients,
+                spreadsheet_id,
+                sheet_title,
+                timeslot,
+                all_dojos,
+                protected_range_editor_emails,
+            )
+            timeslot_tab_info.append({"title": sheet_title, "sheet_id": sheet_id})
+
+        totals_sheet_title = "Totals"
+        totals_sheet_id = add_sheet_tab(clients, spreadsheet_id, totals_sheet_title)
+        write_tournament_score_totals_sheet(
+            clients=clients,
+            spreadsheet_id=spreadsheet_id,
+            worksheet_title=totals_sheet_title,
+            values=_build_totals_sheet_values(timeslot_tab_info, all_dojos),
+            dojo_names=all_dojos,
+            protected_range_editor_emails=protected_range_editor_emails,
         )
-        if idx == 0:
-            rename_sheet_tab(clients, spreadsheet_id, first_tab_id, sheet_title)
-            sheet_id = first_tab_id
-            clear_sheet_values(clients, spreadsheet_id, sheet_title)
-        else:
-            sheet_id = add_sheet_tab(clients, spreadsheet_id, sheet_title)
-        # then write the data to the sheet
-        write_data_to_tournament_score_sheet(clients, spreadsheet_id, sheet_title, timeslot, all_dojos)
-        timeslot_tab_info.append({"title": sheet_title, "sheet_id": sheet_id})
+        move_sheet_tab_to_index(
+            clients=clients,
+            spreadsheet_id=spreadsheet_id,
+            sheet_id=totals_sheet_id,
+            index=len(timeslot_tab_info),
+        )
 
-    totals_sheet_title = "Totals"
-    totals_sheet_id = add_sheet_tab(clients, spreadsheet_id, totals_sheet_title)
-    write_tournament_score_totals_sheet(
-        clients=clients,
-        spreadsheet_id=spreadsheet_id,
-        worksheet_title=totals_sheet_title,
-        values=_build_totals_sheet_values(timeslot_tab_info, all_dojos),
-        dojo_names=all_dojos,
-    )
-    move_sheet_tab_to_index(
-        clients=clients,
-        spreadsheet_id=spreadsheet_id,
-        sheet_id=totals_sheet_id,
-        index=len(timeslot_tab_info),
-    )
+        leaderboard_sheet_title = "Leader Board"
+        leaderboard_sheet_id = add_sheet_tab(clients, spreadsheet_id, leaderboard_sheet_title)
+        write_tournament_score_leaderboard_sheet(
+            clients=clients,
+            spreadsheet_id=spreadsheet_id,
+            worksheet_title=leaderboard_sheet_title,
+            dojo_names=all_dojos,
+            protected_range_editor_emails=protected_range_editor_emails,
+        )
+        move_sheet_tab_to_index(
+            clients=clients,
+            spreadsheet_id=spreadsheet_id,
+            sheet_id=leaderboard_sheet_id,
+            index=len(timeslot_tab_info) + 1,
+        )
+    except OrphanNamedRangeError as exc:
+        if not _allow_recreate_on_orphan:
+            raise
 
-    leaderboard_sheet_title = "Leader Board"
-    leaderboard_sheet_id = add_sheet_tab(clients, spreadsheet_id, leaderboard_sheet_title)
-    write_tournament_score_leaderboard_sheet(
-        clients=clients,
-        spreadsheet_id=spreadsheet_id,
-        worksheet_title=leaderboard_sheet_title,
-        dojo_names=all_dojos,
-    )
-    move_sheet_tab_to_index(
-        clients=clients,
-        spreadsheet_id=spreadsheet_id,
-        sheet_id=leaderboard_sheet_id,
-        index=len(timeslot_tab_info) + 1,
-    )
+        replacement_spreadsheet_id, _ = create_spreadsheet(
+            clients=clients,
+            title=spreadsheet_title,
+            worksheet_title=worksheet_title,
+            drive_folder_id=drive_folder_id,
+        )
+        set_registered_id(registry, registry_key, spreadsheet_title, replacement_spreadsheet_id)
+        save_registry(registry_path, registry)
+        logging.getLogger(__name__).warning(
+            "Spreadsheet %s contains orphaned named ranges that block reset (example: %s). "
+            "Created replacement spreadsheet %s and retrying the tournament score upload there.",
+            spreadsheet_id,
+            exc.range_name,
+            replacement_spreadsheet_id,
+        )
+        return upload_tournament_score_data(
+            working_guilde_list,
+            dojo_list_directory,
+            _allow_recreate_on_orphan=False,
+        )
 
 
     share_spreadsheet(clients, spreadsheet_id, cfg.share_emails, role=share_role)

@@ -14,6 +14,7 @@ from .registry import get_registered_id, load_registry, save_registry, set_regis
 from .sheets_client import (
     add_sheet_tab,
     auto_resize_columns,
+    build_protected_range_editor_accounts,
     build_clients_from_config,
     create_spreadsheet,
     get_column_pixel_sizes,
@@ -98,6 +99,10 @@ def create_from_csv(
 
     if clients is None:
         clients = build_clients_from_config(cfg)
+    protected_range_editor_accounts = build_protected_range_editor_accounts(
+        clients,
+        cfg.protected_range_editor_accounts or [cfg.owner_email],
+    )
     registry_path = (
         Path(config_path).expanduser().resolve().parent.parent / "data" / "sheet_registry.yaml"
     )
@@ -168,7 +173,7 @@ def create_from_csv(
         sheet_id=sheet_id,
         total_columns=len(df.columns),
         unprotected_last_n=unprotected_last_n,
-        allowed_editor_emails=[cfg.owner_email],
+        allowed_editor_emails=protected_range_editor_accounts,
     )
     share_spreadsheet(clients, spreadsheet_id, cfg.share_emails, role=share_role)
 

@@ -23,6 +23,7 @@ class AppConfig:
 
     owner_email: str = ""
     share_emails: List[str] = None  # type: ignore[assignment]
+    protected_range_editor_accounts: List[str] = None  # type: ignore[assignment]
     drive_folder_id: Optional[str] = None
     drive_folder_name: Optional[str] = None
     working_guide_spreadsheet_title: Optional[str] = None
@@ -47,6 +48,9 @@ class AppConfig:
 
         owner_email = str(data["owner_email"]).strip()
         share_emails = [str(x).strip() for x in (data["share_emails"] or []) if str(x).strip()]
+        protected_range_editor_accounts = [
+            str(x).strip() for x in (data.get("protected_range_editor_accounts") or []) if str(x).strip()
+        ]
 
         service_account_json = None
         oauth_client_secret_json = None
@@ -81,6 +85,7 @@ class AppConfig:
             oauth_token_path=oauth_token_path,
             owner_email=owner_email,
             share_emails=share_emails,
+            protected_range_editor_accounts=protected_range_editor_accounts,
             drive_folder_id=drive_folder_id,
             drive_folder_name=drive_folder_name,
             working_guide_spreadsheet_title=working_guide_spreadsheet_title,

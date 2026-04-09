@@ -31,6 +31,7 @@ SCOPES = [
 KEYRING_SERVICE_NAME = "gsheet-rw"
 SHEETS_WRITE_LIMIT_PER_MINUTE = 50 # Google's actual limit is 60
 SHEETS_WRITE_WINDOW_SECONDS = 60.0
+SHEETS_WRITE_MIN_SLEEP_SECONDS = 2.0
 _sheets_write_timestamps: deque[float] = deque()
 _sheets_write_lock = threading.Lock()
 
@@ -49,7 +50,10 @@ def _wait_for_sheets_write_slot() -> None:
                 return
 
             oldest = _sheets_write_timestamps[0]
-            sleep_seconds = max(0.1, SHEETS_WRITE_WINDOW_SECONDS - (now - oldest))
+            sleep_seconds = max(
+                SHEETS_WRITE_MIN_SLEEP_SECONDS,
+                SHEETS_WRITE_WINDOW_SECONDS - (now - oldest),
+            )
 
         logger.info(
             "Pausing %.1f seconds to stay within the Google Sheets write quota (%s writes/minute/user).",
@@ -97,11 +101,27 @@ def _execute_with_retry(
 class GoogleClients:
     sheets: Any
     drive: Any
+    principal_email: Optional[str] = None
 
 
 class GoogleClientsProtocol(Protocol):
     sheets: Any
     drive: Any
+    principal_email: Optional[str]
+
+
+class OrphanNamedRangeError(RuntimeError):
+    """Raised when Google rejects a named range as duplicate but does not expose it via the API."""
+
+    def __init__(self, spreadsheet_id: str, range_name: str):
+        super().__init__(
+            "Google Sheets rejected named range "
+            f"{range_name!r} in spreadsheet {spreadsheet_id} because the name already exists, "
+            "but the existing range could not be read through the API. "
+            "This usually indicates an orphaned named range."
+        )
+        self.spreadsheet_id = spreadsheet_id
+        self.range_name = range_name
 
 
 def _oauth_token_key(token_path: Path) -> str:
@@ -279,7 +299,7 @@ def build_clients(service_account_json_path: str) -> GoogleClients:
     )
     sheets = build("sheets", "v4", credentials=creds, cache_discovery=False)
     drive = build("drive", "v3", credentials=creds, cache_discovery=False)
-    return GoogleClients(sheets=sheets, drive=drive)
+    return GoogleClients(sheets=sheets, drive=drive, principal_email=creds.service_account_email)
 
 
 def build_clients_from_config(cfg: AppConfig) -> GoogleClients:
@@ -298,7 +318,8 @@ def build_clients_from_config(cfg: AppConfig) -> GoogleClients:
         )
         sheets = build("sheets", "v4", credentials=creds, cache_discovery=False)
         drive = build("drive", "v3", credentials=creds, cache_discovery=False)
-        return GoogleClients(sheets=sheets, drive=drive)
+        principal_email = str(getattr(creds, "service_account_email", "") or "").strip() or None
+        return GoogleClients(sheets=sheets, drive=drive, principal_email=principal_email)
 
     if mode != "oauth":
         raise ValueError("auth_mode must be 'service_account', 'oauth', or 'adc'")
@@ -363,7 +384,28 @@ def build_clients_from_config(cfg: AppConfig) -> GoogleClients:
     )
     sheets = build("sheets", "v4", credentials=creds, cache_discovery=False)
     drive = build("drive", "v3", credentials=creds, cache_discovery=False)
-    return GoogleClients(sheets=sheets, drive=drive)
+    principal_email = str(getattr(creds, "account", "") or "").strip() or None
+    return GoogleClients(sheets=sheets, drive=drive, principal_email=principal_email)
+
+
+def build_protected_range_editor_accounts(
+    clients: GoogleClientsProtocol,
+    configured_accounts: Sequence[str],
+) -> list[str]:
+    merged_accounts: list[str] = []
+    seen_accounts: set[str] = set()
+
+    for account in list(configured_accounts) + [str(getattr(clients, "principal_email", "") or "").strip()]:
+        normalized_account = str(account).strip()
+        if not normalized_account:
+            continue
+        normalized_key = normalized_account.casefold()
+        if normalized_key in seen_accounts:
+            continue
+        seen_accounts.add(normalized_key)
+        merged_accounts.append(normalized_account)
+
+    return merged_accounts
 
 
 def create_spreadsheet(
@@ -387,12 +429,26 @@ def create_spreadsheet(
                 )
             )
         except HttpError as e:
-            logging.getLogger(__name__).error(
+            logger = logging.getLogger(__name__)
+            logger.error(
                 "event=drive_create_error status=%s reason=%s content=%s",
                 e.resp.status,
                 getattr(e.resp, "reason", None),
                 e.content.decode("utf-8", errors="replace"),
             )
+            if getattr(e.resp, "status", None) in (403, 404):
+                logger.warning(
+                    "Drive folder %s is not accessible to the current Google account. "
+                    "Creating spreadsheet %r in the account root instead.",
+                    drive_folder_id,
+                    title,
+                )
+                return create_spreadsheet(
+                    clients=clients,
+                    title=title,
+                    worksheet_title=worksheet_title,
+                    drive_folder_id=None,
+                )
             raise
 
         spreadsheet_id = created["id"]
@@ -679,6 +735,31 @@ def delete_all_protected_ranges(
         spreadsheet_id,
     )
     return len(protected_range_ids)
+
+
+def get_named_ranges_by_name(
+    clients: GoogleClientsProtocol,
+    spreadsheet_id: str,
+) -> dict[str, dict[str, Any]]:
+    meta = _execute_with_retry(
+        clients.sheets.spreadsheets().get(
+            spreadsheetId=spreadsheet_id,
+            fields=(
+                "namedRanges("
+                "namedRangeId,"
+                "name,"
+                "range(sheetId,startRowIndex,endRowIndex,startColumnIndex,endColumnIndex)"
+                ")"
+            ),
+        )
+    )
+    named_ranges: dict[str, dict[str, Any]] = {}
+    for named_range in meta.get("namedRanges", []):
+        name = str(named_range.get("name", "")).strip()
+        if not name:
+            continue
+        named_ranges[name.casefold()] = named_range
+    return named_ranges
 
 
 def spreadsheet_exists(clients: GoogleClients, spreadsheet_id: str) -> bool:
@@ -991,7 +1072,8 @@ def write_data_to_tournament_score_sheet(
     spreadsheet_id: str,
     worksheet_title: str,
     timeslot: list[list[str]],
-    all_dojos: list[str]
+    all_dojos: list[str],
+    protected_range_editor_emails: Sequence[str],
 ) -> None:
     logger = logging.getLogger(__name__)
     dojo_start_col = 7  # G
@@ -1079,7 +1161,7 @@ def write_data_to_tournament_score_sheet(
         sheet_id=sheet_id,
         total_columns=total_columns,
         unprotected_last_n=unprotected_last_n,
-        allowed_editor_emails=[],
+        allowed_editor_emails=protected_range_editor_emails,
     )
 
     format_requests = [
@@ -1175,7 +1257,7 @@ def write_data_to_tournament_score_sheet(
                         },
                         "description": "Protected sum row.",
                         "warningOnly": False,
-                        "editors": {"users": []},
+                        "editors": {"users": list(protected_range_editor_emails)},
                     }
                 }
             }
@@ -1294,6 +1376,7 @@ def write_tournament_score_totals_sheet(
     worksheet_title: str,
     values: list[list[str]],
     dojo_names: list[str],
+    protected_range_editor_emails: Sequence[str],
 ) -> None:
     body = {"values": values}
     _execute_with_retry(
@@ -1461,44 +1544,112 @@ def write_tournament_score_totals_sheet(
         sheet_id=sheet_id,
         total_columns=total_columns,
         unprotected_last_n=0,
-        allowed_editor_emails=[],
+        allowed_editor_emails=protected_range_editor_emails,
     )
 
     if dojo_names and total_rows >= 2:
+        logger = logging.getLogger(__name__)
         total_row_index = total_rows - 1
-        named_range_requests = []
+        existing_named_ranges = get_named_ranges_by_name(clients, spreadsheet_id)
+        seen_total_named_range_names: set[str] = set()
         for offset, dojo_name in enumerate(dojo_names):
-            range_name = _to_named_range_name(f"{dojo_name}-Total")
+            range_name = build_tournament_score_total_named_range_name(dojo_name)
             if not range_name:
-                logging.getLogger(__name__).warning(
+                logger.warning(
                     "Skipping total named range for dojo %r because the generated range name is empty.",
                     dojo_name,
                 )
                 continue
-            named_range_requests.append(
-                {
-                    "addNamedRange": {
-                        "namedRange": {
-                            "name": range_name,
-                            "range": {
-                                "sheetId": sheet_id,
-                                "startRowIndex": total_row_index,
-                                "endRowIndex": total_row_index + 1,
-                                "startColumnIndex": offset + 1,
-                                "endColumnIndex": offset + 2,
-                            },
+
+            range_name_key = range_name.casefold()
+            if range_name_key in seen_total_named_range_names:
+                logger.warning(
+                    "Skipping duplicate total named range %r for dojo %r on worksheet %r.",
+                    range_name,
+                    dojo_name,
+                    worksheet_title,
+                )
+                continue
+            seen_total_named_range_names.add(range_name_key)
+
+            target_range = {
+                "sheetId": sheet_id,
+                "startRowIndex": total_row_index,
+                "endRowIndex": total_row_index + 1,
+                "startColumnIndex": offset + 1,
+                "endColumnIndex": offset + 2,
+            }
+
+            existing_named_range = existing_named_ranges.get(range_name_key)
+            request_body: dict[str, Any]
+            if existing_named_range:
+                request_body = {
+                    "requests": [
+                        {
+                            "updateNamedRange": {
+                                "namedRange": {
+                                    "namedRangeId": existing_named_range["namedRangeId"],
+                                    "name": range_name,
+                                    "range": target_range,
+                                },
+                                "fields": "name,range",
+                            }
                         }
-                    }
+                    ]
                 }
-            )
-        if named_range_requests:
-            _execute_with_retry(
-                clients.sheets.spreadsheets().batchUpdate(
-                    spreadsheetId=spreadsheet_id,
-                    body={"requests": named_range_requests},
-                ),
-                is_sheets_write=True,
-            )
+            else:
+                request_body = {
+                    "requests": [
+                        {
+                            "addNamedRange": {
+                                "namedRange": {
+                                    "name": range_name,
+                                    "range": target_range,
+                                }
+                            }
+                        }
+                    ]
+                }
+
+            try:
+                _execute_with_retry(
+                    clients.sheets.spreadsheets().batchUpdate(
+                        spreadsheetId=spreadsheet_id,
+                        body=request_body,
+                    ),
+                    is_sheets_write=True,
+                )
+            except HttpError as exc:
+                status = getattr(getattr(exc, "resp", None), "status", None)
+                message = str(exc)
+                if status != 400 or "already exists" not in message:
+                    raise
+
+                existing_named_ranges = get_named_ranges_by_name(clients, spreadsheet_id)
+                existing_named_range = existing_named_ranges.get(range_name_key)
+                if not existing_named_range:
+                    raise OrphanNamedRangeError(spreadsheet_id, range_name) from exc
+
+                _execute_with_retry(
+                    clients.sheets.spreadsheets().batchUpdate(
+                        spreadsheetId=spreadsheet_id,
+                        body={
+                            "requests": [
+                                {
+                                    "updateNamedRange": {
+                                        "namedRange": {
+                                            "namedRangeId": existing_named_range["namedRangeId"],
+                                            "name": range_name,
+                                            "range": target_range,
+                                        },
+                                        "fields": "name,range",
+                                    }
+                                }
+                            ]
+                        },
+                    ),
+                    is_sheets_write=True,
+                )
 
 
 def write_tournament_score_leaderboard_sheet(
@@ -1506,6 +1657,7 @@ def write_tournament_score_leaderboard_sheet(
     spreadsheet_id: str,
     worksheet_title: str,
     dojo_names: list[str],
+    protected_range_editor_emails: Sequence[str],
 ) -> None:
     formula = _build_leaderboard_formula(dojo_names)
     values: list[list[str]] = [
@@ -1600,7 +1752,7 @@ def write_tournament_score_leaderboard_sheet(
         sheet_id=sheet_id,
         total_columns=total_columns,
         unprotected_last_n=0,
-        allowed_editor_emails=[],
+        allowed_editor_emails=protected_range_editor_emails,
     )
 
 

@@ -149,7 +149,7 @@ cfg = AppConfig(
     owner_email="you@example.com",
     share_emails=["judge1@example.com", "judge2@example.com"],
     drive_folder_name="root",
-    spreadsheet_title="Tournament Judges Sheet",
+    spreadsheet_title="Tournament Judge Assignment Sheet",
     worksheet_title="Initial",
 )
 

@@ -119,7 +119,7 @@ class ReportGenerationView(ttk.Frame):
         # Envelope Guide label
         if self.app_container.is_custom_division == False:
             self.tournament_summary_report_label = ttk.Label(self.final_output_labelframe, text='  envelope report.pdf', style="Hyperlink.TLabel", cursor="hand2")
-            self.tournament_summary_report_label.grid(row=6, column=0, sticky=tk.W, **options)
+            self.tournament_summary_report_label.grid(row=7, column=0, sticky=tk.W, **options)
             tournament_summary_report_disk_path = pathlib.Path(self.app_container.tournament_output_folder_path / 'EnvelopeReport.pdf')
             tournament_summary_report_filename_with_path = 'file://' + str(tournament_summary_report_disk_path)
             self.tournament_summary_report_label.bind('<Button-1>', lambda x: webbrowser.open(tournament_summary_report_filename_with_path))

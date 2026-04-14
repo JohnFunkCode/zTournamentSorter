@@ -1,7 +1,6 @@
 pandas >= 3.0.0
 reportlab >=4.4.10
 XlsxWriter >= 3.2.9
-pandastable >= 0.14.0
 tkcalendar >= 1.6.1
 chardet >= 5.2.0
 numpy >= 2.4.2
@@ -13,5 +12,12 @@ google-auth-oauthlib>=1.2.0
 pytest>=9.0.2
 fire>=0.7.1
 PyYAML >= 6.0.3
-numexpr >= 2.14.1
 keyring >=25.7.0
+matplotlib>=3.0
+future
+openpyxl>=3.1.5
+xlrd>=2.0.1
+
+# NOTE for Windows ARM64 users:
+# pandastable must be installed separately with: pip install pandastable --no-deps
+# numexpr is skipped as it requires C++ build tools and is optional for pandastable

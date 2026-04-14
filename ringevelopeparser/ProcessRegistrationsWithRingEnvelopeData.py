@@ -167,7 +167,9 @@ def process_registrations_with_ring_envelope_data(ring_definition_file_name: str
 
         #print hitcount warnings
         if clean_df.shape[0] > 30:
-            logging.warning("\u001b[31mInvestigate these entries in the spreadsheet!  They didn't get put into any events:\u001b[0m")
+            #logging.warning("\u001b[31mInvestigate these entries in the spreadsheet!  They didn't get put into any events:\u001b[0m")
+            logging.warning("Investigate these entries in the spreadsheet!  They didn't get put into any events:")
+
             for index, row in clean_df.iterrows():
                 name = row['First_Name'] + " " + row['Last_Name']
                 events = row['Events']

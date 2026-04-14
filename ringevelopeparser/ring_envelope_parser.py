@@ -95,7 +95,7 @@ class RingCollection:
     def from_csv(cls, path: str) -> "RingCollection":
         logging.info(f"Reading Ring Envelope Database CSV file: {path}")
         assignments: List[RingAssignment] = []
-        with open(path, newline="") as f:
+        with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             required = {"Time:", "Ring:", "Division:", "Age:", "Belts:"}
             if not required.issubset(set(reader.fieldnames or [])):

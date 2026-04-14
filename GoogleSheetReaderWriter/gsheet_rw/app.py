@@ -94,7 +94,7 @@ def create_from_csv(
     if not ws_title:
         raise ValueError("Missing worksheet title. Provide worksheet_title or set worksheet_title in config/config.yaml.")
 
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, encoding="utf-8-sig")
     _validate_columns(df)
 
     if clients is None:

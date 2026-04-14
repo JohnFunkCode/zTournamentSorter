@@ -115,7 +115,7 @@ def upload_tournament_score_data(
 
     dojo_list_directory = Path(dojo_list_directory)
     participating_dojos_path = dojo_list_directory / "ParticipatingDojos.csv"
-    with open(participating_dojos_path, "r", encoding="utf-8", newline="") as f:
+    with open(participating_dojos_path, "r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             dojo = row["DOJO"].strip()

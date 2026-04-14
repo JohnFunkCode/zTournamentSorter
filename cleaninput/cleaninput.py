@@ -97,9 +97,15 @@ def clean_all_input_errors(inputDataFrame: str, input_error_list: input_errors.I
     logging.info("   Checking the weight field")
 
     if cleanDataFrame['Weight'].dtype != 'int64':
-        #Strip any non-numeric characters from the weight and make the column an int64 type
+        # Remove decimal portions first (e.g. 120.5 -> 120), then keep only digits and cast to int64.
         # Source - https://stackoverflow.com/a/73625937
-        cleanDataFrame['Weight'] = cleanDataFrame['Weight'].str.replace('[^0-9]', '', regex=True).astype('int64')
+        cleanDataFrame['Weight'] = (
+            cleanDataFrame['Weight']
+            .astype(str)
+            .str.replace(r'\.\d+', '', regex=True)
+            .str.replace('[^0-9]', '', regex=True)
+            .astype('int64')
+        )
 
     import re
     compiledRegex=re.compile(r'\d+')

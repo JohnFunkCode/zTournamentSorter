@@ -251,7 +251,7 @@ class DivisionDetailReport(object):
         if minimum_age == 4:
             minimum_age = 2
 
-        logging.info("Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label)
+        logging.info("Generating Detail Report PDF for " + event_time + " " + division_name + " " + age_label + " " + rank_label)
 
         self.set_title(division_name)
 
@@ -292,9 +292,11 @@ class DivisionDetailReport(object):
         if rings[0][1].upper()  == 'AUTO':  #means we want to use autosplit
             import domain_model.name_partitioner
             np = domain_model.name_partitioner.NamePartionioner()
+            if(number_of_rings > 4):
+                logging.error("Too many rings configured - split the belts up")
             partition_boundaries = np.get_optimum_partition_boundaries(the_data=division_competitors,
                                                                        min_number_of_partitions=number_of_rings,
-                                                                       max_entries_per_partition=20)
+                                                                       max_entries_per_partition=constants.MAXIMUM_COMPETITORS)
             # print(partition_boundaries)
             new_ring_info = []
             ring_number = rings[0][0]

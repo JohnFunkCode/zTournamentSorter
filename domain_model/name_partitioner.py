@@ -191,18 +191,20 @@ class NamePartionioner:
         logging.info(
             f'data size:{size_of_dataframe}, max people per partition: {max_entries_per_partition}, expected_partitions: {expected_partitions} or {expected_partitions + 1}')
 
-        # don't create more than 4 partitions - something is wrong if we get to this point
-        if (expected_partitions > 4):
-            logging.error(
-                f'Too much data to split into maximum of 4 partitions - data size:{size_of_dataframe}, max people per partition: {max_entries_per_partition}, would require: {expected_partitions} or {expected_partitions + 1} partitions')
-            raise ValueError(
-                f'Too much data to split into the maximum of 4 partitions - data size:{size_of_dataframe}, max people per partition: {max_entries_per_partition}, would require: {expected_partitions} or {expected_partitions + 1} partitions')
-            # return [['A', 'Z']]
 
         # don't create less partitions than specified
         if (expected_partitions < min_number_of_partitions):
-            logging.info(f'Data could be put into {expected_partitions} partitions, but specified number {min_number_of_partitions} will be used instead')
+            logging.info(f'Competitors could be put into {expected_partitions} partitions, but specified number {min_number_of_partitions} will be used instead')
             expected_partitions = min_number_of_partitions
+
+        # don't create more than 4 partitions - something is wrong if we get to this point
+        if (expected_partitions > 4):
+            logging.error(
+                f'Too many rings or competitors to split into maximum of 4 partitions - data size:{size_of_dataframe}, max people per partition: {max_entries_per_partition}, would require: {expected_partitions} or {expected_partitions + 1} partitions')
+            raise ValueError(
+                f'Too many rings or competitors to split into the maximum of 4 partitions - data size:{size_of_dataframe}, max people per partition: {max_entries_per_partition}, would require: {expected_partitions} or {expected_partitions + 1} partitions')
+            # return [['A', 'Z']]
+
 
         # Add a column to the data with the first letter of the 'Last Name' field
         the_data_with_LastNameFirstLetter = the_data.copy()
@@ -215,21 +217,27 @@ class NamePartionioner:
 
             case 2:
                 self.split_into_two_partitions(max_entries_per_partition, the_data_with_LastNameFirstLetter)
-                if (len(self.list_of_scores) == 0):
+                if len(self.list_of_scores) == 0:
                     logging.info("no solutions found for two partitions, trying three")
                     self.split_into_three_partitions(max_entries_per_partition, the_data_with_LastNameFirstLetter)
 
             case 3:
                 self.split_into_three_partitions(max_entries_per_partition, the_data_with_LastNameFirstLetter)
-                if (len(self.list_of_scores) == 0):
+                if len(self.list_of_scores) == 0:
                     logging.info("no solutions found for three partitions, trying four")
                     self.split_into_four_partitions(max_entries_per_partition, the_data_with_LastNameFirstLetter)
 
+            case 4:
+                self.split_into_four_partitions(max_entries_per_partition, the_data_with_LastNameFirstLetter)
+                if len(self.list_of_scores) == 0:
+                    logging.error("No solutions found for four partitions, You need to split the ranks up!")
+                    raise ValueError(f'No solutions found for four partitions, You need to split the ranks up!')
+
         if len(self.list_of_scores) == 0:
             logging.error(
-                f'No solutions found to partition the data into partitions of {max_entries_per_partition} entries')
+                f'No solutions found to partition the competitors into partitions of {max_entries_per_partition} entries')
             raise ValueError(
-                f'No solutions found to partition the data into partitions of {max_entries_per_partition} entries')
+                f'No solutions found to partition the competitors into partitions of {max_entries_per_partition} entries')
             # return [['A', 'Z']]
 
         # self.split_into_two_partitions(max_entries_per_partition, the_data)
